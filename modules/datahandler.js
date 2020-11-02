@@ -47,28 +47,28 @@ class StorageHandler {
            // results = await client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password]);
             //console.log(results.rows);
 
+            
+            
             results = await client.query("SELECT password FROM users WHERE username=$1 AND password=$2", [username, password]);
-            console.log(results.rows);
+            if(results.rows[0] !== undefined){
+                
+                if(password === results.rows[0].password){
+                    console.log("login");
+                }else{
+                    results = "Password or username does not exist";
+                    return;
+                }
+                
+            }else{
+                //console.log("Password or username does not exist");
+            }
+
+
+            
             
         }catch(err){
             console.log(err);
         }
-
-        /*
-        server.get('/user', async function (req , res){
-            let sql = 'SELECT * FROM users';
-            try {
-              let result = await client.query(sql);
-              res.status(200).json(results.rows);
-              console.log(result);
-            }
-            catch(err) {
-              res.status(500).json({error: err});
-            }
-          
-          
-          });
-          */
 
     }
 

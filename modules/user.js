@@ -26,7 +26,7 @@ class User {
     async login(){
         try{
             let resp = await database.loginUser(this.username, this.password);
-            return resp;
+            return;
         }catch(err){
             console.log(err);
         }

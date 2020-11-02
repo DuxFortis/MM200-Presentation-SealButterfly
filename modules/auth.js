@@ -1,4 +1,6 @@
+const user = require("./user");
 const authenticator = (req, res,next) => {
+    
 
     if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
         return res.append("WWW-Authenticate", 'Basic realm="User Visible Realm", charset="UTF-8"').status(401).end()
@@ -21,7 +23,10 @@ const authenticator = (req, res,next) => {
 
 
 function authenticate(username, password){
-    console.log(username + ":" + password);
+    //console.log(username + ":" + password);
+    const checkUser = new user(username, password);
+    checkUser.login();
+    return;
 };
 
 

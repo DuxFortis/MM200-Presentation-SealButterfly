@@ -63,9 +63,12 @@
         let username = loginUsername
         let password = loginPsw
 
+       
+
         const credentials = "Basic " + window.btoa(`${username}:${password}`);
         //const credentials = username + ":" + password;
 
+        
         let config = {
             method: "GET",
             headers: {
@@ -97,7 +100,7 @@
 
     if(createPassword === createPasswordConf){
 
-        let body = {
+            let body = {
                 username: createUsername,
                 password: createPassword
             }
