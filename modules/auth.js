@@ -9,8 +9,9 @@ const authenticator = (req, res,next) => {
     const credentials = req.headers.authorization.split(' ')[1];
     const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":");
 
-    const user = authenticate(username, password)
-    if (user) {
+    const user = authenticate(username, password);
+    //console.log(user)
+    if(user) {
         return res.status(403).end()
     }
     //next();
@@ -26,7 +27,7 @@ function authenticate(username, password){
     //console.log(username + ":" + password);
     const checkUser = new user(username, password);
     checkUser.login();
-    return;
+    return checkUser;
 };
 
 

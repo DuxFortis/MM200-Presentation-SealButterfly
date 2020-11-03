@@ -53,10 +53,14 @@ class StorageHandler {
             if(results.rows[0] !== undefined){
                 
                 if(password === results.rows[0].password){
+
                     console.log("login");
+
                 }else{
+
                     results = "Password or username does not exist";
                     return;
+                    
                 }
                 
             }else{
