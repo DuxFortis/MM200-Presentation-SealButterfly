@@ -3,7 +3,6 @@ const user = require('./user');
 
 const authenticator = async (req, res, next) => {
     if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
-        //return res.redirect("/"); //returnerer til index.html hvis brukeren ikke er logget inn
         return res.append("WWW-Authenticate", 'Basic realm="User Visible Realm", charset="UTF-8"').status(401).end();
     }
 

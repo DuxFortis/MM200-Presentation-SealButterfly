@@ -21,13 +21,25 @@ server.post("/user", async function (req, res) {
   res.status(200).json(newUser).end();
 });
 
+
+// login user
 server.post("/authenticate", async (req, res) => {
+
+  console.log(req.headers.authorization); // krypterte strengen brukeren sender inn
+
+  const credentials = req.headers.authorization.split(' ')[1];
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+
+  console.log(username + ":" + password); // brukernavn, passord i ren tekst
   
-  let requestUser = new user(req.body.username, req.body.password); // Hvem prøver å logge inn?
-  let isValid = requestUser.validate(); // Finnes vedkommende i DB og er det riktig passord?
+  const requestUser = new user(username, password); // Hvem prøver å logge inn?
+  const isValid = await requestUser.validate(); // Finnes vedkommende i DB og er det riktig passord?
+
+  console.log(isValid); // isValid = true/false
   
   if(isValid){
-    let sessionToken = createToken(requestUser);
+    //let sessionToken = createToken(requestUser);
+    let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken}).end();
   } else {
     res.status(403).end(); 
@@ -35,12 +47,12 @@ server.post("/authenticate", async (req, res) => {
   
 });
 
-//!!!! WARNING DEMO !!! 
-server.get("/user/presentation/:id",auth, function (req, res) {
+//!!!! WARNING DEMO !!!
+server.get("/user/presentation/:id", auth, function (req, res) {
 
     // Bruker spør om presentasjon med id.
     // Tilhører den presentasjonen denne brukeren?
-    // if(req.user.id = presenteasjon.author){}
+    // if(req.user.id = presentasjon.author){}
     // req.user kommer fra auth. 
     
     // Retuner json for presentasjon. 

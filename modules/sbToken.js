@@ -1,4 +1,4 @@
-const user = requier("./user.js");
+const user = require("./user.js");
 const crypto = require('crypto');
 const secret = process.env.tokenSecret || require("../localenv").tokenSecret;
 

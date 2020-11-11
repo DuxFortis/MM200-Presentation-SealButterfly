@@ -12,6 +12,8 @@ class StorageHandler {
         };
     }
 
+    //  create new user
+
     async insertUser(username, password) {
         const client = new pg.Client(this.credentials);
         let results = null;
@@ -29,13 +31,15 @@ class StorageHandler {
         return results;
     }
 
+    //  login user
+
     async selectUser(username, password){
         const client = new pg.Client(this.credentials);
         let resp = null;
         try{
             await client.connect();
             let results = await client.query('SELECT * FROM "public"."users" WHERE username=$1 AND password=$2', [username, password]);
-            resp =  (results.rows.length > 0) ? results.rows[0]:null;
+            resp = (results.rows.length > 0) ? results.rows[0]:null;
             client.end();
         }catch(err){
             console.log(err);
@@ -44,7 +48,7 @@ class StorageHandler {
         return resp;        
     }
 
-    //presentations
+    // create presentation
 
     async insertPres(name, descr) {
 

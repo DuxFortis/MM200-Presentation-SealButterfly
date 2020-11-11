@@ -83,44 +83,43 @@
 
         if(loginUsername !== "" && loginPsw !== ""){
 
-        let username = loginUsername;
-        let password = loginPsw;
-
-       
-
-        const credentials = "Basic " + window.btoa(`${username}:${password}`); //kryptert streng
-        //const credentials = username + ":" + password; //til ren streng/tekst
-
+            let username = loginUsername;
+            let password = loginPsw;
         
-        let config = {
-            method: "GET",
-            headers: {
-            "content-type": "application/json",
-            "authorization": credentials
+
+            const credentials = "Basic " + window.btoa(`${username}:${password}`); //kryptert streng
+            //const credentials = username + ":" + password; //til ren streng/tekst
+
+            
+            let config = {
+                method: "POST",
+                headers: {
+                "content-type": "application/json",
+                "authorization": credentials
+                }
             }
+
+            const response = await fetch("/authenticate", config);
+            const data = await response.json();
+            serverResp(response, data, 1); //sender response og data til funksjonen 1 = login
+
+        }else{
+            // p shows up with text info
+            //const infoDiv = document.getElementById("info");
+            //infoDiv.innerHTML = "Invalid username or password";
+            //document.body.appendChild(infoDiv);
         }
 
-        const response = await fetch("/authenticate", config);
-        //const data = await response.json();
-        //serverResp(response, data, 1); //sender response og data til funksjonen 1 = login
-
-    }else{
-        // p shows up with text info
-        //const infoDiv = document.getElementById("info");
-        //infoDiv.innerHTML = "Invalid username or password";
-        //document.body.appendChild(infoDiv);
-    }
-
-    })
+        })
 
     
     //
 
 
     //create User
-    const userform = document.getElementById('createform');
+    const createform = document.getElementById('createform');
 
-    userform.addEventListener('submit', async function(evt) {
+    createform.addEventListener("submit", async function(evt) {
 
     evt.preventDefault();
 
@@ -129,34 +128,34 @@
 
     if(createUsername !== "" && createPassword !== ""){
 
-    const createPasswordConf = document.getElementById("createPswConf").value;
+        const createPasswordConf = document.getElementById("createPswConf").value;
 
-    if(createPassword === createPasswordConf){
+        if(createPassword === createPasswordConf){
 
-            let body = {
-                username: createUsername,
-                password: createPassword
+                let body = {
+                    username: createUsername,
+                    password: createPassword
+                }
+                let config = {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                }
+
+                const response = await fetch("/user", config);
+                const data = await response.json();
+                serverResp(response, data, 2); //sender response og data til funksjonen 2 = createUser
+
+            }else{
+                // p shows up with text info2
+                //const infoDiv = document.getElementById("info2");
+                //infoDiv.innerHTML = "Passwords don't match!";
+                //document.body.appendChild(infoDiv);
+
+                
             }
-            let config = {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify(body)
-            }
-
-            const response = await fetch("/user", config);
-            //const data = await response.json();
-            //serverResp(response, data, 2); //sender response og data til funksjonen 2 = createUser
-
-        }else{
-            // p shows up with text info2
-            const infoDiv = document.getElementById("info2");
-            infoDiv.innerHTML = "Passwords don't match!";
-            document.body.appendChild(infoDiv);
-
-            
-        }
     }else{
         // p shows up with text info2
         //const infoDiv = document.getElementById("info2");
@@ -172,20 +171,20 @@
     function serverResp(res, data, num){
         console.log(res.status);
         //console.log(data.response)
-        if(data.token){
-            console.log(data.token);
-            localStorage.setItem("token", data.token);
+        if(data.authToken !== null){
+            console.log("authToken:" + data.authToken);
+            localStorage.setItem("token", data.authToken);
         }
         //
 
         //sjekker om num 1 = login eller om num 2 = createUser, for å gi brukeren beskjed i riktig div
-        switch(num){
+        /*switch(num){
             case 1:
                 //document.getElementById("info").innerHTML = data.response;
                 break;
             case 2:
                 //document.getElementById("info2").innerHTML = data.response;
-        }
+        }*/
     }
 
     //

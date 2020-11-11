@@ -25,22 +25,22 @@ class User {
         }
     }
   
-  async update(){
-  
-  }
+    async update(){
+    
+    }
 
-  async delete(){
-    //??? Vanskelig :) pga politikk. 
-  }
+    async delete(){
+      //??? Vanskelig :) pga politikk. 
+    }
 
     async validate(){
       let success = false;
       try{
-            let resp = await database.loginUser(this.username, this.password);
+            let resp = await database.selectUser(this.username, this.password);
 
             if(resp != null){
               this.isValid = true;
-              sucess = true
+              success = true;
               // Her kan vi populere andre felter i user objektet
               // Eks this.email = resp.email (eller lignende)
             }
