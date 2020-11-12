@@ -1,9 +1,8 @@
 const user = require("./user.js");
 const crypto = require('crypto');
-const secret = process.env.tokenSecret || require("../localenv").tokenSecret;
+const secretKey = process.env.tokenSecret || require("../localenv").tokenSecret;
 
 const algorithm = 'aes-256-ctr';
-const secretKey = 'vOVH6sdmpNWjRRIqCc7rdxs01lwHzfr3';
 const iv = crypto.randomBytes(16);
 let d = new Date();
 const dateNow = Date.now();
@@ -30,11 +29,20 @@ function createToken(user){
 
 function validateToken(token, user){
 
+    let isTokenValid = false;
+
     const splitToken = token.authToken.split(".");
-    
+
     let tIV = splitToken[0];
     let tEncryptedData = splitToken[1];
 
+    if(splitToken.length > 2){
+        return isTokenValid;
+    }else if(tIV.length !== 32){
+        return isTokenValid;
+    }else if(tEncryptedData.length !== 362){
+        return isTokenValid;
+    }else{
 
     let iv = Buffer.from(tIV, 'hex');
     let encryptedToken = Buffer.from(tEncryptedData, 'hex');
@@ -43,16 +51,28 @@ function validateToken(token, user){
     decrypted = Buffer.concat([decrypted, decipher.final()]);
 
     let tokenText = decrypted.toString();
-    console.log(tokenText);
 
+    let expirationDate = JSON.parse(tokenText).validTo;
+    let userInfo = JSON.parse(tokenText).user;
+    userInfo = JSON.parse(userInfo);
+
+    if(dateNow > expirationDate){
+        return isTokenValid;
+    }else if(user.username !== userInfo.username){
+        return isTokenValid;
+    }else if(user.password !== userInfo.password){
+        return isTokenValid;
+    }
+    else{
+        isTokenValid = true;
+    }
+    }
         
-    return "";
+    return isTokenValid;
 
     // omvendt av det som ligger i createToken?
     // er token info === user info
     // Er tokenet utløpt??
-  
-    //return token;
 }
 
 
