@@ -14,57 +14,81 @@
 
     <div class="w3-dropdown-click w3-right">
       <button onclick="myAccount()" class="w3-button w3-white">Account</button>
-      <div id="Demo" class="w3-dropdown-content w3-bar-block w3-border">
+      <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
         <a href="#" class="w3-bar-item w3-button">Log out</a>
         <a href="#" class="w3-bar-item w3-button">Delete account</a>
       </div>
     </div>
 
     <div class="w3-bar w3-white">
-        <button class="w3-bar-item w3-button" onclick="openTab('createTab')">Create Slides</button>
-        <button class="w3-bar-item w3-button" onclick="openTab('privateTab')">Private Slides</button>
-        <button class="w3-bar-item w3-button" onclick="openTab('myPublicTab')">Your Public Slides</button>
-        <button class="w3-bar-item w3-button" onclick="openTab('publicTab')">Public Slides</button>
+        <button class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Public Slides</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
       </div>
 
-    <div id="createTab" class="w3-container w3-white tab">
-      <button id="createNew">Create new slideshow</button>
-      <input id="presentationName">
-        <p>Here you can create a new slideshow from these templates:</p>
+    <div id="createTab" class="w3-container w3-border w3-white tab">
+      <p>Here you can create a new slideshow from these templates:</p>
+      <div class="w3-row-padding" style="margin:0 -16px">
+          <div class="w3-half">
+            <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioLight" value="light" style="margin:0;padding:0 " onclick="chooseTheme(event, `themeRadioLight`)" checked>
+              <img src="./pictures/LandingPageBackground.png" style="width:100%">
+              <p>Light theme</p>
+            </div>
+          </div>
+        <div class="w3-half">
+          <div class="w3-button w3-white w3-radio w3-grayscale-max tablinkTheme theme" type="radio" id="themeRadioDark" value="dark" style="margin:0;padding:0" onclick="chooseTheme(event, `themeRadioDark`)">
+            <img src="./pictures/LandingPageBackground.png" style="width:100%">
+              <p>Dark theme</p>
+          </div>
+        </div>
       </div>
+      <br>
+        <input id="presentationName" placeholder="Your slideshow name">
+        <button class="w3-button w3-border" id="createNew">Create new slideshow</button>
+    </div>
       
-      <div id="privateTab" class="w3-container w3-white tab" style="display:none">
+      <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My private slideshows</h2>
         <p>Here you will find your private slideshows.</p>
       </div>
       
-      <div id="myPublicTab" class="w3-container w3-white tab" style="display:none">
+      <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My public slideshows</h2>
         <p>Here you will find your public slideshows.</p>
       </div>
 
-      <div id="publicTab" class="w3-container w3-white tab" style="display:none">
+      <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>Public slideshows</h2>
         <p>Here are other users public slideshows.</p>
       </div>
 
+    
 
 
 <script>
 
+// tab function, w3.css
 
-function openTab(tabName) {
-  var i;
-  var x = document.getElementsByClassName("tab");
+function openTab(evt, tabName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("tab");
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";
   }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
+  }
   document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " w3-black";
 }
 
 
+// dropdown function w3.css
+
 function myAccount() {
-  var x = document.getElementById("Demo");
+  var x = document.getElementById("Acc");
   if (x.className.indexOf("w3-show") == -1) { 
     x.className += " w3-show";
   } else {
@@ -73,6 +97,21 @@ function myAccount() {
 }
 
 //create new presentation
+
+
+function chooseTheme(evt, themeName) {
+  var i, x, tablinksTheme;
+  x = document.getElementsByClassName("theme");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinksTheme = document.getElementsByClassName("tablinkTheme");
+  for (i = 0; i < x.length; i++) {
+    tablinksTheme[i].className = tablinksTheme[i].className.replace(" w3-black", "");
+  }
+  document.getElementById(themeName).style.display = "block";
+  evt.currentTarget.className += " w3-black";
+}
 
 const createNewBtn = document.getElementById("createNew");
 

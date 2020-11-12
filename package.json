@@ -1,5 +1,5 @@
 {
-  "name": "PresentationToolSB",
+  "name": "presentationtoolsb",
   "version": "1.0.0",
   "description": "Main repo for all project files.",
   "main": "server.js",
@@ -15,7 +15,7 @@
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express.js": "^1.0.0",
-    "pg": "^8.4.2"
+    "pg": "^8.5.0"
   },
   "repository": {
     "type": "git",

@@ -14,4 +14,16 @@ body{
     background-image: url("./pictures/LandingPageBackground.png");
 }
 
+#themeRadioLight{
+    width: auto;
+    height: auto;
+    position: relative;
+    top: 10px;
+}
 
+#themeRadioDark{
+    width: auto;
+    height: auto;
+    position: relative;
+    top: 10px;
+}
