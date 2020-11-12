@@ -14,7 +14,7 @@ class User {
             .update(password)
             .digest('hex');
         this.isValid = false;
-        this.email = null;
+        //this.email = null;
     }
 
     async create() {
@@ -30,7 +30,7 @@ class User {
     }
 
     async delete(){
-      //??? Vanskelig :) pga politikk. 
+      //??? Vanskelig :) pga politikk.
     }
 
     async validate(){
