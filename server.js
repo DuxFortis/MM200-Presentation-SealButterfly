@@ -4,7 +4,6 @@ const user = require("./modules/user");
 const auth = require("./modules/auth");
 
 const createToken = require("./modules/sbToken").create;
-const validateToken = require("./modules/sbToken").validate;
 
 const server = express();
 const port = (process.env.PORT || 8080);
@@ -47,6 +46,10 @@ server.post("/authenticate", async (req, res) => {
   }
   
 });
+
+server.get("/test", auth, function (req, res) {
+  res.end();
+})
 
 //!!!! WARNING DEMO !!!
 server.get("/user/presentation/:id", auth, function (req, res) {
