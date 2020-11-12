@@ -12,9 +12,6 @@
 
 body{
     background-image: url("./pictures/LandingPageBackground.png");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center; 
 }
 
 
