@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
+const presentation = require("./modules/presentation");
 const auth = require("./modules/auth");
 
 const createToken = require("./modules/sbToken").create;
@@ -61,10 +62,14 @@ server.get("/user/presentation/:id", auth, function (req, res) {
 
 server.post("/presentation", auth, async (req, res) => {
 
-  //const newPres = new presentation(req.body.presentation);
-  //await newPres.create();
+  const presentationName = req.body.presentation.name;
+  const presentationTheme = req.body.presentation.theme;
+  const owner = req.body.user;
+
+  const newPres = new presentation(presentationName, presentationTheme, owner);
+  await newPres.create();
  
-  res.status(200).json("newPres").end();
+  res.status(200).json(newPres).end();
 });
 
 server.post("/presentation/*")

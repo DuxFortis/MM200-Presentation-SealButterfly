@@ -59,20 +59,23 @@ class StorageHandler {
 
     // create presentation
 
-    async insertPres(name, descr) {
+    async insertPres(name, theme, username) {
 
         const client = new pg.Client(this.credentials);
         let results = null;
-        try {
+        results = await client.query('SELECT username from "users" where username=$1', [username]);
+        console.log(results + ":" + username)
+
+        /*try {
             await client.connect();
-            results = await client.query('INSERT INTO "public"."presentations"("name", "description") VALUES($1, $2) RETURNING *;', [name, descr]);
+            results = await client.query('INSERT INTO "public"."presentations"("name","owner_id","theme") VALUES($1, $2, $3) RETURNING *;', [name, ownerId,theme]);
             results = results.rows[0].message;
             client.end();
         } catch (err) {
             client.end();
             console.log(err);
             results = err;
-        }
+        }*/
 
         return results;
 
