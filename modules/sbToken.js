@@ -10,8 +10,6 @@ const dateNow = Date.now();
 const validToDate = d.setDate(d.getDate() + 1);
 
 function createToken(user){
-    
-    //console.log("now: " + dateNow + " validToDate: " + validToDate)
   
     let body = {"created":dateNow, "user":JSON.stringify(user), "validTo":validToDate};
     
@@ -22,7 +20,7 @@ function createToken(user){
     let encryptedDataString = encrypted.toString('hex');
 
     let token = {"authToken":`${ivString}.${encryptedDataString}`};
-    console.log(token)
+    //console.log(token)
     return token;
     
 }
@@ -60,10 +58,10 @@ function validateToken(token, user){
         return isTokenValid;
     }else if(user.username !== userInfo.username){
         return isTokenValid;
-    }else if(user.password !== userInfo.password){
+    /*}else if(user.password !== userInfo.password){
         return isTokenValid;
-    }
-    else{
+    }*/
+    }else{
         isTokenValid = true;
     }
     }

@@ -170,10 +170,20 @@
 
     function serverResp(res, data, num){
         console.log(res.status);
-        //console.log(data.response)
-        if(data.authToken !== undefined){
-            console.log("authToken:" + data.authToken);
-            localStorage.setItem("token", data.authToken);
+        if(!data.authToken){
+            return;
+        }else{
+            let token = data.authToken.authToken;
+            let user = data.user;
+            if(token !== undefined){
+                sessionStorage.setItem("token", token);
+            }
+            if(user !== undefined){
+                sessionStorage.setItem("user", user.username);
+            }
+            if(res.status === 200){
+                location.href = "/userIndex.html";
+            }
         }
         //
 

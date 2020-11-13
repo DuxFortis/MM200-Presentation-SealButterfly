@@ -119,8 +119,13 @@ createNewBtn.addEventListener("click", async function(evt) {
 
   const newPresentation = document.getElementById("presentationName").value;
 
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+        if(token !== undefined){
 
-  let body = {
+            let body = {
+                authToken: token,
+                user: username,
                 presentation: newPresentation,
             }
             let config = {
@@ -132,6 +137,10 @@ createNewBtn.addEventListener("click", async function(evt) {
             }
 
             const response = await fetch("/presentation", config);
+            console.log(response.status);
+            
+        }
+  
 });
 
 //

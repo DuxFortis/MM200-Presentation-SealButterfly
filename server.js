@@ -40,16 +40,12 @@ server.post("/authenticate", async (req, res) => {
   if(isValid){
     let sessionToken = createToken(requestUser);
     //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
-    res.status(200).json({"authToken":sessionToken}).end();
+    res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
     res.status(403).json("unauthorized").end(); 
   }
   
 });
-
-server.get("/test", auth, function (req, res) {
-  res.end();
-})
 
 //!!!! WARNING DEMO !!!
 server.get("/user/presentation/:id", auth, function (req, res) {
@@ -63,11 +59,12 @@ server.get("/user/presentation/:id", auth, function (req, res) {
 
 });
 
-server.post("/presentation", async function (req, res) {
+server.post("/presentation", auth, async (req, res) => {
 
-  const newPres = new presentation(req.body.presentation);
-  await newPres.create();
-  res.status(200).json(newPres).end();
+  //const newPres = new presentation(req.body.presentation);
+  //await newPres.create();
+ 
+  res.status(200).json("newPres").end();
 });
 
 server.post("/presentation/*")
