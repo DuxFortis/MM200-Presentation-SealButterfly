@@ -15,8 +15,8 @@
     <div class="w3-dropdown-click w3-right">
       <button onclick="myAccount()" class="w3-button w3-white">Account</button>
       <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
-        <a href="#" class="w3-bar-item w3-button">Log out</a>
-        <a href="#" class="w3-bar-item w3-button">Delete account</a>
+        <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+        <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
       </div>
     </div>
 
@@ -95,6 +95,13 @@ function myAccount() {
     x.className = x.className.replace(" w3-show", "");
   }
 }
+
+const logOut = document.getElementById("logOut");
+
+logOut.addEventListener("click", function(evt){
+  sessionStorage.clear();
+  location.href = "/";
+});
 
 //create new presentation
 let chosenTheme = "Light";

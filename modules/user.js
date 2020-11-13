@@ -20,8 +20,7 @@ class User {
     async create() {
         try {
             let resp = await database.insertUser(this.username, this.password);
-            console.log(resp)
-            //return resp;
+            return resp;
         } catch (error) {
             console.error(error)
         }

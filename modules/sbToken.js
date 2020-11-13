@@ -38,7 +38,7 @@ function validateToken(token, user){
         return isTokenValid;
     }else if(tIV.length !== 32){
         return isTokenValid;
-    }else if(tEncryptedData.length !== 362){
+    }else if(tEncryptedData.length < 356 || tEncryptedData > 394){
         return isTokenValid;
     }else{
 

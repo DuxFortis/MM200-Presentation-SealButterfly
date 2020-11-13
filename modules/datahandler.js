@@ -18,15 +18,14 @@ class StorageHandler {
         const client = new pg.Client(this.credentials);
         let results = null;
         try {
+            await client.connect();
             results = await client.query('SELECT username from "users" where username=$1', [username]);
             const nameCheck = results.rows.find(element => element = username);
             
             if(nameCheck !== undefined){
                 results = null;
-                //
                 client.end();
             }else{
-                await client.connect();
                 results = await client.query('INSERT INTO "public"."users"("username", "password") VALUES($1, $2) RETURNING *;', [username, password]);
                 results = results.rows[0].message;
                 client.end();
@@ -59,23 +58,21 @@ class StorageHandler {
 
     // create presentation
 
-    async insertPres(name, theme, username) {
+    async insertPres(name, theme, owner) {
 
         const client = new pg.Client(this.credentials);
         let results = null;
-        results = await client.query('SELECT username from "users" where username=$1', [username]);
-        console.log(results + ":" + username)
 
-        /*try {
+        try {
             await client.connect();
-            results = await client.query('INSERT INTO "public"."presentations"("name","owner_id","theme") VALUES($1, $2, $3) RETURNING *;', [name, ownerId,theme]);
+            results = await client.query('INSERT INTO "public"."presentations"("name","owner","theme") VALUES($1, $2, $3) RETURNING *;', [name, owner,theme]);
             results = results.rows[0].message;
             client.end();
         } catch (err) {
             client.end();
             console.log(err);
             results = err;
-        }*/
+        }
 
         return results;
 

@@ -12,14 +12,31 @@ server.set('port', port);
 server.use(express.static('public'));
 server.use(bodyParser.json());
 
+const maxCharLength = 20;
+
 
 // create new user
 server.post("/user", async function (req, res) {
-  const newUser = new user(req.body.username, req.body.password);
-  await newUser.create();
+  const username = req.body.username;
+  const password = req.body.password;
+
+  if(username === "" || password === ""){
+    res.status(403).json("invalid username or password").end();
+  }
+  if(username.length > maxCharLength || password.length > maxCharLength){
+    res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
+  }else{
+  const newUser = new user(username, password);
+  const resp = await newUser.create();
+
+  if(resp === null){
+    res.status(401).json("username is taken!").end();
+  }else{
+    res.status(200).json(newUser).end();
+  }
   // Hva om databasen feilet?
   // Hva om det var en bruker med samme brukernavn?
-  res.status(200).json(newUser).end();
+  }
 });
 
 
@@ -62,7 +79,13 @@ server.get("/user/presentation/:id", auth, function (req, res) {
 
 server.post("/presentation", auth, async (req, res) => {
 
-  const presentationName = req.body.presentation.name;
+  let presentationName = req.body.presentation.name;
+  if(presentationName === ""){
+    presentationName = "New Presentation";
+  }
+  if(presentationName.length > maxCharLength){
+    res.status(403).json(`Presentation name is exceeding ${maxCharLength} characters!`).end();
+  }else{
   const presentationTheme = req.body.presentation.theme;
   const owner = req.body.user;
 
@@ -70,6 +93,7 @@ server.post("/presentation", auth, async (req, res) => {
   await newPres.create();
  
   res.status(200).json(newPres).end();
+  }
 });
 
 server.post("/presentation/*")
