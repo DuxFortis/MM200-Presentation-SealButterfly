@@ -29,15 +29,15 @@
 
     <div id="createTab" class="w3-container w3-border w3-white tab">
       <p>Here you can create a new slideshow from these templates:</p>
-      <div class="w3-row-padding" style="margin:0 -16px">
+      <div id="themeSelector" class="w3-row-padding" style="margin:0 -16px">
           <div class="w3-half">
-            <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioLight" value="light" style="margin:0;padding:0 " onclick="chooseTheme(event, `themeRadioLight`)" checked>
+            <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioLight" value="light" style="margin:0;padding:0 " onclick="chooseTheme(event, `Light`)" checked>
               <img src="./pictures/LandingPageBackground.png" style="width:100%">
               <p>Light theme</p>
             </div>
           </div>
         <div class="w3-half">
-          <div class="w3-button w3-white w3-radio w3-grayscale-max tablinkTheme theme" type="radio" id="themeRadioDark" value="dark" style="margin:0;padding:0" onclick="chooseTheme(event, `themeRadioDark`)">
+          <div class="w3-button w3-white w3-radio w3-grayscale-max tablinkTheme theme" type="radio" id="themeRadioDark" value="dark" style="margin:0;padding:0" onclick="chooseTheme(event, `Dark`)">
             <img src="./pictures/LandingPageBackground.png" style="width:100%">
               <p>Dark theme</p>
           </div>
@@ -97,21 +97,22 @@ function myAccount() {
 }
 
 //create new presentation
-
+let chosenTheme = "Light";
 
 function chooseTheme(evt, themeName) {
   var i, x, tablinksTheme;
   x = document.getElementsByClassName("theme");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
+  chosenTheme = themeName;
+  let fullThemeName = `themeRadio${themeName}`
+
   tablinksTheme = document.getElementsByClassName("tablinkTheme");
   for (i = 0; i < x.length; i++) {
     tablinksTheme[i].className = tablinksTheme[i].className.replace(" w3-black", "");
   }
-  document.getElementById(themeName).style.display = "block";
+  document.getElementById(fullThemeName).style.display = "block";
   evt.currentTarget.className += " w3-black";
 }
+
 
 const createNewBtn = document.getElementById("createNew");
 
@@ -126,7 +127,7 @@ createNewBtn.addEventListener("click", async function(evt) {
             let body = {
                 authToken: token,
                 user: username,
-                presentation: newPresentation,
+                presentation: {"name":newPresentation, "theme": chosenTheme},
             }
             let config = {
                 method: "POST",
@@ -149,3 +150,7 @@ createNewBtn.addEventListener("click", async function(evt) {
 
 
 </body>
+
+
+
+  
