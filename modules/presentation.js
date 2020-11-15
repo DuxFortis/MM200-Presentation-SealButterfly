@@ -2,15 +2,16 @@ const database = require("./datahandler");
 
 class Presentation {
 
-    constructor(name, theme, owner){
+    constructor(name, theme, owner, isPublic){
         this.name = name;
         this.theme = theme;
         this.owner = owner;
+        this.isPublic = isPublic;
     }
 
     async create() {
         try {
-            let respons = await database.insertPres(this.name, this.theme, this.owner);
+            let respons = await database.insertPres(this.name, this.theme, this.owner, this.isPublic);
         } catch (error) {
             console.error(error)
         }

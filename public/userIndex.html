@@ -13,7 +13,7 @@
     <img id="logo" src= "./pictures/logo.png">
 
     <div class="w3-dropdown-click w3-right">
-      <button onclick="myAccount()" class="w3-button w3-white">Account</button>
+      <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
       <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
         <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
         <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
@@ -23,7 +23,7 @@
     <div class="w3-bar w3-white">
         <button class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
         <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Public Slides</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
         <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
       </div>
 
@@ -54,7 +54,7 @@
       </div>
       
       <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
-        <h2>My public slideshows</h2>
+        <h2>My slideshows</h2>
         <p>Here you will find your public slideshows.</p>
       </div>
 
@@ -120,6 +120,10 @@ function chooseTheme(evt, themeName) {
   evt.currentTarget.className += " w3-black";
 }
 
+const accountText = document.getElementById("accountText");
+const username = sessionStorage.getItem("user");
+accountText.innerHTML = username;
+
 
 const createNewBtn = document.getElementById("createNew");
 
@@ -134,7 +138,7 @@ createNewBtn.addEventListener("click", async function(evt) {
             let body = {
                 authToken: token,
                 user: username,
-                presentation: {"name":newPresentation, "theme": chosenTheme},
+                presentation: {"name":newPresentation, "theme": chosenTheme, "isPublic": true},
             }
             let config = {
                 method: "POST",
