@@ -95,7 +95,41 @@ if(username){
   accountText.innerHTML = username;
 }
 
+getPresentation();
+async function getPresentation() {
+  const id = sessionStorage.getItem("presentationId");
 
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  presentationId: id
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/user/presentation/:${id}`, config);
+    const data = await response.json();
+
+    const pres = data[0];
+    const slides = pres.slides;
+
+    document.getElementById("presTitle").innerHTML = pres.name;
+
+    document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
+    
+    console.log(data[0].slides.Slide1);
+    
+    }
+}
 
 
 

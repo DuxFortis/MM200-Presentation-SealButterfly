@@ -66,14 +66,27 @@ server.post("/authenticate", async (req, res) => {
 });
 
 //!!!! WARNING DEMO !!!
-server.get("/user/presentation/:id", auth, function (req, res) {
+server.post("/user/presentation/:id", auth, async function (req, res) {
+    const owner = req.body.user;
+    const presentationId = req.body.presentationId;
+    //name, theme, owner, isPublic, id
+    const Pres = new presentation("", "", owner, "", presentationId);
+    const resp = await Pres.getPresentation();
+
+
+
 
     // Bruker spør om presentasjon med id.
     // Tilhører den presentasjonen denne brukeren?
     // if(req.user.id = presentasjon.author){}
     // req.user kommer fra auth. 
     
-    // Retuner json for presentasjon. 
+    // Retuner json for presentasjon.
+    if(resp.length === 0){
+      res.status(404).json("Error").end();
+    }
+
+    res.status(200).json(resp).end();
 
 });
 
@@ -91,9 +104,9 @@ server.post("/presentation", auth, async (req, res) => {
   const isPublic = req.body.presentation.isPublic;
 
   const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
-  await newPres.create();
+  const resp = await newPres.create();
  
-  res.status(200).json(newPres).end();
+  res.status(200).json(resp).end();
   }
 });
 

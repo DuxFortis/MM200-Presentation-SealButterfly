@@ -70,7 +70,27 @@ class StorageHandler {
         try {
             await client.connect();
             results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","isPublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
-            //results = results.rows[0].message;
+            results = results.rows[0].id;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
+    async getPresentation(owner, id) {
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, id]);
+            results = results.rows;
             client.end();
         } catch (err) {
             client.end();
