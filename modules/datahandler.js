@@ -63,10 +63,14 @@ class StorageHandler {
         const client = new pg.Client(this.credentials);
         let results = null;
 
+        let slides = {
+            "Slide1": {"title": "test", "image": "123.png", "imageText": "myImage", "list": "1,2,3"},
+           }
+
         try {
             await client.connect();
-            results = await client.query('INSERT INTO "public"."presentations"("name","owner","theme","isPublic") VALUES($1, $2, $3, $4) RETURNING *;', [name, owner,theme,isPublic]);
-            results = results.rows[0].message;
+            results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","isPublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
+            //results = results.rows[0].message;
             client.end();
         } catch (err) {
             client.end();
