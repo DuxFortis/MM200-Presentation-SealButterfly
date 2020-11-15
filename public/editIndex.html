@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>Client</title>
+    <link rel="stylesheet" href="editIndex.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+
+<body>
+
+    <img id="logo" src= "./pictures/logo.png">
+
+
+    <div class="w3-dropdown-click w3-right">
+        <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
+        <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
+          <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+          <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+<script>
+// dropdown function w3.css
+
+function myAccount() {
+  var x = document.getElementById("Acc");
+  if (x.className.indexOf("w3-show") == -1) { 
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+const logOut = document.getElementById("logOut");
+
+logOut.addEventListener("click", function(evt){
+  sessionStorage.clear();
+  location.href = "/";
+});
+
+
+
+
+
+
+</script>

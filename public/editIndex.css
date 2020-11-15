@@ -1,0 +1,15 @@
+*{
+    font-size: 20px;
+    font-family: sans-serif;
+    
+}
+
+#logo{
+   margin-left: 43%;
+   margin-top: 2%;
+   margin-bottom: 1%;
+}
+
+body{
+    background-image: url("./pictures/LandingPageBackground.png");
+}
