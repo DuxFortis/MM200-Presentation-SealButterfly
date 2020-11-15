@@ -16,6 +16,14 @@ p{
     opacity: 0;
 }
 
+#info{
+    padding:5px;
+}
+
+#info1{
+    padding:5px;
+}
+
 
 body{
     background-image: url("./pictures/LandingPageBackground.png");
