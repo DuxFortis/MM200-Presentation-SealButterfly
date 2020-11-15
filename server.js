@@ -21,7 +21,7 @@ server.post("/user", async function (req, res) {
   const password = req.body.password;
 
   if(username === "" || password === ""){
-    res.status(403).json("invalid username or password").end();
+    res.status(403).json("Invalid username or password").end();
   }
   if(username.length > maxCharLength || password.length > maxCharLength){
     res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
@@ -30,9 +30,9 @@ server.post("/user", async function (req, res) {
   const resp = await newUser.create();
 
   if(resp === null){
-    res.status(401).json("username is taken!").end();
+    res.status(401).json("Username is taken!").end();
   }else{
-    res.status(200).json(newUser).end();
+    res.status(200).json("Account created!").end();
   }
   // Hva om databasen feilet?
   // Hva om det var en bruker med samme brukernavn?
@@ -60,7 +60,7 @@ server.post("/authenticate", async (req, res) => {
     //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
-    res.status(403).json("Unauthorized").end(); 
+    res.status(403).json("Username or password is incorrect!").end(); 
   }
   
 });
