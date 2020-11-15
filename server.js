@@ -88,8 +88,9 @@ server.post("/presentation", auth, async (req, res) => {
   }else{
   const presentationTheme = req.body.presentation.theme;
   const owner = req.body.user;
+  const isPublic = req.body.presentation.isPublic;
 
-  const newPres = new presentation(presentationName, presentationTheme, owner);
+  const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
   await newPres.create();
  
   res.status(200).json(newPres).end();
