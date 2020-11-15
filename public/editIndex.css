@@ -13,3 +13,21 @@
 body{
     background-image: url("./pictures/LandingPageBackground.png");
 }
+
+.edit{
+    background-image: url(./pictures/Theme_Dark.png);
+    width: auto;
+    height: 700px;
+}
+
+#presTitle{
+    padding-top: 50px;
+    width: auto;
+    height: 100px;
+}
+ 
+#presParagraph{
+    padding-top: 100px;
+    height: 200px;
+    width: auto;
+}
