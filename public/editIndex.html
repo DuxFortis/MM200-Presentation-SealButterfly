@@ -84,6 +84,12 @@ logOut.addEventListener("click", function(evt){
   location.href = "/";
 });
 
+const accountText = document.getElementById("accountText");
+const username = sessionStorage.getItem("user");
+if(username){
+  accountText.innerHTML = username;
+}
+
 
 
 
