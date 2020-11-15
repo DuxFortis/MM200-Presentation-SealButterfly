@@ -60,7 +60,7 @@ server.post("/authenticate", async (req, res) => {
     //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
-    res.status(403).json("unauthorized").end(); 
+    res.status(403).json("Unauthorized").end(); 
   }
   
 });
@@ -97,8 +97,6 @@ server.post("/presentation", auth, async (req, res) => {
   }
 });
 
-server.post("/presentation/*")
-
 
 /*server.get("/secure/*", async function (req, res) {
     let isValid = false;
@@ -109,6 +107,13 @@ server.post("/presentation/*")
     }
     
 })*/
+
+/*
+let slides = [
+  Slide1: {"title": "test", "image": "123.png", "imageText": "myImage", "list": "1,2,3"},
+  Slide2: {"":""},
+];
+*/
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));
