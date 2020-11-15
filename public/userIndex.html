@@ -122,7 +122,10 @@ function chooseTheme(evt, themeName) {
 
 const accountText = document.getElementById("accountText");
 const username = sessionStorage.getItem("user");
-accountText.innerHTML = username;
+if(username){
+  accountText.innerHTML = username;
+}
+
 
 
 const createNewBtn = document.getElementById("createNew");
