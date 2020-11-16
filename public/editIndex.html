@@ -29,10 +29,10 @@
             <div class="w3-col l2 s2">
                 <div class="w3-container w3-white">
                     <p>Your slides</p>
-                    <ul class="w3-ul">
-                        <li class="w3-hover-grey w3-button">slide 1 </li>
-                        <li id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</li>
+                    <ul id="allSlides" class="w3-ul">
+                        
                     </ul>
+                    <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
                 </div>
             </div>
             <div class="w3-col l8 s8">
@@ -127,12 +127,34 @@ async function getPresentation() {
 
     document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
 
-    sessionStorage.setItem("currentSlide", Object.keys(slides)[0]);
+    localStorage.setItem("PresentationProject", JSON.stringify(pres));
+
+    refreshSlides();
 
     }else{
       location.href = "/userIndex.html";
     }
     }
+}
+
+function refreshSlides(){
+
+  let slides = localStorage.getItem("PresentationProject");
+  slides = JSON.parse(slides)
+  slides = slides.slides;
+
+  const allSlides = document.getElementById("allSlides");
+
+  allSlides.innerHTML = "";
+
+  const totalSlides = Object.entries(slides).length;
+
+  allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+
+  for(let i = 2; i <= totalSlides; i++){
+    allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+    }
+
 }
 
 const newSlideBtn = document.getElementById("newSlideBtn");
@@ -142,14 +164,12 @@ newSlideBtn.addEventListener("click", async function(evt){
 
   const token = sessionStorage.getItem("token");
   const username = sessionStorage.getItem("user");
-  const currentSlide = sessionStorage.getItem("currentSlide");
   if(token !== undefined){
 
     let body = {
                   authToken: token,
                   user: username,
-                  presentationId: id,
-                  slideNr: currentSlide
+                  presentationId: id
               };
               let config = {
                   method: "POST",
@@ -159,12 +179,11 @@ newSlideBtn.addEventListener("click", async function(evt){
                   body: JSON.stringify(body)
               }
 
-    const response = await fetch(`/user/presentation/${id}/slide/${currentSlide}`, config);
+    const response = await fetch(`/user/presentation/${id}/slide`, config);
     const data = await response.json();
     console.log(response.status);
 
-    const pres = data[0];
-    const slides = pres.slides;
+    getPresentation();
 
     /*if(slides){
 

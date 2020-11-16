@@ -91,14 +91,13 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
 
 });
 
-server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) {
+server.post("/user/presentation/:id/slide", auth, async function (req, res) {
   const owner = req.body.user;
   const presentationId = req.body.presentationId;
   const template = 1;
-  const slideNr = req.body.slideNr;
   
   //name, theme, owner, isPublic, id
-  const newSlide = new slides(presentationId, slideNr, template, owner);
+  const newSlide = new slides(presentationId, template, owner);
   const resp = await newSlide.create();
 
   if(resp === null){
@@ -112,7 +111,7 @@ server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) 
   
   // Retuner json for presentasjon.
 
-  res.status(200).json(resp).end();
+  res.status(200).json("Created new slide").end();
   }
 
 });
