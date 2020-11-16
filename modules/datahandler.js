@@ -46,7 +46,7 @@ class StorageHandler {
         let resp = null;
         try{
             await client.connect();
-            let results = await client.query('SELECT * FROM "public"."users" WHERE username=$1 AND password=$2', [username, password]);
+            results = await client.query('SELECT * FROM "public"."users" WHERE username=$1 AND password=$2', [username, password]);
             resp = (results.rows.length > 0) ? results.rows[0]:null;
             client.end();
         }catch(err){
@@ -58,15 +58,74 @@ class StorageHandler {
 
     // create presentation
 
-    async insertPres(name, theme, owner) {
+    async insertPres(name, theme, owner, isPublic) {
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        let slides = {
+            "Slide1": {"title": "", "image": "", "imageText": "", "list": ""},
+           }
+
+        try {
+            await client.connect();
+            results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","isPublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
+            results = results.rows[0].id;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
+    async insertSlide(presentationId, slideNr, template, owner) {
 
         const client = new pg.Client(this.credentials);
         let results = null;
 
         try {
             await client.connect();
-            results = await client.query('INSERT INTO "public"."presentations"("name","owner","theme") VALUES($1, $2, $3) RETURNING *;', [name, owner,theme]);
-            results = results.rows[0].message;
+            results = await client.query('SELECT slides FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, presentationId]);
+
+            const presentationCheck = results.rows;
+            if(presentationCheck.length === 0){
+                results = null;
+                client.end()
+            }else{
+
+            const userSlides = results.rows[0].slides;
+            const slidesAmount = Object.entries(userSlides);
+            const newSlide = "Slide" + parseInt(slidesAmount.length + 1);
+            userSlides[newSlide] = {"title": "", "image": "", "imageText": "", "list": ""};
+
+            results = await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, userSlides, owner]);
+            results = await client.query('SELECT slides FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, presentationId]);
+            results = results.rows[0].slides;
+            client.end();
+            }
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
+    async getPresentation(owner, id) {
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, id]);
+            results = results.rows;
             client.end();
         } catch (err) {
             client.end();
@@ -91,7 +150,6 @@ class StorageHandler {
             client.end();
             results = err;
         }
-
         return results;
     }*/
 

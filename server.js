@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
 const presentation = require("./modules/presentation");
+const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
 const createToken = require("./modules/sbToken").create;
@@ -21,7 +22,7 @@ server.post("/user", async function (req, res) {
   const password = req.body.password;
 
   if(username === "" || password === ""){
-    res.status(403).json("invalid username or password").end();
+    res.status(403).json("Invalid username or password").end();
   }
   if(username.length > maxCharLength || password.length > maxCharLength){
     res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
@@ -30,9 +31,9 @@ server.post("/user", async function (req, res) {
   const resp = await newUser.create();
 
   if(resp === null){
-    res.status(401).json("username is taken!").end();
+    res.status(401).json("Username is taken!").end();
   }else{
-    res.status(200).json(newUser).end();
+    res.status(200).json("Account created!").end();
   }
   // Hva om databasen feilet?
   // Hva om det var en bruker med samme brukernavn?
@@ -60,20 +61,59 @@ server.post("/authenticate", async (req, res) => {
     //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
-    res.status(403).json("unauthorized").end(); 
+    res.status(403).json("Username or password is incorrect!").end(); 
   }
   
 });
 
 //!!!! WARNING DEMO !!!
-server.get("/user/presentation/:id", auth, function (req, res) {
+server.post("/user/presentation/:id", auth, async function (req, res) {
+    const owner = req.body.user;
+    const presentationId = req.body.presentationId;
+    //name, theme, owner, isPublic, id
+    const Pres = new presentation("", "", owner, "", presentationId);
+    const resp = await Pres.getPresentation();
+
+
+    if(resp.length === 0){
+      res.status(404).json("Presentation not found").end();
+    }else{
 
     // Bruker spør om presentasjon med id.
     // Tilhører den presentasjonen denne brukeren?
     // if(req.user.id = presentasjon.author){}
     // req.user kommer fra auth. 
     
-    // Retuner json for presentasjon. 
+    // Retuner json for presentasjon.
+
+    res.status(200).json(resp).end();
+    }
+
+});
+
+server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) {
+  const owner = req.body.user;
+  const presentationId = req.body.presentationId;
+  const template = 1;
+  const slideNr = req.body.slideNr;
+  
+  //name, theme, owner, isPublic, id
+  const newSlide = new slides(presentationId, slideNr, template, owner);
+  const resp = await newSlide.create();
+
+  if(resp === null){
+    res.status(404).json("Presentation not found").end();
+  }else{
+
+  // Bruker spør om presentasjon med id.
+  // Tilhører den presentasjonen denne brukeren?
+  // if(req.user.id = presentasjon.author){}
+  // req.user kommer fra auth. 
+  
+  // Retuner json for presentasjon.
+
+  res.status(200).json(resp).end();
+  }
 
 });
 
@@ -88,30 +128,32 @@ server.post("/presentation", auth, async (req, res) => {
   }else{
   const presentationTheme = req.body.presentation.theme;
   const owner = req.body.user;
+  const isPublic = req.body.presentation.isPublic;
 
-  const newPres = new presentation(presentationName, presentationTheme, owner);
-  await newPres.create();
+  const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
+  const resp = await newPres.create();
  
-  res.status(200).json(newPres).end();
+  res.status(200).json(resp).end();
   }
 });
 
-server.post("/presentation/*")
-
 
 /*server.get("/secure/*", async function (req, res) {
-
     let isValid = false;
-
     if(isValid === true){
         res.redirect("/secure/userIndex.html");
     }else{
         res.redirect("/");
     }
-
     
-
 })*/
+
+/*
+let slides = [
+  Slide1: {"title": "test", "image": "123.png", "imageText": "myImage", "list": "1,2,3"},
+  Slide2: {"":""},
+];
+*/
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));

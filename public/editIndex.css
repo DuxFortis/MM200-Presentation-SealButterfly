@@ -1,0 +1,33 @@
+*{
+    font-size: 20px;
+    font-family: sans-serif;
+    
+}
+
+#logo{
+   margin-left: 43%;
+   margin-top: 2%;
+   margin-bottom: 1%;
+}
+
+body{
+    background-image: url("./pictures/LandingPageBackground.png");
+}
+
+.edit{
+    background-image: url(./pictures/Theme_Dark.png);
+    width: auto;
+    height: 700px;
+}
+
+#presTitle{
+    padding-top: 50px;
+    width: auto;
+    height: 100px;
+}
+ 
+#presParagraph{
+    padding-top: 100px;
+    height: 200px;
+    width: auto;
+}

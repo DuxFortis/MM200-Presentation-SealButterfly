@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <title>Client</title>
+    <link rel="stylesheet" href="editIndex.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+</head>
+
+<body>
+
+    <img id="logo" src= "./pictures/logo.png">
+
+
+    <div class="w3-dropdown-click w3-right">
+        <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
+        <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
+          <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+          <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+        </div>
+      </div>
+
+
+
+    <div class="w3-row">
+      <div class="w3-container w3-border w3-white container">
+            <div class="w3-col l2 s2">
+                <div class="w3-container w3-white">
+                    <p>Your slides</p>
+                    <ul class="w3-ul">
+                        <li class="w3-hover-grey w3-button">slide 1 </li>
+                        <li id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="w3-col l8 s8">
+                <div class="w3-container w3-border w3-white">
+                    <div class="w3-container edit">
+                        <h1 id="presTitle" class="w3-center">New Presentation</h1>
+                        <p id="presParagraph" class="w3-center">
+                            Lorem Ipsum Dolor
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="w3-col l2 s2">
+                <div class="w3-container w3-white">
+                    <p>Templates</p>
+                    <ul class="w3-ul">
+                        <li class="w3-hover-grey">Template Title</li>
+                        <li class="w3-hover-grey">Template Picture</li>
+                        <li class="w3-hover-grey">Template List</li>
+                    </ul>
+                </div>
+            </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+
+<script>
+// dropdown function w3.css
+
+function myAccount() {
+  var x = document.getElementById("Acc");
+  if (x.className.indexOf("w3-show") == -1) { 
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+const logOut = document.getElementById("logOut");
+
+logOut.addEventListener("click", function(evt){
+  sessionStorage.clear();
+  location.href = "/";
+});
+
+const accountText = document.getElementById("accountText");
+const username = sessionStorage.getItem("user");
+if(username){
+  accountText.innerHTML = username;
+}
+
+getPresentation();
+async function getPresentation() {
+  const id = sessionStorage.getItem("presentationId");
+
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  presentationId: id
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/user/presentation/:${id}`, config);
+    const data = await response.json();
+    console.log(response.status);
+
+    const pres = data[0];
+    const slides = pres.slides;
+
+    if(slides){
+
+    document.getElementById("presTitle").innerHTML = pres.name;
+
+    document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
+
+    sessionStorage.setItem("currentSlide", Object.keys(slides)[0]);
+
+    }else{
+      location.href = "/userIndex.html";
+    }
+    }
+}
+
+const newSlideBtn = document.getElementById("newSlideBtn");
+
+newSlideBtn.addEventListener("click", async function(evt){
+  const id = sessionStorage.getItem("presentationId");
+
+  const token = sessionStorage.getItem("token");
+  const username = sessionStorage.getItem("user");
+  const currentSlide = sessionStorage.getItem("currentSlide");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  presentationId: id,
+                  slideNr: currentSlide
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/user/presentation/${id}/slide/${currentSlide}`, config);
+    const data = await response.json();
+    console.log(response.status);
+
+    const pres = data[0];
+    const slides = pres.slides;
+
+    /*if(slides){
+
+    document.getElementById("presTitle").innerHTML = pres.name;
+
+    document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
+    
+    console.log(data[0].slides.Slide1);
+
+    }else{
+      location.href = "/userIndex.html";
+    }*/
+    }
+})
+
+
+
+
+</script>
