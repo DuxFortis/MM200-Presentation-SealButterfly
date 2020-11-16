@@ -30,10 +30,8 @@
                 <div class="w3-container w3-white">
                     <p>Your slides</p>
                     <ul class="w3-ul">
-                        <li class="w3-hover-grey">slide 1 </li>
-                        <li class="w3-hover-grey">slide 2 </li>
-                        <li class="w3-hover-grey">slide 3 </li>
-                        <li class="w3-hover-grey">New slide +</li>
+                        <li class="w3-hover-grey w3-button">slide 1 </li>
+                        <li id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</li>
                     </ul>
                 </div>
             </div>
@@ -118,18 +116,69 @@ async function getPresentation() {
 
     const response = await fetch(`/user/presentation/:${id}`, config);
     const data = await response.json();
+    console.log(response.status);
 
     const pres = data[0];
     const slides = pres.slides;
+
+    if(slides){
+
+    document.getElementById("presTitle").innerHTML = pres.name;
+
+    document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
+
+    sessionStorage.setItem("currentSlide", Object.keys(slides)[0]);
+
+    }else{
+      location.href = "/userIndex.html";
+    }
+    }
+}
+
+const newSlideBtn = document.getElementById("newSlideBtn");
+
+newSlideBtn.addEventListener("click", async function(evt){
+  const id = sessionStorage.getItem("presentationId");
+
+  const token = sessionStorage.getItem("token");
+  const username = sessionStorage.getItem("user");
+  const currentSlide = sessionStorage.getItem("currentSlide");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  presentationId: id,
+                  slideNr: currentSlide
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/user/presentation/${id}/slide/${currentSlide}`, config);
+    const data = await response.json();
+    console.log(response.status);
+
+    const pres = data[0];
+    const slides = pres.slides;
+
+    /*if(slides){
 
     document.getElementById("presTitle").innerHTML = pres.name;
 
     document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
     
     console.log(data[0].slides.Slide1);
-    
+
+    }else{
+      location.href = "/userIndex.html";
+    }*/
     }
-}
+})
 
 
 

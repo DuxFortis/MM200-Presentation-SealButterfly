@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
 const presentation = require("./modules/presentation");
+const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
 const createToken = require("./modules/sbToken").create;
@@ -74,7 +75,9 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
     const resp = await Pres.getPresentation();
 
 
-
+    if(resp.length === 0){
+      res.status(404).json("Presentation not found").end();
+    }else{
 
     // Bruker spør om presentasjon med id.
     // Tilhører den presentasjonen denne brukeren?
@@ -82,11 +85,35 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
     // req.user kommer fra auth. 
     
     // Retuner json for presentasjon.
-    if(resp.length === 0){
-      res.status(404).json("Error").end();
-    }
 
     res.status(200).json(resp).end();
+    }
+
+});
+
+server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) {
+  const owner = req.body.user;
+  const presentationId = req.body.presentationId;
+  const template = 1;
+  const slideNr = req.body.slideNr;
+  
+  //name, theme, owner, isPublic, id
+  const newSlide = new slides(presentationId, slideNr, template, owner);
+  const resp = await newSlide.create();
+
+  if(resp === null){
+    res.status(404).json("Presentation not found").end();
+  }else{
+
+  // Bruker spør om presentasjon med id.
+  // Tilhører den presentasjonen denne brukeren?
+  // if(req.user.id = presentasjon.author){}
+  // req.user kommer fra auth. 
+  
+  // Retuner json for presentasjon.
+
+  res.status(200).json(resp).end();
+  }
 
 });
 
