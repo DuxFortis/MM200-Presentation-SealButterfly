@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
 const presentation = require("./modules/presentation");
+const getPresData = require("./modules/presentation").getPresData;
 const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
@@ -95,14 +96,12 @@ server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
   const owner = req.body.user;
   const isPresentationPublic = req.body.isPublic;
   //name, theme, owner, isPublic, id
-  /*const Pres = new presentation("", "", owner, "", presentationId);
-  const resp = await Pres.getPresentation();*/
-
-  let resp = 1;
+  /*const Pres = new presentation("", "", owner, "", presentationId);*/
+  const resp = await getPresData(owner, isPresentationPublic);
 
 
   if(resp.length === 0){
-    res.status(404).json("Presentation not found").end();
+    res.status(404).json("User does not have any public presentations").end();
   }else{
 
   // Bruker spør om presentasjon med id.

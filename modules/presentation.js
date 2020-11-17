@@ -48,5 +48,15 @@ class Presentation {
 
 }
 
+async function getPresData(owner, isPublic){
+    try{
+        let resp = await database.getPresData(owner, isPublic);
+        return resp;
+    }catch(err){
+        console.log(err);
+    }
+}
+
 
 module.exports = Presentation;
+module.exports.getPresData = getPresData;

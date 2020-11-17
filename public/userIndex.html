@@ -52,31 +52,15 @@
         <h2>My private slideshows</h2>
         <p>Here you will find your private slideshows.</p>
         <div class="w3-row w3-white">
-            <div class="w3-col l4 s4 w3-white">
-
-            </div>
-            <div class="w3-col l4 s4 w3-white">
-
-            </div>
-            <div class="w3-col l4 s4 w3-white">
-
-            </div>
+            
           </div>
       </div>
       
       <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My slideshows</h2>
         <p>Here you will find your public slideshows.</p>
-        <div class="w3-row w3-white">
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
+        <div id="myPubContainer" class="w3-row w3-white">
+          
         </div>
       </div>
 
@@ -84,15 +68,7 @@
         <h2>Public slideshows</h2>
         <p>Here are other users public slideshows.</p>
         <div class="w3-row w3-white">
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
-          <div class="w3-col l4 s4 w3-white">
-
-          </div>
+         
         </div>
       </div>
 
@@ -226,116 +202,44 @@ publicSlidesListener.addEventListener("click", async function(evt){
               }
 
     const response = await fetch(`/${username}/presentations/${isPublicOrNot}`, config);
-    //const data = await response.json();
-    //console.log(response.status);
+    const data = await response.json();
+    console.log(response.status);
+    if(response.status === 200){
+    displayPresentations(data);
+    }
 }})
+
+function displayPresentations(presArr){
+
+  let container = document.getElementById('myPubContainer');
+
+  for (let i = 0; i < presArr.length; i++) {
+
+  let myDiv = document.createElement("div");
+  myDiv.classList.add("pres");
+
+  let myHtml = `
+      <h3>Title: ${presArr[i].name}</h3>
+      <h4>Theme: ${presArr[i].theme}</h4>  
+      <p>${presArr[i].description}</p>
+                
+  `;
+
+  myDiv.innerHTML = myHtml;            
+
+  myDiv.addEventListener('click', function (evt) {
+    console.log("you clicked on number " + i);
+  });
+
+  container.appendChild(myDiv);
+  }
+
+
+}
 
 //
     
 </script>
 
-
-</body>
-
-<body>
-  <div id="container"></div>
-
-  <script>
-    /*
-
-      let presArr = [
-          {
-              id: "",
-              name: "New Presentation",
-              user: "user",
-              theme: "Light/Dark"
-          },
-          {
-              id: presentationId,
-              name: "New Presentation",
-              user: "user",
-              theme: "Dark"
-          },
-          {
-              id: presentationId,
-              name: "New Presentation",
-              user: "user",
-              theme: "Dark"
-          },
-          {
-              id: presentationId,
-              name: "New Presentation",
-              user: "user",
-              theme: "Light"
-          },
-          {
-              id: presentationId,
-              name: "New Presentation",
-              user: "user",
-              theme: "Dark"
-          }    
-      ];
-
-      let container = document.getElementById('container');
-
-     
-      for (let i = 0; i < presArr.length; i++) {
-
-          let myDiv = document.createElement("div");
-          myDiv.classList.add("pres");
-          
-          let myHtml = `
-              <h3>${presArr[i].name}</h3>
-              <img src="${presArr[i].img_small}" />
-              <p>${presArr[i].descr}</p>
-              <p>Price kr ${presArr[i].price},-</p>            
-          `;
-
-          myDiv.innerHTML = myHtml;            
-
-          myDiv.addEventListener('click', function (evt) {
-              console.log("you clicked on number " + i);
-          });
-
-          container.appendChild(myDiv);
-      }       
-
-      */
-  
-  </script>
-
-  <style>
-
-      * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-      }
-
-      .pres {
-          font-family: sans-serif;
-          border-bottom: 1px solid black;
-          background-color: lightgray;
-          display: grid;
-          grid-template-columns: 100px 1fr;
-          grid-template-areas: "im nm"
-                               "im ds"
-                               "im pr";            
-      }
-
-      .pres>img {
-          width: 100px;
-          grid-area: im;
-      }
-
-      .pres>p {
-          padding: 5px;
-      }
-
-      .pres>h3 {
-          padding: 5px;
-      }
-
-  </style>
 
 </body>

@@ -82,6 +82,26 @@ class StorageHandler {
 
     }
 
+    async getPresData(owner, isPublic){
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND ispublic=$2', [owner, isPublic]);
+            results = results.rows;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
     async insertSlide(presentationId, template, owner) {
 
         const client = new pg.Client(this.credentials);
