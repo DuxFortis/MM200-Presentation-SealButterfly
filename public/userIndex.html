@@ -154,7 +154,9 @@ createNewBtn.addEventListener("click", async function(evt) {
             const response = await fetch("/presentation", config);
             const data = await response.json();
             if(response.status === 200){
-              sessionStorage.setItem("presentationId", data);
+              //sessionStorage.setItem("presentationId", data);
+              localStorage.setItem("PresentationProject", JSON.stringify(data))
+              console.log(data)
               location.href = "/editIndex.html";
             }
             console.log(response.status);

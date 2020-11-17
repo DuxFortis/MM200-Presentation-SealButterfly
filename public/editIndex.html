@@ -30,7 +30,7 @@
                 <div class="w3-container w3-white">
                     <p>Your slides</p>
                     <ul id="allSlides" class="w3-ul">
-                        
+                      <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
                     </ul>
                     <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
                 </div>
@@ -40,11 +40,14 @@
                   <div class="w3-row">
                     <h2>Toolbar</h2>
                   </div>
-                    <div class="w3-container edit">
-                        <h1 id="presTitle" class="w3-center">New Presentation</h1>
-                        <p id="presParagraph" class="w3-center">
-                            Lorem Ipsum Dolor
-                        </p>
+                  <div class="w3-container edit">
+                    <div id="theme">
+                      <img id="themeImage" src="pictures/Theme_Light.png">
+                    </div>
+                      <h1 id="presTitle" class="w3-center">New Presentation</h1>
+                      <p id="presParagraph" class="w3-center">
+                          Lorem Ipsum Dolor
+                      </p>
                     </div>
                 </div>
             </div>
@@ -96,9 +99,12 @@ if(username){
   accountText.innerHTML = username;
 }
 
+const slideListener = document.getElementById("allSlides");;
+
 getPresentation();
 async function getPresentation() {
-  const id = sessionStorage.getItem("presentationId");
+  let presentation = localStorage.getItem("PresentationProject");
+  presentation = JSON.parse(presentation);
 
   let token = sessionStorage.getItem("token");
   let username = sessionStorage.getItem("user");
@@ -107,7 +113,7 @@ async function getPresentation() {
     let body = {
                   authToken: token,
                   user: username,
-                  presentationId: id
+                  presentationId: presentation.id
               };
               let config = {
                   method: "POST",
@@ -117,7 +123,7 @@ async function getPresentation() {
                   body: JSON.stringify(body)
               }
 
-    const response = await fetch(`/user/presentation/:${id}`, config);
+    const response = await fetch(`/user/presentation/:${presentation.id}`, config);
     const data = await response.json();
     console.log(response.status);
 
@@ -126,11 +132,16 @@ async function getPresentation() {
 
     if(slides){
 
-    document.getElementById("presTitle").innerHTML = pres.name;
+    if(pres.theme === "Dark"){
 
-    document.getElementById("presParagraph").innerHTML = slides.Slide1.title;
+      const themeStyle = document.getElementById("theme");
+      themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
+
+    }
 
     localStorage.setItem("PresentationProject", JSON.stringify(pres));
+
+    gotoSlide();
 
     refreshSlides();
 
@@ -158,12 +169,45 @@ function refreshSlides(){
     allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
     }
 
+  //slideListener = document.getElementById("allSlides");
+
+}
+
+slideListener.addEventListener("click", function(evt){
+
+if(evt.target.id === "Slides"){
+gotoSlide(evt.target.value);
+}
+
+});
+
+
+
+function gotoSlide(slideNr){
+  if(slideNr === undefined){
+    slideNr = 1;
+  }
+
+  let presentation = localStorage.getItem("PresentationProject");
+  presentation = JSON.parse(presentation);
+  let slideEditMode = presentation.slides["Slide"+slideNr];
+
+
+    document.getElementById("presTitle").innerHTML = slideEditMode.title;
+
+    //document.getElementById("presParagraph").innerHTML = slideEditMode.image;
+
+    //document.getElementById("presParagraph").innerHTML = slideEditMode.imageText;
+
+    //
+
 }
 
 const newSlideBtn = document.getElementById("newSlideBtn");
 
 newSlideBtn.addEventListener("click", async function(evt){
-  const id = sessionStorage.getItem("presentationId");
+  let presentation = localStorage.getItem("PresentationProject");
+  presentation = JSON.parse(presentation);
 
   const token = sessionStorage.getItem("token");
   const username = sessionStorage.getItem("user");
@@ -172,7 +216,7 @@ newSlideBtn.addEventListener("click", async function(evt){
     let body = {
                   authToken: token,
                   user: username,
-                  presentationId: id
+                  presentationId: presentation.id
               };
               let config = {
                   method: "POST",
@@ -182,7 +226,7 @@ newSlideBtn.addEventListener("click", async function(evt){
                   body: JSON.stringify(body)
               }
 
-    const response = await fetch(`/user/presentation/${id}/slide`, config);
+    const response = await fetch(`/user/presentation/${presentation.id}/slide`, config);
     const data = await response.json();
     console.log(response.status);
 

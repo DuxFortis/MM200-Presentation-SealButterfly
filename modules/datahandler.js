@@ -70,7 +70,7 @@ class StorageHandler {
         try {
             await client.connect();
             results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","isPublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
-            results = results.rows[0].id;
+            results = results.rows[0];
             client.end();
         } catch (err) {
             client.end();
