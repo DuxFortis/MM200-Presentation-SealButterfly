@@ -89,6 +89,7 @@ function myAccount() {
 const logOut = document.getElementById("logOut");
 
 logOut.addEventListener("click", function(evt){
+  localStorage.clear();
   sessionStorage.clear();
   location.href = "/";
 });

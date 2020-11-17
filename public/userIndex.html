@@ -21,10 +21,10 @@
     </div>
 
     <div class="w3-bar w3-white">
-        <button class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
+        <button id="createSlidesBtn" class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
+        <button id="privateSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
+        <button id="yourSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
+        <button id="publicSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
       </div>
 
     <div id="createTab" class="w3-container w3-border w3-white tab">
@@ -51,16 +51,49 @@
       <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My private slideshows</h2>
         <p>Here you will find your private slideshows.</p>
+        <div class="w3-row w3-white">
+            <div class="w3-col l4 s4 w3-white">
+
+            </div>
+            <div class="w3-col l4 s4 w3-white">
+
+            </div>
+            <div class="w3-col l4 s4 w3-white">
+
+            </div>
+          </div>
       </div>
       
       <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My slideshows</h2>
         <p>Here you will find your public slideshows.</p>
+        <div class="w3-row w3-white">
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+        </div>
       </div>
 
       <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>Public slideshows</h2>
         <p>Here are other users public slideshows.</p>
+        <div class="w3-row w3-white">
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+          <div class="w3-col l4 s4 w3-white">
+
+          </div>
+        </div>
       </div>
 
     
@@ -99,6 +132,7 @@ function myAccount() {
 const logOut = document.getElementById("logOut");
 
 logOut.addEventListener("click", function(evt){
+  localStorage.clear();
   sessionStorage.clear();
   location.href = "/";
 });
@@ -166,8 +200,142 @@ createNewBtn.addEventListener("click", async function(evt) {
 });
 
 //
+
+// Get user public presentations
+
+const publicSlidesListener = document.getElementById("yourSlidesBtn");
+
+publicSlidesListener.addEventListener("click", async function(evt){
+
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+  let isPublicOrNot = true;
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  isPublic: isPublicOrNot,
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/${username}/presentations/${isPublicOrNot}`, config);
+    //const data = await response.json();
+    //console.log(response.status);
+}})
+
+//
     
 </script>
 
+
+</body>
+
+<body>
+  <div id="container"></div>
+
+  <script>
+    /*
+
+      let presArr = [
+          {
+              id: "",
+              name: "New Presentation",
+              user: "user",
+              theme: "Light/Dark"
+          },
+          {
+              id: presentationId,
+              name: "New Presentation",
+              user: "user",
+              theme: "Dark"
+          },
+          {
+              id: presentationId,
+              name: "New Presentation",
+              user: "user",
+              theme: "Dark"
+          },
+          {
+              id: presentationId,
+              name: "New Presentation",
+              user: "user",
+              theme: "Light"
+          },
+          {
+              id: presentationId,
+              name: "New Presentation",
+              user: "user",
+              theme: "Dark"
+          }    
+      ];
+
+      let container = document.getElementById('container');
+
+     
+      for (let i = 0; i < presArr.length; i++) {
+
+          let myDiv = document.createElement("div");
+          myDiv.classList.add("pres");
+          
+          let myHtml = `
+              <h3>${presArr[i].name}</h3>
+              <img src="${presArr[i].img_small}" />
+              <p>${presArr[i].descr}</p>
+              <p>Price kr ${presArr[i].price},-</p>            
+          `;
+
+          myDiv.innerHTML = myHtml;            
+
+          myDiv.addEventListener('click', function (evt) {
+              console.log("you clicked on number " + i);
+          });
+
+          container.appendChild(myDiv);
+      }       
+
+      */
+  
+  </script>
+
+  <style>
+
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+      }
+
+      .pres {
+          font-family: sans-serif;
+          border-bottom: 1px solid black;
+          background-color: lightgray;
+          display: grid;
+          grid-template-columns: 100px 1fr;
+          grid-template-areas: "im nm"
+                               "im ds"
+                               "im pr";            
+      }
+
+      .pres>img {
+          width: 100px;
+          grid-area: im;
+      }
+
+      .pres>p {
+          padding: 5px;
+      }
+
+      .pres>h3 {
+          padding: 5px;
+      }
+
+  </style>
 
 </body>

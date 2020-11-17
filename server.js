@@ -91,6 +91,32 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
 
 });
 
+server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
+  const owner = req.body.user;
+  const isPresentationPublic = req.body.isPublic;
+  //name, theme, owner, isPublic, id
+  /*const Pres = new presentation("", "", owner, "", presentationId);
+  const resp = await Pres.getPresentation();*/
+
+  let resp = 1;
+
+
+  if(resp.length === 0){
+    res.status(404).json("Presentation not found").end();
+  }else{
+
+  // Bruker spør om presentasjon med id.
+  // Tilhører den presentasjonen denne brukeren?
+  // if(req.user.id = presentasjon.author){}
+  // req.user kommer fra auth. 
+  
+  // Retuner json for presentasjon.
+
+  res.status(200).json(resp).end();
+  }
+
+});
+
 server.post("/user/presentation/:id/slide", auth, async function (req, res) {
   const owner = req.body.user;
   const presentationId = req.body.presentationId;
