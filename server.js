@@ -59,7 +59,6 @@ server.post("/authenticate", async (req, res) => {
   
   if(isValid){
     let sessionToken = createToken(requestUser);
-    //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
     res.status(403).json("Username or password is incorrect!").end(); 
@@ -95,13 +94,18 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
 server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
   const owner = req.body.user;
   const isPresentationPublic = req.body.isPublic;
+  let publicOrNotStatus = "public";
   //name, theme, owner, isPublic, id
   /*const Pres = new presentation("", "", owner, "", presentationId);*/
+
   const resp = await getPresData(owner, isPresentationPublic);
 
+  if(!isPresentationPublic){
+    publicOrNotStatus = "private";
+  }
 
   if(resp.length === 0){
-    res.status(404).json("User does not have any public presentations").end();
+    res.status(404).json(`User does not have any ${publicOrNotStatus} presentations`).end();
   }else{
 
   // Bruker spør om presentasjon med id.
@@ -144,6 +148,11 @@ server.post("/user/presentation/:id/slide", auth, async function (req, res) {
 server.post("/presentation", auth, async (req, res) => {
 
   let presentationName = req.body.presentation.name;
+  let isPublic = req.body.presentation.isPublic;
+  if(isPublic !== true && isPublic !== false){
+    isPublic = false;
+  }
+
   if(presentationName === ""){
     presentationName = "New Presentation";
   }
@@ -152,7 +161,6 @@ server.post("/presentation", auth, async (req, res) => {
   }else{
   const presentationTheme = req.body.presentation.theme;
   const owner = req.body.user;
-  const isPublic = req.body.presentation.isPublic;
 
   const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
   const resp = await newPres.create();

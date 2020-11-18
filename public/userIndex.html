@@ -51,7 +51,7 @@
       <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My private slideshows</h2>
         <p>Here you will find your private slideshows.</p>
-        <div class="w3-row w3-white">
+        <div id="myPrivContainer" class="w3-row w3-white">
             
           </div>
       </div>
@@ -136,6 +136,7 @@ if(username){
   accountText.innerHTML = username;
 }
 
+// create new presentation
 
 
 const createNewBtn = document.getElementById("createNew");
@@ -144,6 +145,8 @@ createNewBtn.addEventListener("click", async function(evt) {
 
   const newPresentation = document.getElementById("presentationName").value;
 
+  const userPref = true;//document.getElementById("publicOrPrivate");
+
   let token = sessionStorage.getItem("token");
   let username = sessionStorage.getItem("user");
         if(token !== undefined){
@@ -151,7 +154,7 @@ createNewBtn.addEventListener("click", async function(evt) {
             let body = {
                 authToken: token,
                 user: username,
-                presentation: {"name":newPresentation, "theme": chosenTheme, "isPublic": true},
+                presentation: {"name": newPresentation, "theme": chosenTheme, "isPublic": userPref},
             }
             let config = {
                 method: "POST",
@@ -164,7 +167,6 @@ createNewBtn.addEventListener("click", async function(evt) {
             const response = await fetch("/presentation", config);
             const data = await response.json();
             if(response.status === 200){
-              //sessionStorage.setItem("presentationId", data);
               localStorage.setItem("PresentationProject", JSON.stringify(data))
               console.log(data)
               location.href = "/editIndex.html";
@@ -177,15 +179,32 @@ createNewBtn.addEventListener("click", async function(evt) {
 
 //
 
-// Get user public presentations
+// Get user public or hidden presentations
+
+const privateSlidesBtn = document.getElementById("privateSlidesBtn");
 
 const publicSlidesListener = document.getElementById("yourSlidesBtn");
 
 publicSlidesListener.addEventListener("click", async function(evt){
 
+  getUserPresentations(true);
+
+  console.log("Loading public presentations")
+
+});
+
+privateSlidesBtn.addEventListener("click", async function(evt){
+
+  getUserPresentations(false);
+
+  console.log("Loading private presentations")
+
+});
+
+async function getUserPresentations(isPublicOrNot){
+
   let token = sessionStorage.getItem("token");
   let username = sessionStorage.getItem("user");
-  let isPublicOrNot = true;
   if(token !== undefined){
 
     let body = {
@@ -205,13 +224,17 @@ publicSlidesListener.addEventListener("click", async function(evt){
     const data = await response.json();
     console.log(response.status);
     if(response.status === 200){
-    displayPresentations(data);
+    displayPresentations(data, isPublicOrNot);
     }
-}})
+}}
 
-function displayPresentations(presArr){
+function displayPresentations(presArr, isPublicOrNot){
 
-  let container = document.getElementById('myPubContainer');
+  let container = document.getElementById('myPubContainer')
+
+  if(!isPublicOrNot){
+    container = document.getElementById('myPrivContainer');
+  }
 
   for (let i = 0; i < presArr.length; i++) {
 
