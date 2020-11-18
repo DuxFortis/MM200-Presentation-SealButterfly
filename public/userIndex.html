@@ -230,11 +230,13 @@ async function getUserPresentations(isPublicOrNot){
 
 function displayPresentations(presArr, isPublicOrNot){
 
-  let container = document.getElementById('myPubContainer')
+  let container = document.getElementById('myPubContainer');
 
   if(!isPublicOrNot){
     container = document.getElementById('myPrivContainer');
   }
+
+  container.innerHTML = "";
 
   for (let i = 0; i < presArr.length; i++) {
 
