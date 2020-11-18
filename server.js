@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
 const presentation = require("./modules/presentation");
+const getPresData = require("./modules/presentation").getPresData;
 const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
@@ -58,7 +59,6 @@ server.post("/authenticate", async (req, res) => {
   
   if(isValid){
     let sessionToken = createToken(requestUser);
-    //let sessionToken = 1234; //bare for nå siden vi ikke har laget ferdig token modulen
     res.status(200).json({"authToken":sessionToken, "user": requestUser}).end();
   } else {
     res.status(403).json("Username or password is incorrect!").end(); 
@@ -91,18 +91,21 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
 
 });
 
-server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) {
+server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
   const owner = req.body.user;
-  const presentationId = req.body.presentationId;
-  const template = 1;
-  const slideNr = req.body.slideNr;
-  
+  const isPresentationPublic = req.body.isPublic;
+  let publicOrNotStatus = "public";
   //name, theme, owner, isPublic, id
-  const newSlide = new slides(presentationId, slideNr, template, owner);
-  const resp = await newSlide.create();
+  /*const Pres = new presentation("", "", owner, "", presentationId);*/
 
-  if(resp === null){
-    res.status(404).json("Presentation not found").end();
+  const resp = await getPresData(owner, isPresentationPublic);
+
+  if(!isPresentationPublic){
+    publicOrNotStatus = "private";
+  }
+
+  if(resp.length === 0){
+    res.status(404).json(`User does not have any ${publicOrNotStatus} presentations`).end();
   }else{
 
   // Bruker spør om presentasjon med id.
@@ -117,9 +120,39 @@ server.post("/user/presentation/:id/slide/:id", auth, async function (req, res) 
 
 });
 
+server.post("/user/presentation/:id/slide", auth, async function (req, res) {
+  const owner = req.body.user;
+  const presentationId = req.body.presentationId;
+  const template = 1;
+  
+  //name, theme, owner, isPublic, id
+  const newSlide = new slides(presentationId, template, owner);
+  const resp = await newSlide.create();
+
+  if(resp === null){
+    res.status(404).json("Presentation not found").end();
+  }else{
+
+  // Bruker spør om presentasjon med id.
+  // Tilhører den presentasjonen denne brukeren?
+  // if(req.user.id = presentasjon.author){}
+  // req.user kommer fra auth. 
+  
+  // Retuner json for presentasjon.
+
+  res.status(200).json("Created new slide").end();
+  }
+
+});
+
 server.post("/presentation", auth, async (req, res) => {
 
   let presentationName = req.body.presentation.name;
+  let isPublic = req.body.presentation.isPublic;
+  if(isPublic !== true && isPublic !== false){
+    isPublic = false;
+  }
+
   if(presentationName === ""){
     presentationName = "New Presentation";
   }
@@ -128,7 +161,6 @@ server.post("/presentation", auth, async (req, res) => {
   }else{
   const presentationTheme = req.body.presentation.theme;
   const owner = req.body.user;
-  const isPublic = req.body.presentation.isPublic;
 
   const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
   const resp = await newPres.create();

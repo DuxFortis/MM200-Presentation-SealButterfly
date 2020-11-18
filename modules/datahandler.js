@@ -43,17 +43,17 @@ class StorageHandler {
 
     async selectUser(username, password){
         const client = new pg.Client(this.credentials);
-        let resp = null;
+        let results = null;
         try{
             await client.connect();
             results = await client.query('SELECT * FROM "public"."users" WHERE username=$1 AND password=$2', [username, password]);
-            resp = (results.rows.length > 0) ? results.rows[0]:null;
+            results = (results.rows.length > 0) ? results.rows[0]:null;
             client.end();
         }catch(err){
             console.log(err);
         }
 
-        return resp;        
+        return results;        
     }
 
     // create presentation
@@ -69,8 +69,8 @@ class StorageHandler {
 
         try {
             await client.connect();
-            results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","isPublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
-            results = results.rows[0].id;
+            results = await client.query('INSERT INTO "public"."presentations"("name","slides","owner","theme","ispublic") VALUES($1,$2 , $3, $4, $5) RETURNING *;', [name, slides,owner,theme,isPublic]);
+            results = results.rows[0];
             client.end();
         } catch (err) {
             client.end();
@@ -82,7 +82,27 @@ class StorageHandler {
 
     }
 
-    async insertSlide(presentationId, slideNr, template, owner) {
+    async getPresData(owner, isPublic){
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND ispublic=$2', [owner, isPublic]);
+            results = results.rows;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
+    async insertSlide(presentationId, template, owner) {
 
         const client = new pg.Client(this.credentials);
         let results = null;

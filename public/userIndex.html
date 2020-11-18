@@ -21,10 +21,10 @@
     </div>
 
     <div class="w3-bar w3-white">
-        <button class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
-        <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
+        <button id="createSlidesBtn" class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
+        <button id="privateSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
+        <button id="yourSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
+        <button id="publicSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
       </div>
 
     <div id="createTab" class="w3-container w3-border w3-white tab">
@@ -51,16 +51,25 @@
       <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My private slideshows</h2>
         <p>Here you will find your private slideshows.</p>
+        <div id="myPrivContainer" class="w3-row w3-white">
+            
+          </div>
       </div>
       
       <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>My slideshows</h2>
         <p>Here you will find your public slideshows.</p>
+        <div id="myPubContainer" class="w3-row w3-white">
+          
+        </div>
       </div>
 
       <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>Public slideshows</h2>
         <p>Here are other users public slideshows.</p>
+        <div class="w3-row w3-white">
+         
+        </div>
       </div>
 
     
@@ -99,6 +108,7 @@ function myAccount() {
 const logOut = document.getElementById("logOut");
 
 logOut.addEventListener("click", function(evt){
+  localStorage.clear();
   sessionStorage.clear();
   location.href = "/";
 });
@@ -126,6 +136,7 @@ if(username){
   accountText.innerHTML = username;
 }
 
+// create new presentation
 
 
 const createNewBtn = document.getElementById("createNew");
@@ -134,6 +145,8 @@ createNewBtn.addEventListener("click", async function(evt) {
 
   const newPresentation = document.getElementById("presentationName").value;
 
+  const userPref = true;//document.getElementById("publicOrPrivate");
+
   let token = sessionStorage.getItem("token");
   let username = sessionStorage.getItem("user");
         if(token !== undefined){
@@ -141,7 +154,7 @@ createNewBtn.addEventListener("click", async function(evt) {
             let body = {
                 authToken: token,
                 user: username,
-                presentation: {"name":newPresentation, "theme": chosenTheme, "isPublic": true},
+                presentation: {"name": newPresentation, "theme": chosenTheme, "isPublic": userPref},
             }
             let config = {
                 method: "POST",
@@ -154,7 +167,8 @@ createNewBtn.addEventListener("click", async function(evt) {
             const response = await fetch("/presentation", config);
             const data = await response.json();
             if(response.status === 200){
-              sessionStorage.setItem("presentationId", data);
+              localStorage.setItem("PresentationProject", JSON.stringify(data))
+              console.log(data)
               location.href = "/editIndex.html";
             }
             console.log(response.status);
@@ -162,6 +176,89 @@ createNewBtn.addEventListener("click", async function(evt) {
         }
   
 });
+
+//
+
+// Get user public or hidden presentations
+
+const privateSlidesBtn = document.getElementById("privateSlidesBtn");
+
+const publicSlidesListener = document.getElementById("yourSlidesBtn");
+
+publicSlidesListener.addEventListener("click", async function(evt){
+
+  getUserPresentations(true);
+
+  console.log("Loading public presentations")
+
+});
+
+privateSlidesBtn.addEventListener("click", async function(evt){
+
+  getUserPresentations(false);
+
+  console.log("Loading private presentations")
+
+});
+
+async function getUserPresentations(isPublicOrNot){
+
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+                  isPublic: isPublicOrNot,
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/${username}/presentations/${isPublicOrNot}`, config);
+    const data = await response.json();
+    console.log(response.status);
+    if(response.status === 200){
+    displayPresentations(data, isPublicOrNot);
+    }
+}}
+
+function displayPresentations(presArr, isPublicOrNot){
+
+  let container = document.getElementById('myPubContainer')
+
+  if(!isPublicOrNot){
+    container = document.getElementById('myPrivContainer');
+  }
+
+  for (let i = 0; i < presArr.length; i++) {
+
+  let myDiv = document.createElement("div");
+  myDiv.classList.add("pres");
+
+  let myHtml = `
+      <h3>Title: ${presArr[i].name}</h3>
+      <h4>Theme: ${presArr[i].theme}</h4>  
+      <p>${presArr[i].description}</p>
+                
+  `;
+
+  myDiv.innerHTML = myHtml;            
+
+  myDiv.addEventListener('click', function (evt) {
+    console.log("you clicked on number " + i);
+  });
+
+  container.appendChild(myDiv);
+  }
+
+
+}
 
 //
     
