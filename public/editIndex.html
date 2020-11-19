@@ -76,9 +76,9 @@
           </div>
         </div>
 
-        <div class="w3-container edit">
+        <div id="edit" class="w3-container w3-center edit">
           <div id="theme">
-            <img id="themeImage" src="pictures/Theme_Light.png">
+            
           </div>
           <h1 id="presTitle" class="w3-center">New Presentation</h1>
           <p id="presParagraph" class="w3-center">
@@ -212,12 +212,18 @@
 
       if (slides) {
 
+        let bildeUrl = "pictures/Theme_Light.png";
+
         if (pres.theme === "Dark") {
-
-          const themeStyle = document.getElementById("theme");
-          themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
-
+          //const themeStyle = document.getElementById("theme");
+          //themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
+          bildeUrl = "pictures/Theme_Dark.png";
         }
+
+        let edit = document.getElementById("edit");
+        edit.style.background = "url(" + bildeUrl + ")";
+        edit.style.width = "100%";
+        edit.style.height = "550px";
 
         localStorage.setItem("PresentationProject", JSON.stringify(pres));
 

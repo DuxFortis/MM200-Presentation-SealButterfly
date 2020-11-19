@@ -74,7 +74,7 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
     const owner = req.body.user;
     const presentationId = req.body.presentationId;
     //name, theme, owner, isPublic, id
-    const Pres = new presentation("", "", owner, "", presentationId);
+    const Pres = new presentation("", "", "", owner, "", presentationId);
     const resp = await Pres.getPresentation();
 
 
@@ -162,9 +162,11 @@ server.post("/presentation", auth, async (req, res) => {
   if(presentationName.length > maxCharLength){
     res.status(403).json(`Presentation name is exceeding ${maxCharLength} characters!`).end();
   }else{
+
+  let descr = "";
   
   const owner = req.body.user;
-  const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
+  const newPres = new presentation(presentationName, presentationTheme, descr, owner, isPublic);
   const resp = await newPres.create();
  
   res.status(200).json(resp).end();
@@ -204,6 +206,26 @@ server.post("/presentations/update/:id", auth, async (req, res) => {
   }else{
     res.status(403).json("You are not the owner of this presentation!").end();
   }}
+
+});
+
+server.post("/presentations/delete/:id", auth, async (req, res) => {
+  const presentation = req.body.presentation;
+  const owner = req.body.user;
+
+  if(presentation.owner === owner){
+
+    //let resp = await deletePres(presentation, owner);
+    let resp = 1;
+
+    if(resp.length === 0){
+      res.status(403).json("No changes have been made!").end();
+    }
+   
+    res.status(200).json(resp).end();
+  }else{
+    res.status(403).json("You are not the owner of this presentation!").end();
+  }
 
 });
 

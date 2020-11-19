@@ -15,7 +15,7 @@ const authenticator = async (req, res, next) => {
       let token = {"authToken": req.body.authToken}
     
     let resp = validateToken(token, user);
-    console.log(resp)
+    //console.log(resp) //true or false token
     if (!resp) {
         return res.status(403).json("token invalid").end();
     }

@@ -37,7 +37,7 @@ padding: 5px;
 .pres {
     font-family: sans-serif;
     border-bottom: 1px solid black;
-    background-color: lightgray;
+    background-color: rgb(159, 191, 204);
     display: grid;
     grid-template-columns: 100px 1fr;
     grid-template-areas: "im tt"
@@ -46,29 +46,30 @@ padding: 5px;
                          "im th";            
 }
 
-.pres>img {
+.pres>div>img {
     width: 100px;
     grid-area: im;
 }
 
-.pres>p {
+
+.pres>#desc>p {
     padding: 5px;
     grid-area: ds;
 }
 
-.pres>h5 {
+.pres>#owner>h5 {
     padding: 5px;
     font-weight: 600;
     grid-area: ow;
 }
 
-.pres>h3 {
+.pres>#title>h3 {
     padding: 5px;
     font-weight: bold;
     grid-area: tt;
 }
 
-.pres>h4 {
+.pres>#theme>h4 {
     padding: 5px;
     font-weight: 500;
     grid-area: th;
