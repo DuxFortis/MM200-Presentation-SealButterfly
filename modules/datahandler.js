@@ -193,7 +193,7 @@ class StorageHandler {
         const isPublic = presentation.ispublic;
 
         const client = new pg.Client(this.credentials);
-        let results = null;
+        let results = 0;
 
         try {
             await client.connect();

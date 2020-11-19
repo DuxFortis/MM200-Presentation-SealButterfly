@@ -17,6 +17,7 @@ server.use(express.static('public'));
 server.use(bodyParser.json());
 
 const maxCharLength = 20;
+const maxCharLengthPres = maxCharLength+10;
 
 
 // create new user
@@ -186,20 +187,23 @@ server.post("/presentations/update/:id", auth, async (req, res) => {
   const presentation = req.body.presentation;
   const owner = req.body.user;
 
+  if(presentation.name.length > maxCharLengthPres){
+    res.status(403).json(`Presentation name is exceeding ${maxCharLengthPres} characters!`).end();
+    return;
+  }else{
+
   if(presentation.owner === owner){
 
     let resp = await updatePres(presentation, owner);
-    resp = 1;
 
     if(resp.length === 0){
       res.status(403).json("No changes have been made!").end();
     }
    
     res.status(200).json(resp).end();
-    
   }else{
     res.status(403).json("You are not the owner of this presentation!").end();
-  }
+  }}
 
 });
 
