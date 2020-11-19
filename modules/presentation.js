@@ -2,7 +2,7 @@ const database = require("./datahandler");
 
 class Presentation {
 
-    constructor(name, theme, descr, owner, isPublic, id){
+    constructor(name, theme, descr, owner, isPublic, id) {
         this.name = name;
         this.theme = theme;
         this.descr = descr;
@@ -29,49 +29,49 @@ class Presentation {
         }
     }
 
-    async update(){
-        try{
+    async update() {
+        try {
             let resp = await database.updatePres(this.name);
             return resp;
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
 
-    async delete(){
-        try{
+    async delete() {
+        try {
             let resp = await database.deletePres(this.name);
             return resp;
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
     }
 
 }
 
-async function getPresData(owner, isPublic){
-    try{
+async function getPresData(owner, isPublic) {
+    try {
         let resp = await database.getPresData(owner, isPublic);
         return resp;
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
 
-async function getAllPres(){
-    try{
+async function getAllPres() {
+    try {
         let resp = await database.getAllPres();
         return resp;
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
 
-async function updatePres(presentation, owner){
-    try{
+async function updatePres(presentation, owner) {
+    try {
         let resp = await database.updatePres(presentation, owner);
         return resp;
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }

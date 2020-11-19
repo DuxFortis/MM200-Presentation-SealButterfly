@@ -34,7 +34,7 @@
                 </div>
                 <label><input id="loginUsername" type="text" placeholder="Username" name="name"> </label>
                 <label><input id="loginPsw" type="password" placeholder="Password" name="password"></label>
-                <div id="info">  
+                <div id="info">
 
                 </div>
                 <button id="subLogin" class="red" type="submit">Login</button>
@@ -52,7 +52,8 @@
                 </div>
                 <label><input id="createUsername" type="text" placeholder="Username" name="name"> </label>
                 <label><input id="createPsw" type="password" placeholder="Password" name="password"></label>
-                <label><input id="createPswConf" type="password" placeholder="Confirm Password" name="passwordConf"></label>
+                <label><input id="createPswConf" type="password" placeholder="Confirm Password"
+                        name="passwordConf"></label>
                 <div id="info1">
 
                 </div>
@@ -71,37 +72,37 @@
 </body>
 
 
-<script>    
+<script>
 
-    
+
 
 
     //login user
 
     const loginUser = document.getElementById("loginform");
 
-    loginUser.addEventListener("submit", async function(evt){
-        
+    loginUser.addEventListener("submit", async function (evt) {
+
         evt.preventDefault();
 
         const loginUsername = document.getElementById("loginUsername").value;
         const loginPsw = document.getElementById("loginPsw").value;
 
-        if(loginUsername !== "" && loginPsw !== ""){
+        if (loginUsername !== "" && loginPsw !== "") {
 
             let username = loginUsername;
             let password = loginPsw;
-        
+
 
             const credentials = "Basic " + window.btoa(`${username}:${password}`); //kryptert streng
             //const credentials = username + ":" + password; //til ren streng/tekst
 
-            
+
             let config = {
                 method: "POST",
                 headers: {
-                "content-type": "application/json",
-                "authorization": credentials
+                    "content-type": "application/json",
+                    "authorization": credentials
                 }
             }
 
@@ -109,34 +110,34 @@
             const data = await response.json();
             serverResp(response, data, 1); //sender response og data til funksjonen 1 = login
 
-        }else{
+        } else {
             // p shows up with text info
             //const infoDiv = document.getElementById("info");
             //infoDiv.innerHTML = "Invalid username or password";
             //document.body.appendChild(infoDiv);
         }
 
-        })
+    })
 
-    
+
     //
 
 
     //create User
     const createform = document.getElementById('createform');
 
-    createform.addEventListener("submit", async function(evt) {
+    createform.addEventListener("submit", async function (evt) {
 
-    evt.preventDefault();
+        evt.preventDefault();
 
-    const createUsername = document.getElementById("createUsername").value;
-    const createPassword = document.getElementById("createPsw").value;
+        const createUsername = document.getElementById("createUsername").value;
+        const createPassword = document.getElementById("createPsw").value;
 
-    if(createUsername !== "" && createPassword !== ""){
+        if (createUsername !== "" && createPassword !== "") {
 
-        const createPasswordConf = document.getElementById("createPswConf").value;
+            const createPasswordConf = document.getElementById("createPswConf").value;
 
-        if(createPassword === createPasswordConf){
+            if (createPassword === createPasswordConf) {
 
                 let body = {
                     username: createUsername,
@@ -154,56 +155,56 @@
                 const data = await response.json();
                 serverResp(response, data, 2); //sender response og data til funksjonen 2 = createUser
 
-            }else{
+            } else {
                 // p shows up with text info2
                 const infoDiv = document.getElementById("info1");
                 infoDiv.innerHTML = "Passwords don't match!";
                 //document.body.appendChild(infoDiv);
 
-                
+
             }
-    }else{
-        // p shows up with text info2
-        const infoDiv = document.getElementById("info1");
-        infoDiv.innerHTML = "Invalid username or password";
-        //document.body.appendChild(infoDiv);
-    }
+        } else {
+            // p shows up with text info2
+            const infoDiv = document.getElementById("info1");
+            infoDiv.innerHTML = "Invalid username or password";
+            //document.body.appendChild(infoDiv);
+        }
 
 
     });
 
     //
 
-    function serverResp(res, data, num){
+    function serverResp(res, data, num) {
         console.log(res.status);
-        if(!data.authToken){
-            switch(num){
-            case 1:
-                document.getElementById("info").innerHTML = data;
-                break;
-            case 2:
-                document.getElementById("info1").innerHTML = data;
-        }
-        }else{
+        if (!data.authToken) {
+            switch (num) {
+                case 1:
+                    document.getElementById("info").innerHTML = data;
+                    break;
+                case 2:
+                    document.getElementById("info1").innerHTML = data;
+            }
+        } else {
             let token = data.authToken.authToken;
             let user = data.user;
-            if(token !== undefined){
+            if (token !== undefined) {
                 sessionStorage.setItem("token", token);
             }
-            if(user !== undefined){
+            if (user !== undefined) {
                 sessionStorage.setItem("user", user.username);
             }
-            if(res.status === 200){
+            if (res.status === 200) {
                 location.href = "/userIndex.html";
             }
         }
         //
 
         //sjekker om num 1 = login eller om num 2 = createUser, for å gi brukeren beskjed i riktig div
-        
+
     }
 
     //
-    
-    
+
+
 </script>

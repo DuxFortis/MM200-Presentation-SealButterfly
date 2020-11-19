@@ -25,30 +25,30 @@ class User {
             console.error(error)
         }
     }
-  
-    async update(){
-    
+
+    async update() {
+
     }
 
-    async delete(){
-      //??? Vanskelig :) pga politikk.
+    async delete() {
+        //??? Vanskelig :) pga politikk.
     }
 
-    async validate(){
-      let success = false;
-      try{
+    async validate() {
+        let success = false;
+        try {
             let resp = await database.selectUser(this.username, this.password);
 
-            if(resp != null){
-              this.isValid = true;
-              success = true;
-              // Her kan vi populere andre felter i user objektet
-              // Eks this.email = resp.email (eller lignende)
+            if (resp != null) {
+                this.isValid = true;
+                success = true;
+                // Her kan vi populere andre felter i user objektet
+                // Eks this.email = resp.email (eller lignende)
             }
-        }catch(err){
+        } catch (err) {
             console.log(err);
         }
-      return success;
+        return success;
     }
 
 }

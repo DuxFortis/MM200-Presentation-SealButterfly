@@ -57,12 +57,12 @@
               </div>
             </div>
             <div id="presentationVisability">
-            <a href="#" class="w3-bar-item w3-button" onClick="changeVisability('public', true)">
-                  <div id="private" name="visability" value="private">
-                    <i class="fa fa-lock"></i></div>
-                  <label>Private</label>
-            </a>
-          </div>
+              <a href="#" class="w3-bar-item w3-button" onClick="changeVisability('public', true)">
+                <div id="private" name="visability" value="private">
+                  <i class="fa fa-lock"></i></div>
+                <label>Private</label>
+              </a>
+            </div>
             <a id="renamePres" href="#" class="w3-bar-item">
               <input id="renamePresInp" type="text" placeholder="Rename presentation">
             </a>
@@ -78,7 +78,7 @@
 
         <div id="edit" class="w3-container w3-center edit">
           <div id="theme">
-            
+
           </div>
           <h1 id="presTitle" class="w3-center">New Presentation</h1>
           <p id="presParagraph" class="w3-center">
@@ -99,25 +99,17 @@
     </div>
   </div>
 
-
-
-
-
-
-
-
-
 </body>
 
 <script>
-  
+
   const presentationVisability = document.getElementById("presentationVisability");
 
-  function changeVisability(status, change){
+  function changeVisability(status, change) {
 
     let html = "";
-    
-    if(status === "private"){
+
+    if (status === "private") {
 
       html = `<a href="#" class="w3-bar-item w3-button" onClick="changeVisability('public', true)">
                   <div id="private" name="visability" value="private">
@@ -125,11 +117,11 @@
                   <label>Private</label>
             </a>`;
 
-            if(change){
-              updatePresLocal("ispublic", false);
-            }
+      if (change) {
+        updatePresLocal("ispublic", false);
+      }
 
-    }else{
+    } else {
 
       html = `<a href="#" class="w3-bar-item w3-button" onClick="changeVisability('private', true)">
                   <div id="public" name="visability" value="public">
@@ -137,14 +129,14 @@
                   <label>Public</label>
             </a>`;
 
-            if(change){
-              updatePresLocal("ispublic", true);
-            }
+      if (change) {
+        updatePresLocal("ispublic", true);
+      }
 
     }
 
     presentationVisability.innerHTML = html;
-    
+
   }
 
   // dropdown function w3.css
@@ -176,7 +168,7 @@
 
   const slideListener = document.getElementById("allSlides");;
 
-  getPresentation();
+  getPresentation(); //laster inn PresentationProject hvis dette finnes
   async function getPresentation() {
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
@@ -186,54 +178,39 @@
       return;
     }
 
-    let token = sessionStorage.getItem("token");
-    let username = sessionStorage.getItem("user");
-    if (token !== undefined) {
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
+    const body = { authToken: token, user: username, presentationId: presentation.id };
+    const url = `/user/presentation/${presentation.id}`;
 
-      let body = {
-        authToken: token,
-        user: username,
-        presentationId: presentation.id
-      };
-      let config = {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(body)
+    const results = await callServerAPI(body, url);
+
+    const pres = results.data[0];
+    const slides = pres.slides;
+
+    if (slides) {
+
+      let bildeUrl = "pictures/Theme_Light.png";
+
+      if (pres.theme === "Dark") {
+        //const themeStyle = document.getElementById("theme");
+        //themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
+        bildeUrl = "pictures/Theme_Dark.png";
       }
 
-      const response = await fetch(`/user/presentation/:${presentation.id}`, config);
-      const data = await response.json();
-      console.log(response.status);
+      let edit = document.getElementById("edit");
+      edit.style.background = "url(" + bildeUrl + ")";
+      edit.style.width = "100%";
+      edit.style.height = "550px";
 
-      const pres = data[0];
-      const slides = pres.slides;
+      localStorage.setItem("PresentationProject", JSON.stringify(pres));
 
-      if (slides) {
+      gotoSlide();
 
-        let bildeUrl = "pictures/Theme_Light.png";
+      refreshPresentation();
 
-        if (pres.theme === "Dark") {
-          //const themeStyle = document.getElementById("theme");
-          //themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
-          bildeUrl = "pictures/Theme_Dark.png";
-        }
-
-        let edit = document.getElementById("edit");
-        edit.style.background = "url(" + bildeUrl + ")";
-        edit.style.width = "100%";
-        edit.style.height = "550px";
-
-        localStorage.setItem("PresentationProject", JSON.stringify(pres));
-
-        gotoSlide();
-
-        refreshPresentation();
-
-      } else {
-        location.href = "/userIndex.html";
-      }
+    } else {
+      location.href = "/userIndex.html";
     }
   }
 
@@ -249,7 +226,7 @@
     if (presentation.ispublic === false) {
 
       changeVisability("private", false);
-    }else{
+    } else {
       changeVisability("public", false);
     }
 
@@ -312,25 +289,12 @@
 
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
-    if (token !== undefined) {
+    const body = { authToken: token, user: username, presentationId: presentation.id };
+    const url = `/user/presentation/${presentation.id}/slide`;
 
-      let body = {
-        authToken: token,
-        user: username,
-        presentationId: presentation.id
-      };
-      let config = {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(body)
-      }
+    const results = await callServerAPI(body, url);
 
-      const response = await fetch(`/user/presentation/${presentation.id}/slide`, config);
-      const data = await response.json();
-      console.log(response.status);
-
+    if (results.response.status === 200) {
       getPresentation();
     }
   })
@@ -353,38 +317,23 @@
   async function updatePresentation() {
 
     const text = document.getElementById("renamePresInp").value
-      if (text !== "") {
-        updatePresLocal("name", text);
-      }
+    if (text !== "") {
+      updatePresLocal("name", text);
+    }
 
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
 
+
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
-    if (token !== undefined) {
+    const body = { authToken: token, user: username, presentation: presentation };
+    const url = `/presentations/update/${presentation.id}`;
 
-      let body = {
-        authToken: token,
-        user: username,
-        presentation: presentation
-      };
-      let config = {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(body)
-      }
+    const results = await callServerAPI(body, url);
 
-      const response = await fetch(`/presentations/update/${presentation.id}`, config);
-      const data = await response.json();
-      console.log(response.status);
-
-      if(response.status === 200){
-        refreshPresentation();
-      }
-
+    if (results.response.status === 200) {
+      refreshPresentation();
     }
   }
 
@@ -392,8 +341,29 @@
 
 
 
+  // fetch server api function
 
+  async function callServerAPI(body, url) {
 
+    if (body === "" || url === "" || body.authToken === undefined) {
+      return;
+    }
+
+    const config = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+
+    const response = await fetch(url, config);
+    const data = await response.json();
+    console.log(response.status);
+    return { "response": response, "data": data };
+  };
+
+//
 
 
 </script>
