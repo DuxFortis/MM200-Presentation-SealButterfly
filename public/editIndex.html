@@ -77,6 +77,8 @@
 <script>
 // dropdown function w3.css
 
+goBackBtn = document.getElementById("goBackBtn");
+
 function myAccount() {
   var x = document.getElementById("Acc");
   if (x.className.indexOf("w3-show") == -1) { 
@@ -234,6 +236,15 @@ newSlideBtn.addEventListener("click", async function(evt){
     getPresentation();
     }
 })
+
+goBackBtn.addEventListener(function (evt){
+  location.href = "/userIndex.html";
+})
+ 
+
+  
+   
+  
 
 
 
