@@ -67,7 +67,7 @@
       <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
         <h2>Public slideshows</h2>
         <p>Here are other users public slideshows.</p>
-        <div class="w3-row w3-white">
+        <div id="allPublicContainer" class="w3-row w3-white">
          
         </div>
       </div>
@@ -189,15 +189,11 @@ publicSlidesListener.addEventListener("click", async function(evt){
 
   getUserPresentations(true);
 
-  console.log("Loading public presentations")
-
 });
 
 privateSlidesBtn.addEventListener("click", async function(evt){
 
   getUserPresentations(false);
-
-  console.log("Loading private presentations")
 
 });
 
@@ -253,6 +249,74 @@ function displayPresentations(presArr, isPublicOrNot){
   myDiv.innerHTML = myHtml;            
 
   myDiv.addEventListener('click', function (evt) {
+    let chosenPres = presArr[i];
+    localStorage.setItem("PresentationProject", JSON.stringify(chosenPres));
+    location.href = "/editIndex.html";
+  });
+
+  container.appendChild(myDiv);
+  }
+
+
+}
+
+//
+
+// get all public presentations
+
+const publicSlidesBtn = document.getElementById("publicSlidesBtn");
+
+publicSlidesBtn.addEventListener("click", async function(evt){
+
+  let token = sessionStorage.getItem("token");
+  let username = sessionStorage.getItem("user");
+  if(token !== undefined){
+
+    let body = {
+                  authToken: token,
+                  user: username,
+
+              };
+              let config = {
+                  method: "POST",
+                  headers: {
+                      "content-type": "application/json"
+                  },
+                  body: JSON.stringify(body)
+              }
+
+    const response = await fetch(`/presentations/uniPub`, config);
+    const data = await response.json();
+    console.log(response.status);
+    if(response.status === 200){
+    displayAllPresentations(data);
+    }
+
+
+
+}});
+
+function displayAllPresentations(presArr){
+
+  let container = document.getElementById('allPublicContainer');
+
+  container.innerHTML = "";
+
+  for (let i = 0; i < presArr.length; i++) {
+
+  let myDiv = document.createElement("div");
+  myDiv.classList.add("pres");
+
+  let myHtml = `
+      <h3>Title: ${presArr[i].name}</h3>
+      <p>${presArr[i].description}</p>
+      <h5>Owner: ${presArr[i].owner}</h5>
+      <h4>Theme: ${presArr[i].theme}</h4>
+  `;
+
+  myDiv.innerHTML = myHtml;            
+
+  myDiv.addEventListener('click', function (evt) {
     console.log("you clicked on number " + i);
   });
 
@@ -261,6 +325,7 @@ function displayPresentations(presArr, isPublicOrNot){
 
 
 }
+
 
 //
     

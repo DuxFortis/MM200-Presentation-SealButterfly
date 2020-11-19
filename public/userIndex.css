@@ -30,6 +30,9 @@ body{
     top: 10px;
 }
 
+.w3-half{
+padding: 5px;
+}
 
 .pres {
     font-family: sans-serif;
@@ -39,6 +42,7 @@ body{
     grid-template-columns: 100px 1fr;
     grid-template-areas: "im tt"
                          "im ds"
+                         "im ow"
                          "im th";            
 }
 
@@ -50,6 +54,12 @@ body{
 .pres>p {
     padding: 5px;
     grid-area: ds;
+}
+
+.pres>h5 {
+    padding: 5px;
+    font-weight: 600;
+    grid-area: ow;
 }
 
 .pres>h3 {

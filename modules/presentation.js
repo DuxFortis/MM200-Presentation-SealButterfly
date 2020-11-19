@@ -57,6 +57,26 @@ async function getPresData(owner, isPublic){
     }
 }
 
+async function getAllPres(){
+    try{
+        let resp = await database.getAllPres();
+        return resp;
+    }catch(err){
+        console.log(err);
+    }
+}
+
+async function updatePres(presentation, owner){
+    try{
+        let resp = await database.updatePres(presentation, owner);
+        return resp;
+    }catch(err){
+        console.log(err);
+    }
+}
+
 
 module.exports = Presentation;
 module.exports.getPresData = getPresData;
+module.exports.getAllPres = getAllPres;
+module.exports.updatePres = updatePres;

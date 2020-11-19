@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const user = require("./modules/user");
 const presentation = require("./modules/presentation");
 const getPresData = require("./modules/presentation").getPresData;
+const getAllPres = require("./modules/presentation").getAllPres;
+const updatePres = require("./modules/presentation").updatePres;
 const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
@@ -132,13 +134,8 @@ server.post("/user/presentation/:id/slide", auth, async function (req, res) {
   if(resp === null){
     res.status(404).json("Presentation not found").end();
   }else{
-
-  // Bruker spør om presentasjon med id.
-  // Tilhører den presentasjonen denne brukeren?
-  // if(req.user.id = presentasjon.author){}
-  // req.user kommer fra auth. 
   
-  // Retuner json for presentasjon.
+  // Retuner json for presentasjon/slide
 
   res.status(200).json("Created new slide").end();
   }
@@ -149,6 +146,7 @@ server.post("/presentation", auth, async (req, res) => {
 
   let presentationName = req.body.presentation.name;
   let isPublic = req.body.presentation.isPublic;
+  let presentationTheme = req.body.presentation.theme;
   if(isPublic !== true && isPublic !== false){
     isPublic = false;
   }
@@ -156,12 +154,15 @@ server.post("/presentation", auth, async (req, res) => {
   if(presentationName === ""){
     presentationName = "New Presentation";
   }
+  if(presentationTheme === ""){
+    presentationTheme = "Light";
+  }
+
   if(presentationName.length > maxCharLength){
     res.status(403).json(`Presentation name is exceeding ${maxCharLength} characters!`).end();
   }else{
-  const presentationTheme = req.body.presentation.theme;
+  
   const owner = req.body.user;
-
   const newPres = new presentation(presentationName, presentationTheme, owner, isPublic);
   const resp = await newPres.create();
  
@@ -169,23 +170,38 @@ server.post("/presentation", auth, async (req, res) => {
   }
 });
 
+server.post("/presentations/uniPub", auth, async (req, res) => {
 
-/*server.get("/secure/*", async function (req, res) {
-    let isValid = false;
-    if(isValid === true){
-        res.redirect("/secure/userIndex.html");
-    }else{
-        res.redirect("/");
+  let resp = await getAllPres();
+
+  if(resp.length === 0){
+    res.status(403).json("There is no public presentations!").end();
+  }
+ 
+  res.status(200).json(resp).end();
+  }
+);
+
+server.post("/presentations/update/:id", auth, async (req, res) => {
+  const presentation = req.body.presentation;
+  const owner = req.body.user;
+
+  if(presentation.owner === owner){
+
+    let resp = await updatePres(presentation, owner);
+    resp = 1;
+
+    if(resp.length === 0){
+      res.status(403).json("No changes have been made!").end();
     }
+   
+    res.status(200).json(resp).end();
     
-})*/
+  }else{
+    res.status(403).json("You are not the owner of this presentation!").end();
+  }
 
-/*
-let slides = [
-  Slide1: {"title": "test", "image": "123.png", "imageText": "myImage", "list": "1,2,3"},
-  Slide2: {"":""},
-];
-*/
+});
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));

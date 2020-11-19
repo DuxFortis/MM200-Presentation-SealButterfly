@@ -102,6 +102,30 @@ class StorageHandler {
 
     }
 
+    // get all public presentations
+
+    async getAllPres(){
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            results = await client.query('SELECT * FROM "public"."presentations" WHERE ispublic=$1', [true]);
+            results = results.rows;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+
+    }
+
+    //
+
     async insertSlide(presentationId, template, owner) {
 
         const client = new pg.Client(this.credentials);
@@ -156,6 +180,43 @@ class StorageHandler {
         return results;
 
     }
+
+    // update presentation
+
+    async updatePres(presentation, owner) {
+
+        const presentationId = presentation.id;
+        const name = presentation.name;
+        const slides = presentation.slides;
+        const description = presentation.description;
+        const theme = presentation.theme;
+        const isPublic = presentation.ispublic;
+
+        const client = new pg.Client(this.credentials);
+        let results = null;
+
+        try {
+            await client.connect();
+            await client.query('UPDATE presentations SET name=$2 WHERE id=$1 AND owner=$3', [presentationId, name, owner]);
+            //await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, slides, owner]);
+            await client.query('UPDATE presentations SET description=$2 WHERE id=$1 AND owner=$3', [presentationId, description, owner]);
+            //await client.query('UPDATE presentations SET theme=$2 WHERE id=$1 AND owner=$3', [presentationId, theme, owner]);
+            await client.query('UPDATE presentations SET ispublic=$2 WHERE id=$1 AND owner=$3', [presentationId, isPublic, owner]);
+
+            //results = results.rows;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+        return results;
+        
+    }
+
+
+    //
 
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters
     /*async insert(...params) {
