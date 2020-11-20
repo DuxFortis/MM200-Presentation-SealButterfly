@@ -256,8 +256,7 @@
       <div id="title"><h3>Title: ${presArr[i].name}</h3><p>Edit <i class="material-icons">edit</i></p></div>
       <div id="theme"><h4>Theme: ${presArr[i].theme}</h4> </div>
       <div id="desc"><p>${presArr[i].description}</p> </div>
-      <div id="delete"><p id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></p></div>
-  `;
+      <div id="delete"><p id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></p></div>`;
 
         myDiv.innerHTML = myHtml;
 
@@ -339,9 +338,11 @@
         myDiv.classList.add("pres");
 
         let myHtml = `
+        
       <h3>Title: ${presArr[i].name}</h3>
       <p>${presArr[i].description}</p>
       <h5>Owner: ${presArr[i].owner}</h5>
+      
       <h4>Theme: ${presArr[i].theme}</h4>
   `;
 
