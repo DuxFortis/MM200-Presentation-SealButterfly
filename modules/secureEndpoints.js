@@ -1,4 +1,4 @@
-const express = require("express")
+/*const express = require("express")
 const authenticator = require("./auth");
 
 
@@ -10,4 +10,6 @@ hemmelig.get("/", (req, res, next) => {
 
 })
 
-module.exports = hemmelig;
+module.exports = hemmelig;*/
+
+//fant ut at vi egentlig ikke trenger denne secureEndpoints.js, siden vi bruker auth.js og ikke /secure. Så vi kan slette denne?
