@@ -86,9 +86,9 @@
     // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
 
     checkIfUserHasToken();
-    function checkIfUserHasToken(){
+    function checkIfUserHasToken() {
       const token = sessionStorage.getItem("token");
-      if(!token){
+      if (!token) {
         location.href = "/";
       }
     }
@@ -208,15 +208,33 @@
 
       const results = await callServerAPI(body, url);
 
-      if (results.response.status === 200) {
-        displayPresentations(results.data, isPublicOrNot);
-      }else{
-        let infoTab = document.getElementById("privateText");
-        if(isPublicOrNot){
+      let status = "private";
+      let infoTab = document.getElementById("privateText");
+        if (isPublicOrNot) {
+          status = "public";
           infoTab = document.getElementById("publicText");
         }
+
+      if (results.response.status === 200) {
+        displayPresentations(results.data, isPublicOrNot);
+        infoTab.innerHTML = `Here you will find your ${status} slideshows.`;
+      } else {
+        clearPresentations(isPublicOrNot);
         infoTab.innerHTML = `${results.data}`;
       }
+      
+    }
+
+    function clearPresentations(isPublicOrNot){
+
+      let container = document.getElementById('myPubContainer');
+
+      if (!isPublicOrNot) {
+        container = document.getElementById('myPrivContainer');
+      }
+
+      container.innerHTML = "";
+
     }
 
     function displayPresentations(presArr, isPublicOrNot) {
@@ -272,7 +290,19 @@
       const results = await callServerAPI(body, url);
 
       if (results.response.status === 200) {
-        console.log("deleted");
+
+        const publicText = document.getElementById("publicText");
+
+        publicText.innerHTML = results.data;
+
+        let timesRun = 0;
+        let interval = setInterval(() => {
+          timesRun = 1;
+          getUserPresentations(presentation.ispublic);
+          if(timesRun === 1){
+            clearInterval(interval);
+          }
+        }, 1000);
       }
 
     }

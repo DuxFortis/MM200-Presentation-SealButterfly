@@ -161,6 +161,9 @@ class StorageHandler {
 
     }
 
+
+  //  async deleteSlides(presentationId, template, owner)
+
     async getPresentation(owner, id) {
 
         const client = new pg.Client(this.credentials);
@@ -217,16 +220,15 @@ class StorageHandler {
 
     async deletePres(presentation, owner){
         const presentationId = presentation.id;
-        const presentationOwner = presentation.owner
 
         const client = new pg.Client(this.credentials);
         let results = 0;
 
         try {
             await client.connect();
-            await client.query('DELETE * FROM "public"."presentation" WHERE id=$1 AND owner=$2', [presentationId, presentationOwner]);
+            results = await client.query('DELETE FROM "presentations" WHERE id=$1 AND owner=$2', [presentationId, owner]);
 
-            //results = results.rows;
+            results = results.rows;
             client.end();
         } catch (err) {
             client.end();

@@ -5,6 +5,7 @@ const presentation = require("./modules/presentation");
 const getPresData = require("./modules/presentation").getPresData;
 const getAllPres = require("./modules/presentation").getAllPres;
 const updatePres = require("./modules/presentation").updatePres;
+const deletePres = require("./modules/presentation").deletePres;
 const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
@@ -216,14 +217,13 @@ server.post("/presentations/delete/:id", auth, async (req, res) => {
 
   if (presentation.owner === owner) {
 
-    //let resp = await deletePres(presentation, owner);
-    let resp = 1;
+    let resp = await deletePres(presentation, owner);
 
-    if (resp.length === 0) {
+    if (resp.length !== 0) {
       res.status(403).json("No changes have been made!").end();
+    }else{
+      res.status(200).json(`Successfully deleted presentation: ${presentation.name}`).end();
     }
-
-    res.status(200).json(resp).end();
   } else {
     res.status(403).json("You are not the owner of this presentation!").end();
   }

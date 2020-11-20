@@ -29,24 +29,6 @@ class Presentation {
         }
     }
 
-    async update() {
-        try {
-            let resp = await database.updatePres(this.name);
-            return resp;
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    async delete() {
-        try {
-            let resp = await database.deletePres(this.name);
-            return resp;
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
 }
 
 async function getPresData(owner, isPublic) {
@@ -76,8 +58,18 @@ async function updatePres(presentation, owner) {
     }
 }
 
+async function deletePres(presentation, owner) {
+    try {
+        let resp = await database.deletePres(presentation, owner);
+        return resp;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 module.exports = Presentation;
 module.exports.getPresData = getPresData;
 module.exports.getAllPres = getAllPres;
 module.exports.updatePres = updatePres;
+module.exports.deletePres = deletePres;
