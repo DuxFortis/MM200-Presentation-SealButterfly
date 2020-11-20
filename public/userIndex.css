@@ -34,19 +34,30 @@ body{
 padding: 5px;
 }
 
+
 .pres {
     font-family: sans-serif;
     border-bottom: 1px solid black;
     background-color: rgb(159, 191, 204);
     display: grid;
-    grid-template-columns: 200px 1fr 1fr;
+    grid-template-columns: 200px 1fr;
     grid-template-areas: "tt"
                          "ow"
                          "ds"
-                         "th";            
+                         "th"
+                         "ebtn";            
 }
 
+#editBtn{
+    width: 150px;
+    grid-area: ebtn;
+}
 
+#deleteBtn{
+    width: 150px;
+    grid-area: dbtn;
+    align-items: right;
+}
 
 .pres>div>img {
     width: 100px;

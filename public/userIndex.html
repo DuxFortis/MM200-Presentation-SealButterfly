@@ -210,10 +210,10 @@
 
       let status = "private";
       let infoTab = document.getElementById("privateText");
-        if (isPublicOrNot) {
-          status = "public";
-          infoTab = document.getElementById("publicText");
-        }
+      if (isPublicOrNot) {
+        status = "public";
+        infoTab = document.getElementById("publicText");
+      }
 
       if (results.response.status === 200) {
         displayPresentations(results.data, isPublicOrNot);
@@ -222,10 +222,10 @@
         clearPresentations(isPublicOrNot);
         infoTab.innerHTML = `${results.data}`;
       }
-      
+
     }
 
-    function clearPresentations(isPublicOrNot){
+    function clearPresentations(isPublicOrNot) {
 
       let container = document.getElementById('myPubContainer');
 
@@ -253,11 +253,11 @@
         myDiv.classList.add("pres");
 
         let myHtml = `
-      <div id="title"><h3>Title: ${presArr[i].name}</h3></div>
-      <div id="theme"><h4>Theme: ${presArr[i].theme}</h4> </div>
-      <div id="desc"><p>${presArr[i].description}</p> </div>
-      <div><p id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></p></div>
-      <div id="delete"><p id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></p></div>
+      <h3>Title: ${presArr[i].name}</h3>
+      <h4>Theme: ${presArr[i].theme}</h4> 
+      <p>${presArr[i].description}</p> 
+      <button id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></button>
+      <button id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></button>
   `;
 
         myDiv.innerHTML = myHtml;
@@ -265,10 +265,10 @@
         myDiv.addEventListener('click', function (evt) {
           if (evt.target.id === "deleteBtn" || evt.target.id === "deleteIconBtn") {
             deletePresentation(presArr[i]);
-          }else if(evt.target.id === "editBtn" || evt.target.id === "editBtnIcon"){
-          localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
-          console.log(presArr[i])
-          location.href = "/editIndex.html";
+          } else if (evt.target.id === "editBtn" || evt.target.id === "editBtnIcon") {
+            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            console.log(presArr[i])
+            location.href = "/editIndex.html";
           }
         });
 
@@ -301,7 +301,7 @@
         let interval = setInterval(() => {
           timesRun = 1;
           getUserPresentations(presentation.ispublic);
-          if(timesRun === 1){
+          if (timesRun === 1) {
             clearInterval(interval);
           }
         }, 1000);
