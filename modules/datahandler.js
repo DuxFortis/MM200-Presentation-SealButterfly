@@ -64,7 +64,7 @@ class StorageHandler {
         let results = null;
 
         let slides = {
-            "Slide1": { "title": "", "image": "", "imageText": "", "list": "" },
+            "Slide1": { "title": "Title", "image": "", "imageText": "", "list": "" },
         }
 
         try {
