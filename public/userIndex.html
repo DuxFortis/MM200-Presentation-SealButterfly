@@ -253,7 +253,7 @@
         myDiv.classList.add("pres");
 
         let myHtml = `
-      <div id="title"><h3>Title: ${presArr[i].name}</h3><p>Edit <i class="material-icons">edit</i></p></div>
+      <div id="title"><h3>Title: ${presArr[i].name}</h3><p id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></p></div>
       <div id="theme"><h4>Theme: ${presArr[i].theme}</h4> </div>
       <div id="desc"><p>${presArr[i].description}</p> </div>
       <div id="delete"><p id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></p></div>
@@ -264,10 +264,11 @@
         myDiv.addEventListener('click', function (evt) {
           if (evt.target.id === "deleteBtn" || evt.target.id === "deleteIconBtn") {
             deletePresentation(presArr[i]);
+          }else if(evt.target.id === "editBtn" || evt.target.id === "editBtnIcon"){
+          localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+          console.log(presArr[i])
+          location.href = "/editIndex.html";
           }
-          let chosenPres = presArr[i];
-          localStorage.setItem("PresentationProject", JSON.stringify(chosenPres));
-          //location.href = "/editIndex.html";
         });
 
         container.appendChild(myDiv);

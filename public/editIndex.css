@@ -19,6 +19,15 @@ body{
 
 }
 
+.scroller {
+    border: solid black;
+    width: 150px;
+    height: 400px;
+    overflow-y: scroll;
+    scrollbar-color: black rgb(72, 190, 219);
+    scrollbar-width: thin;
+  }
+
 #edit {
     background-size: contain;
     background-position: center;
@@ -39,4 +48,17 @@ body{
     height: 200px;
     width: auto;
     z-index: 2;
+}
+
+#newSlideBtn{
+    border: solid black;
+    width: 150px;
+    align-content: center;
+}
+
+#deleteSlideBtn{
+    border-top: 0px;
+    border: solid black;
+    width: 150px;
+    align-content: center;
 }

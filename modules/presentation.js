@@ -67,9 +67,44 @@ async function deletePres(presentation, owner) {
     }
 }
 
+async function deleteSlides(presentation, slide, owner) {
+    try {
+
+        const presentationId = presentation.id;
+        let slides = presentation.slides;
+        let updatedSlides = {};
+
+        let totalSlides = Object.entries(slides);
+
+        delete slides["Slide" + slide]
+
+        let num = 1;
+        for (let i = 1; i <= totalSlides.length; i++) {
+
+            if (slides["Slide" + i] !== undefined) {
+
+                updatedSlides["Slide" + num] = slides["Slide" + i];
+                num++;
+
+            }
+
+
+        }
+
+
+
+
+        let resp = await database.deleteSlides(presentationId, updatedSlides, owner);
+        return resp;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 module.exports = Presentation;
 module.exports.getPresData = getPresData;
 module.exports.getAllPres = getAllPres;
 module.exports.updatePres = updatePres;
 module.exports.deletePres = deletePres;
+module.exports.deleteSlides = deleteSlides;

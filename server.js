@@ -6,6 +6,7 @@ const getPresData = require("./modules/presentation").getPresData;
 const getAllPres = require("./modules/presentation").getAllPres;
 const updatePres = require("./modules/presentation").updatePres;
 const deletePres = require("./modules/presentation").deletePres;
+const deleteSlides = require("./modules/presentation").deleteSlides;
 const slides = require("./modules/slides");
 const auth = require("./modules/auth");
 
@@ -229,6 +230,27 @@ server.post("/presentations/delete/:id", auth, async (req, res) => {
   }
 
 });
+
+server.post("/presentations/delete/:id/slides/:id", auth, async (req, res) => {
+  const presentation = req.body.presentation;
+  const owner = req.body.user;
+  const slide = req.body.slide;
+
+  if (presentation.owner === owner) {
+
+    let resp = await deleteSlides(presentation, slide, owner);
+
+    if (resp.length !== 0) {
+      res.status(403).json("No changes have been made!").end();
+    }else{
+      res.status(200).json(`Successfully deleted slide: ${slide}`).end();
+    }
+  } else {
+    res.status(403).json("You are not the owner of this presentation!").end();
+  }
+
+});
+
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));

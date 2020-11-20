@@ -162,7 +162,30 @@ class StorageHandler {
     }
 
 
-  //  async deleteSlides(presentationId, template, owner)
+   async deleteSlides(presentationId, slides, owner) {
+
+        const client = new pg.Client(this.credentials);
+        let results = 0;
+
+        try {
+            await client.connect();
+            results = await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, slides, owner]);
+
+            results = results.rows;
+            client.end();
+        } catch (err) {
+            client.end();
+            console.log(err);
+            results = err;
+        }
+
+
+        return results;
+
+
+   }
+
+
 
     async getPresentation(owner, id) {
 
@@ -218,7 +241,7 @@ class StorageHandler {
 
     }
 
-    async deletePres(presentation, owner){
+    async deletePres(presentation, owner) {
         const presentationId = presentation.id;
 
         const client = new pg.Client(this.credentials);
@@ -237,30 +260,9 @@ class StorageHandler {
         }
 
         return results;
-
-
     }
 
-
-    //
-
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters
-    /*async insert(...params) {
-        const client = new pg.Client(this.credentials);
-        let results = null;
-        try {
-            await client.connect();
-            results = await client.query('INSERT INTO "public"."$1"("username", "password") VALUES($2, $3) RETURNING *;', params);
-            results = results.rows[0].message;
-            client.end();
-        } catch (err) {
-            client.end();
-            results = err;
-        }
-        return results;
-    }*/
-
-
 }
+//
 
 module.exports = new StorageHandler(dbCredentials);

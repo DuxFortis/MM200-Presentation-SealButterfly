@@ -32,10 +32,15 @@
       <div class="w3-col l2 s2">
         <div class="w3-container w3-white">
           <p>Your slides</p>
+          <div class="scroller">
           <ul id="allSlides" class="w3-ul">
             <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
           </ul>
+          </div>
+          <br>
           <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
+          <br>
+          <div id="deleteSlideBtn" class="w3-hover-grey w3-button">Delete slide </div>
         </div>
       </div>
       <div class="w3-col l8 s8">
@@ -251,7 +256,9 @@
 
     const totalSlides = Object.entries(slides).length;
 
-    allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    if(presentation.slides.Slide1 !== undefined){
+      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    }
 
     for (let i = 2; i <= totalSlides; i++) {
       allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
@@ -270,16 +277,23 @@
   });
 
 
+  let currentSlide = 1;
 
   function gotoSlide(slideNr) {
-    if (slideNr === undefined) {
-      slideNr = 1;
-    }
-
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
-    let slideEditMode = presentation.slides["Slide" + slideNr];
 
+    if (slideNr === undefined) {
+      if(presentation.slides.Slide1 !== undefined){
+        slideNr = 1;
+      }else{
+        return;
+      }
+    }
+
+    currentSlide = slideNr;
+    
+    let slideEditMode = presentation.slides["Slide" + currentSlide];
 
     document.getElementById("presTitle").innerHTML = slideEditMode.title;
 
@@ -309,7 +323,27 @@
     if (results.response.status === 200) {
       getPresentation();
     }
-  })
+  });
+
+
+  const deleteSlideBtn = document.getElementById("deleteSlideBtn");
+
+  deleteSlideBtn.addEventListener("click", async function (evt) {
+
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
+    const body = { authToken: token, user: username, presentation: presentation, slide: currentSlide };
+    const url = `/presentations/delete/${presentation.id}/slides/${currentSlide}`;
+
+    const results = await callServerAPI(body, url);
+
+    if (results.response.status === 200) {
+      getPresentation();
+    }
+  });
 
   goBackBtn.addEventListener("click", function (evt) {
     location.href = "/userIndex.html";
