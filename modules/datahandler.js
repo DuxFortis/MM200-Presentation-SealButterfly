@@ -126,7 +126,7 @@ class StorageHandler {
 
     //
 
-    async insertSlide(presentationId, template, owner) {
+    async insertSlide(presentationId, userSlides, owner) {
 
         const client = new pg.Client(this.credentials);
         let results = null;
