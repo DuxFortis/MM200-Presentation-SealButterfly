@@ -94,7 +94,7 @@ server.post("/user/presentation/:id", auth, async function (req, res) {
 
 });
 
-server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
+server.post("/:user/presentations/public/:isPublic", auth, async function (req, res) {
   const owner = req.body.user;
   const isPresentationPublic = req.body.isPublic;
   let publicOrNotStatus = "public";
@@ -108,7 +108,7 @@ server.post("/:user/presentations/:isPublic", auth, async function (req, res) {
   }
 
   if (resp.length === 0) {
-    res.status(404).json(`User does not have any ${publicOrNotStatus} presentations`).end();
+    res.status(404).json(`You don't have any ${publicOrNotStatus} presentations`).end();
   } else {
 
     // Bruker spør om presentasjon med id.

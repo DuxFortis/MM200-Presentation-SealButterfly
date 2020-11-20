@@ -103,6 +103,18 @@
 
 <script>
 
+  // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+
+  checkIfUserHasToken();
+    function checkIfUserHasToken(){
+      const token = sessionStorage.getItem("token");
+      if(!token){
+        location.href = "/";
+      }
+    }
+
+    //
+
   const presentationVisability = document.getElementById("presentationVisability");
 
   function changeVisability(status, change) {
@@ -345,7 +357,7 @@
 
   async function callServerAPI(body, url) {
 
-    if (body === "" || url === "" || body.authToken === undefined) {
+    if (body === "" || url === "" || !body.authToken) {
       return;
     }
 

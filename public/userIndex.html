@@ -59,7 +59,7 @@
 
   <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
     <h2>My private slideshows</h2>
-    <p>Here you will find your private slideshows.</p>
+    <p id="privateText">Here you will find your private slideshows.</p>
     <div id="myPrivContainer" class="w3-row w3-white">
 
     </div>
@@ -67,7 +67,7 @@
 
   <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
     <h2>My slideshows</h2>
-    <p>Here you will find your public slideshows.</p>
+    <p id="publicText">Here you will find your public slideshows.</p>
     <div id="myPubContainer" class="w3-row w3-white">
 
     </div>
@@ -82,6 +82,18 @@
   </div>
 
   <script>
+
+    // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+
+    checkIfUserHasToken();
+    function checkIfUserHasToken(){
+      const token = sessionStorage.getItem("token");
+      if(!token){
+        location.href = "/";
+      }
+    }
+
+    //
 
     // tab function, w3.css
 
@@ -192,12 +204,18 @@
       const token = sessionStorage.getItem("token");
       const username = sessionStorage.getItem("user");
       const body = { authToken: token, user: username, isPublic: isPublicOrNot };
-      const url = `/${username}/presentations/${isPublicOrNot}`;
+      const url = `/${username}/presentations/public/${isPublicOrNot}`;
 
       const results = await callServerAPI(body, url);
 
       if (results.response.status === 200) {
         displayPresentations(results.data, isPublicOrNot);
+      }else{
+        let infoTab = document.getElementById("privateText");
+        if(isPublicOrNot){
+          infoTab = document.getElementById("publicText");
+        }
+        infoTab.innerHTML = `${results.data}`;
       }
     }
 
@@ -316,7 +334,7 @@
 
     async function callServerAPI(body, url) {
 
-      if (body === "" || url === "" || body.authToken === undefined) {
+      if (body === "" || url === "" || !body.authToken) {
         return;
       }
 
