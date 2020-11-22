@@ -173,7 +173,6 @@
 
       if (results.response.status === 200) {
         localStorage.setItem("PresentationProject", JSON.stringify(results.data))
-        console.log(results.data)
         location.href = "/editIndex.html";
       }
 
