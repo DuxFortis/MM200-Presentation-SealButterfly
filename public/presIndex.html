@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client</title>
+  <link rel="stylesheet" href="presIndex.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+
+  
+
+  <div class="w3-dropdown-click w3-right">
+    <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
+    <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
+      <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+      <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+    </div>
+  </div>
+
+
+  <div class="w3-row">
+    <div class="w3-container w3-border w3-white container">
+      <div class="w3-col l2 s2">
+        <div class="w3-container w3-white">
+          <p>Your slides</p>
+          <ul id="allSlides" class="w3-ul">
+            <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
+          </ul>
+          <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
+        </div>
+      </div>
+      <div class="w3-col l8 s8">
+         
+        <div id="edit" class="w3-container w3-center edit">
+         
+          <h1 id="presTitle" class="w3-center">New Presentation</h1>
+          <p id="presParagraph" class="w3-center">
+            Lorem Ipsum Dolor
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>

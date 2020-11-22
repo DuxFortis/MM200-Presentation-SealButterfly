@@ -33,9 +33,9 @@
         <div class="w3-container w3-white">
           <p>Your slides</p>
           <div class="scroller">
-          <ul id="allSlides" class="w3-ul">
-            <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
-          </ul>
+            <ul id="allSlides" class="w3-ul">
+              <li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="1">Slide 1 </li>
+            </ul>
           </div>
           <br>
           <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
@@ -56,9 +56,14 @@
               </button>
               <br><label>Font</label>
               <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <a href="#" class="w3-bar-item w3-button">Arial</a>
-                <a href="#" class="w3-bar-item w3-button">Times New Roman</a>
-                <a href="#" class="w3-bar-item w3-button">Helvetica</a>
+                <a id="arialBtn" href="#" class="w3-bar-item w3-button tablink w3-black"
+                  onClick="openTab(event, `arialTab`)">Arial</a>
+                <a id="timesBtn" href="#" class="w3-bar-item w3-button tablink"
+                  onClick="openTab(event, `timesTab`)">Times New
+                  Roman</a>
+                <a id="lucidaBtn" href="#" class="w3-bar-item w3-button tablink"
+                  onClick="openTab(event, `lucidaTab`)">Lucida
+                  Console</a>
               </div>
             </div>
             <div id="presentationVisability">
@@ -82,22 +87,21 @@
         </div>
 
         <div id="edit" class="w3-container w3-center edit">
-          <div id="theme">
-
-          </div>
+          <div id="theme"> </div>
           <h1 id="presTitle" class="w3-center"></h1>
-          <p id="presParagraph" class="w3-center">
-          </p>
+          <div id="presParagraph" class="w3-center">
+          </div>
         </div>
       </div>
       <div class="w3-col l2 s2">
         <div class="w3-container w3-white">
-          <p>Templates</p>
+          <p>Slide Templates</p>
           <ul class="w3-ul">
-            <li class="w3-hover-grey">Template Title</li>
-            <li class="w3-hover-grey">Template Picture</li>
-            <li class="w3-hover-grey">Template List</li>
+            <li id="templateTitleBtn" class="w3-hover-grey w3-button">Template Title</li>
+            <li id="templatePictureBtn" class="w3-hover-grey w3-button">Template Picture</li>
+            <li id="templateListBtn" class="w3-hover-grey w3-button">Template List</li>
           </ul>
+          <button id="addListBtn" class="w3-hide" onclick="addListItem()">Add list item</button>
         </div>
       </div>
     </div>
@@ -107,17 +111,250 @@
 
 <script>
 
-  // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+  const templateTitleBtn = document.getElementById("templateTitleBtn");
+  const templatePictureBtn = document.getElementById("templatePictureBtn");
+  const templateListBtn = document.getElementById("templateListBtn");
+  const addListBtn = document.getElementById("addListBtn");
 
-  checkIfUserHasToken();
-    function checkIfUserHasToken(){
-      const token = sessionStorage.getItem("token");
-      if(!token){
-        location.href = "/";
-      }
+  let imgdata = "";
+  let templateCheck = "";
+
+
+
+
+
+  function openTab(evt, tabName) {
+    var i, x, tablinks;
+    x = document.getElementsByClassName("tab");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < x.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " w3-black";
+  }
+
+  templateTitleBtn.addEventListener('click', function (evt) {
+
+    templateCheck += "Title"
+    console.log(templateCheck);
+
+    insertTemplateSlide();
+    templateCheck = "";
+
+
+  })
+  templatePictureBtn.addEventListener('click', function (evt) {
+
+    templateCheck += "Picture"
+
+    insertTemplateSlide();
+    templateCheck = "";
+
+
+  })
+  templateListBtn.addEventListener('click', function (evt) {
+
+    templateCheck += "List"
+    console.log(templateCheck)
+    insertTemplateSlide();
+    templateCheck = "";
+
+  })
+
+  let listItemIndex = 1;
+
+  function addListItem() {
+    const paragraphDom = document.getElementById("presParagraph")
+    paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; edit</p>`;
+    listItemIndex++;
+    /*var node = document.createElement("LI");
+    var textnode = document.createTextNode("Click to write");
+    node.appendChild(textnode);
+    document.getElementById("templateSlideList").appendChild(node);*/
+  }
+
+  async function insertTemplateSlide() {
+    let templateNr = 1;
+
+    /*
+    if (templateCheck === "Title") {
+
+      html = `
+          <div id="theme"> </div>
+          <h1 id="presTitle" class="w3-center"> My Title</h1>
+          
+        `;
+
+      document.getElementById("edit").innerHTML = html;
+      
+    }*/
+    if (templateCheck === "Picture") {
+      templateNr = 2;
+      /*
+            html = `<h1 id="presTitle" class="w3-center"> My Title</h1>
+            <label id="btnFile" for="inpFile">Select file
+              <img id="btnImg" >
+              </label>   
+           <input id="inpFile" type="file" accept="image/*" />
+           <button id="btnSend">Send data</button>   `;
+            document.getElementById("edit").innerHTML = html;
+      
+            let btnImg = document.getElementById('btnImg');
+            let inpFile = document.getElementById('inpFile');
+            let btnSend = document.getElementById('btnSend');
+      
+            btnSend.addEventListener('click', async function (evt) {
+      
+              console.log(imgdata)
+              updatePresLocal("image", imgdata, currentSlide)
+      
+            });
+            //select and handle image -------------------------
+            inpFile.addEventListener('change', function (evt) {
+      
+              let file = inpFile.files[0];
+      
+              if (file.type != "image/png" && file.type != "image/jpeg") {
+                console.log("wrong filetype");
+                
+              }
+      
+              if (file.size > 1000000) {
+                console.log("the file is too large");
+                
+              }
+      
+              let freader = new FileReader();
+              freader.addEventListener('load', function (evt) {
+                btnImg.src = freader.result;
+                imgdata = freader.result;
+              });
+              freader.readAsDataURL(file);
+            });*/
+
+    }
+    if (templateCheck === "List") {
+      templateNr = 3;
+
+      /*
+
+      html = `
+          <div id="theme"> </div>
+          <h1 id="presTitle" class="w3-center"></h1>
+          <div id="presParagraph">
+           <ul id="templateSlideList">
+           </ul>
+          </div>`;
+      document.getElementById("edit").innerHTML = html;
+
+      */
+
+
+    }
+
+
+
+    //test
+
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+
+    if (presentation === null) {
+      location.href = "/userIndex.html";
+      return;
+    }
+
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
+    const body = { authToken: token, user: username, presentation: presentation, slide: currentSlide, template: templateNr };
+
+    let url = `/presentations/update/${presentation.id}/slides/${currentSlide}/${templateNr}`;
+    let resp = await callServerAPI(body, url);
+    let statusCode = resp.response.status;
+
+    if (statusCode === 200) {
+      getPresentation();
     }
 
     //
+
+
+
+
+  }
+
+
+
+
+  // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+
+  checkIfUserHasToken();
+  function checkIfUserHasToken() {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      location.href = "/";
+    }
+  }
+
+  //
+
+
+  const editListener = document.getElementById("edit");
+
+  editListener.addEventListener("click", function (evt) {
+    let target = evt.target.id;
+    console.log(target)
+
+    if (target !== "edit") {
+      editText(target, currentSlide);
+    }
+  });
+
+  function editText(text, slide) {
+    if (!text || !slide) {
+      return;
+    }
+
+    let editText = document.getElementById(text);
+    editText.innerHTML = `<input id='edit${text}'></input>`;
+
+    let editNewText = document.getElementById(`edit${text}`);
+    editNewText.addEventListener("keypress", function (evt) {
+
+      let saveKey = 13;
+      let cancelKey = 27;
+
+
+      let keyCode = evt.keyCode;
+
+      if (keyCode === saveKey) {
+
+        let key = "";
+        switch (text) {
+          case "presTitle":
+            key = "title";
+            break;
+
+          default:
+            return;
+        }
+
+        updatePresLocal(key, editNewText.value, slide);
+
+      }
+
+
+
+    })
+  }
+
+  function checkKey() {
+
+  }
 
   const presentationVisability = document.getElementById("presentationVisability");
 
@@ -221,7 +458,7 @@
 
       localStorage.setItem("PresentationProject", JSON.stringify(pres));
 
-      gotoSlide();
+      gotoSlide(currentSlide);
 
       refreshPresentation();
 
@@ -255,17 +492,19 @@
 
     const totalSlides = Object.entries(slides).length;
 
-    if(presentation.slides.Slide1 !== undefined){
-      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    if (presentation.slides.Slide1 !== undefined) {
+      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="1">Slide 1 </li>`
     }
 
     for (let i = 2; i <= totalSlides; i++) {
-      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="${i}">Slide ${i}</li>`;
     }
 
     //slideListener = document.getElementById("allSlides");
 
   }
+
+
 
   slideListener.addEventListener("click", function (evt) {
 
@@ -283,22 +522,62 @@
     presentation = JSON.parse(presentation);
 
     if (slideNr === undefined) {
-      if(presentation.slides.Slide1 !== undefined){
+      if (presentation.slides.Slide1 !== undefined) {
         slideNr = 1;
-      }else{
+      } else {
         return;
       }
     }
 
     currentSlide = slideNr;
-    
+
+
+
+    let titleDom = document.getElementById("presTitle");
+    let paragraphDom = document.getElementById("presParagraph");
+
+    paragraphDom.innerHTML = "";
+    titleDom.innerHTML = "";
+    addListBtn.className = "w3-hide";
+
     let slideEditMode = presentation.slides["Slide" + currentSlide];
+    if (!slideEditMode) {
 
-    document.getElementById("presTitle").innerHTML = slideEditMode.title;
+      currentSlide--;
+      slideEditMode = presentation.slides["Slide" + currentSlide];
 
-    //document.getElementById("presParagraph").innerHTML = slideEditMode.image;
+      if (!slideEditMode) {
+        return;
+      }
+    }
 
-    //document.getElementById("presParagraph").innerHTML = slideEditMode.imageText;
+
+    titleDom.innerHTML = slideEditMode.title;
+
+    if (slideEditMode.image) {
+      paragraphDom.innerHTML = slideEditMode.image;
+      paragraphDom.innerHTML += slideEditMode.imageText;
+    }
+
+    if (slideEditMode.list) {
+
+      let listArr = slideEditMode.list;
+
+      listArr = listArr.split(" ");
+
+      for(let i = 0; i < listArr.length; i++){
+        paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; ${listArr[i]}</p>`
+        listItemIndex++;
+      }
+
+      addListBtn.className = "w3-show";
+    }
+
+
+
+
+
+
 
     //
 
@@ -311,6 +590,9 @@
 
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
+    currentSlide = Object.entries(presentation.slides);
+
+    currentSlide = currentSlide.length + 1;
 
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
@@ -348,14 +630,20 @@
     location.href = "/userIndex.html";
   });
 
-  function updatePresLocal(key, value) {
+  function updatePresLocal(key, value, slide) {
     if (key === "" || value === "") {
       return;
     }
 
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
-    presentation[key] = value;
+
+    if (slide) {
+      presentation.slides["Slide" + slide][key] = value;
+    } else {
+      presentation[key] = value;
+    }
+
     localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   }
 

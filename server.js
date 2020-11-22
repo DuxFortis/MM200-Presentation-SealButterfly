@@ -222,7 +222,7 @@ server.post("/presentations/delete/:id", auth, async (req, res) => {
 
     if (resp.length !== 0) {
       res.status(403).json("No changes have been made!").end();
-    }else{
+    } else {
       res.status(200).json(`Successfully deleted presentation: ${presentation.name}`).end();
     }
   } else {
@@ -236,14 +236,60 @@ server.post("/presentations/delete/:id/slides/:id", auth, async (req, res) => {
   const owner = req.body.user;
   const slide = req.body.slide;
 
-  if (presentation.owner === owner) {
+  checkSlide = JSON.stringify(presentation.slides);
+
+  if (presentation.owner === owner && checkSlide.length > 2) {
 
     let resp = await deleteSlides(presentation, slide, owner);
 
     if (resp.length !== 0) {
       res.status(403).json("No changes have been made!").end();
-    }else{
+    } else {
       res.status(200).json(`Successfully deleted slide: ${slide}`).end();
+    }
+  } else {
+    res.status(403).json("You are not the owner of this presentation!").end();
+  }
+
+});
+
+
+server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, res) => {
+  const presentation = req.body.presentation;
+  const owner = req.body.user;
+  const slide = req.body.slide;
+  const template = req.body.template;
+
+  let updateSlide = presentation.slides["Slide" + slide];
+
+  let content = "";
+
+  console.log(template)
+
+  //template 1 = title, 2 = image, 3 = list
+  switch (template) {
+    case 1:
+      content = { "title": updateSlide.title };
+      break;
+    case 2:
+      content = { "title": updateSlide.title, "image": "myImage.png", "imageText": "myImageText" };
+      break;
+    case 3:
+      content = { "title": updateSlide.title, "list": "myList" };
+      break;
+
+  }
+
+  presentation.slides["Slide" + slide] = content;
+
+  if (presentation.owner === owner && template <= 3 && template > 0) {
+
+    let resp = await updatePres(presentation, owner)
+
+    if (resp.length === 0) {
+      res.status(403).json("No changes have been made!").end();
+    } else {
+      res.status(200).json(`Successfully updated slide: ${slide}`).end();
     }
   } else {
     res.status(403).json("You are not the owner of this presentation!").end();

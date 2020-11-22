@@ -144,7 +144,10 @@ class StorageHandler {
                 const userSlides = results.rows[0].slides;
                 const slidesAmount = Object.entries(userSlides);
                 const newSlide = "Slide" + parseInt(slidesAmount.length + 1);
-                userSlides[newSlide] = { "title": "", "image": "", "imageText": "", "list": "" };
+
+
+
+                userSlides[newSlide] = { "title": "myTitle", "image": "", "imageText": "", "list": "" };
 
                 results = await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, userSlides, owner]);
                 results = await client.query('SELECT slides FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, presentationId]);
@@ -162,7 +165,7 @@ class StorageHandler {
     }
 
 
-   async deleteSlides(presentationId, slides, owner) {
+    async deleteSlides(presentationId, slides, owner) {
 
         const client = new pg.Client(this.credentials);
         let results = 0;
@@ -183,7 +186,7 @@ class StorageHandler {
         return results;
 
 
-   }
+    }
 
 
 
@@ -224,12 +227,12 @@ class StorageHandler {
         try {
             await client.connect();
             await client.query('UPDATE presentations SET name=$2 WHERE id=$1 AND owner=$3', [presentationId, name, owner]);
-            //await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, slides, owner]);
+            await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, slides, owner]);
             await client.query('UPDATE presentations SET description=$2 WHERE id=$1 AND owner=$3', [presentationId, description, owner]);
-            //await client.query('UPDATE presentations SET theme=$2 WHERE id=$1 AND owner=$3', [presentationId, theme, owner]);
+            await client.query('UPDATE presentations SET theme=$2 WHERE id=$1 AND owner=$3', [presentationId, theme, owner]);
             await client.query('UPDATE presentations SET ispublic=$2 WHERE id=$1 AND owner=$3', [presentationId, isPublic, owner]);
 
-            //results = results.rows;
+            results = `Save successful for ${name}`;
             client.end();
         } catch (err) {
             client.end();

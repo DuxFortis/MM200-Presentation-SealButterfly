@@ -1,0 +1,35 @@
+*{
+    font-size: 20px;
+    font-family: sans-serif;
+    
+}
+
+
+
+body{
+    background-image: url("./pictures/LandingPageBackground.png");
+}
+
+
+
+#edit {
+    background-size: contain;
+    background-position: center;
+}
+
+
+#themeImage>h1{
+    padding-top: 50px;
+    position: absolute;
+    width: auto;
+    height: 100px;
+    z-index: 2;
+}
+ 
+#themeImage>p{
+    padding-top: 100px;
+    position: absolute;
+    height: 200px;
+    width: auto;
+    z-index: 2;
+}
