@@ -168,9 +168,21 @@
   let listItemIndex = 1;
 
   function addListItem() {
-    const paragraphDom = document.getElementById("presParagraph")
-    paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; edit</p>`;
-    listItemIndex++;
+    //const paragraphDom = document.getElementById("presParagraph");
+
+    /*
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+    let value = "1456723";
+    let key = "list";
+    presentation.slides["Slide" + currentSlide][key] = value;
+    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
+    //presentation.slides["Slide" + currentSlide][key] = value;
+    updatePresLocal(key, value, currentSlide);*/
+    //updatePresLocal("list", "1234", currentSlide);
+  
+    //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; edit</p>`;
+    //listItemIndex++;
     /*var node = document.createElement("LI");
     var textnode = document.createTextNode("Click to write");
     node.appendChild(textnode);

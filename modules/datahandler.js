@@ -39,6 +39,33 @@ class StorageHandler {
         return results;
     }
 
+
+    async updateUser(username, password) {
+        const client = new pg.Client(this.credentials);
+        let results = null;
+        try {
+            await client.connect();
+            results = await client.query('SELECT password from "users" where username=$1 password=$1', [username, password]);
+            const passCheck = results.rows.find(element => element = password);
+
+            if (passCheck !== undefined) {
+                results = null;
+                client.end();
+            } else {
+                results = await client.query('UPDATE "users" SET username = $1, password = $2 WHERE id = $3 ', [username, password, id]);
+                results = results.rows[0].message;
+                client.end();
+            }
+        } catch (err) {
+            console.log(err);
+            results = err;
+            client.end();
+        }
+
+        return results;
+
+    }
+
     //  login user
 
     async selectUser(username, password) {

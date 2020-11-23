@@ -26,13 +26,22 @@ class User {
         }
     }
 
-    async update() {
-
-    }
-
     async delete() {
-        //??? Vanskelig :) pga politikk.
+        let success = false;
+        try {
+            let resp = await database.deleteUser(this.username, this.password);
+
+            if (resp != null) {
+                this.isValid = true;
+                success = true;
+                
+            }
+        } catch (err) {
+            console.log(err);
+        }
+        return success;
     }
+    
 
     async validate() {
         let success = false;
@@ -51,6 +60,15 @@ class User {
         return success;
     }
 
+}
+
+async update() {
+    try {
+        let resp = await database.updateUser(this.username, this.password);
+        return resp;
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 

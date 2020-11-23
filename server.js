@@ -69,6 +69,28 @@ server.post("/authenticate", async (req, res) => {
     res.status(403).json("Username or password is incorrect!").end();
   }
 
+
+  server.post("/user/update", auth, async (req, res) => {
+
+    //console.log(req.headers.authorization); // krypterte strengen brukeren sender inn
+  
+    const credentials = req.headers.authorization.split(' ')[1];
+    const [newUsername, newPassword] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  
+    //console.log(username + ":" + password); // brukernavn, passord i ren tekst
+  
+    const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
+    const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
+  
+    //console.log(isValid); // isValid = true/false
+  
+    if (isUpdated) {
+      let sessionToken = createToken(requestUser);
+      res.status(200).json({ "authToken": sessionToken, "user": requestUser }).end();
+    } else {
+      res.status(403).json("Username or password is incorrect!").end();
+    }
+
 });
 
 //!!!! WARNING DEMO !!!
