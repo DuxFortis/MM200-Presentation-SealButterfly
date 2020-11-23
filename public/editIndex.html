@@ -56,14 +56,9 @@
               </button>
               <br><label>Font</label>
               <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <a id="arialBtn" href="#" class="w3-bar-item w3-button tablink w3-black"
-                  onClick="openTab(event, `arialTab`)">Arial</a>
-                <a id="timesBtn" href="#" class="w3-bar-item w3-button tablink"
-                  onClick="openTab(event, `timesTab`)">Times New
-                  Roman</a>
-                <a id="lucidaBtn" href="#" class="w3-bar-item w3-button tablink"
-                  onClick="openTab(event, `lucidaTab`)">Lucida
-                  Console</a>
+                <a id="arialBtn" href="#" class="w3-bar-item w3-button">Arial</a>
+                <a id="timesBtn" href="#" class="w3-bar-item w3-button">Times New Roman</a>
+                <a id="lucidaBtn" href="#" class="w3-bar-item w3-button">Lucida Console</a>
               </div>
             </div>
             <div id="presentationVisability">
@@ -119,23 +114,38 @@
   let imgdata = "";
   let templateCheck = "";
 
+arialBtn = document.getElementById(`arialBtn`);
+timesBtn = document.getElementById(`timesBtn`);
+lucidaBtn = document.getElementById(`lucidaBtn`);
 
+arialBtn.addEventListener(`click`, () =>{
+  presParagraph.classList.add(`sansserif`);
+  presTitle.classList.add(`sansserif`);
+  presParagraph.classList.remove(`monospace`);
+  presTitle.classList.remove(`monospace`);
+  presParagraph.classList.remove(`serif`);
+  presTitle.classList.remove(`serif`);
+})
 
+timesBtn.addEventListener(`click`, () =>{
+  presParagraph.classList.add(`serif`);
+  presTitle.classList.add(`serif`);
+  presParagraph.classList.remove(`monospace`);
+  presTitle.classList.remove(`monospace`);
+  presParagraph.classList.remove(`sansserif`);
+  presTitle.classList.remove(`sansserif`);
+})
 
+lucidaBtn.addEventListener(`click`, () =>{
+  presParagraph.classList.add(`monospace`);
+  presTitle.classList.add(`monospace`);
+  presParagraph.classList.remove(`sansserif`);
+  presTitle.classList.remove(`sansserif`);
+  presParagraph.classList.remove(`serif`);
+  presTitle.classList.remove(`serif`);
+})
 
-  function openTab(evt, tabName) {
-    var i, x, tablinks;
-    x = document.getElementsByClassName("tab");
-    for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < x.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " w3-black";
-  }
+  
 
   templateTitleBtn.addEventListener('click', function (evt) {
 
