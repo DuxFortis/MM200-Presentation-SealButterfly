@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="userIndex.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
@@ -325,6 +326,7 @@
       <p>${presArr[i].description}</p> 
       <button id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></button>
       <button id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></button>
+      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
   `;
 
         myDiv.innerHTML = myHtml;
@@ -334,8 +336,10 @@
             deletePresentation(presArr[i]);
           } else if (evt.target.id === "editBtn" || evt.target.id === "editBtnIcon") {
             localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
-            console.log(presArr[i])
             location.href = "/editIndex.html";
+          } else if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
+            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            location.href = "/presIndex.html";
           }
         });
 
@@ -412,12 +416,16 @@
       <p>${presArr[i].description}</p>
       <h5>Owner: ${presArr[i].owner}</h5>
       <h4>Theme: ${presArr[i].theme}</h4>
+      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
   `;
 
         myDiv.innerHTML = myHtml;
 
         myDiv.addEventListener('click', function (evt) {
-          console.log("you clicked on number " + i);
+          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn"){
+            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            location.href = "/presIndex.html";
+          }
         });
 
         container.appendChild(myDiv);

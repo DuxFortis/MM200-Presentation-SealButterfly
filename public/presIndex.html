@@ -14,36 +14,27 @@
 
 <body>
 
-  
-
-  <div class="w3-dropdown-click w3-right">
-    <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
-    <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
-      <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
-      <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
-    </div>
-  </div>
-
-
   <div class="w3-row">
     <div class="w3-container w3-border w3-white container">
       <div class="w3-col l2 s2">
         <div class="w3-container w3-white">
-          <p>Your slides</p>
+          <p id="presName">Presentation</p>
+          <p>Slides</p>
           <ul id="allSlides" class="w3-ul">
             <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
           </ul>
-          <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
+          <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
+            <i class="material-icons">home</i>
+            <br><label>Home</label>
+          </a>
         </div>
       </div>
-      <div class="w3-col l8 s8">
-         
+      <div class="w3-col l10 s10">
         <div id="edit" class="w3-container w3-center edit">
-         
-          <h1 id="presTitle" class="w3-center">New Presentation</h1>
-          <p id="presParagraph" class="w3-center">
-            Lorem Ipsum Dolor
-          </p>
+          <div id="theme"> </div>
+          <h1 id="presTitle" class="w3-center"></h1>
+          <div id="presParagraph" class="w3-center">
+          </div>
         </div>
 
       </div>
@@ -51,3 +42,181 @@
   </div>
 
 </body>
+
+<script>
+
+  const slideListener = document.getElementById("allSlides");;
+  goBackBtn = document.getElementById("goBackBtn");
+  goBackBtn.addEventListener("click", function (evt) {
+    location.href = "/userIndex.html";
+  });
+
+  getPresentation(); //laster inn PresentationProject hvis dette finnes
+  async function getPresentation() {
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+
+    if (presentation === null) {
+      location.href = "/userIndex.html";
+      return;
+    }
+
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
+    const body = { authToken: token, user: username, presentationId: presentation.id };
+    const url = `/user/presentation/${presentation.id}`;
+
+    const results = await callServerAPI(body, url);
+
+    const pres = results.data[0];
+    const slides = pres.slides;
+
+    if (slides) {
+
+      let bildeUrl = "pictures/Theme_Light.png";
+
+      if (pres.theme === "Dark") {
+        //const themeStyle = document.getElementById("theme");
+        //themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
+        bildeUrl = "pictures/Theme_Dark.png";
+      }
+
+      let edit = document.getElementById("edit");
+      edit.style.background = "url(" + bildeUrl + ")";
+      edit.style.width = "100%";
+      edit.style.height = "550px";
+
+      localStorage.setItem("PresentationProject", JSON.stringify(pres));
+
+      gotoSlide(currentSlide);
+
+      refreshPresentation();
+
+    } else {
+      location.href = "/userIndex.html";
+    }
+  }
+
+  function refreshPresentation() {
+
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation)
+    slides = presentation.slides;
+
+    const presName = document.getElementById("presName");
+
+    presName.innerHTML = presentation.name;
+
+    const allSlides = document.getElementById("allSlides");
+
+    allSlides.innerHTML = "";
+
+    const totalSlides = Object.entries(slides).length;
+
+    if (presentation.slides.Slide1 !== undefined) {
+      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    }
+
+    for (let i = 2; i <= totalSlides; i++) {
+      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+    }
+
+    //slideListener = document.getElementById("allSlides");
+
+  }
+
+
+
+  slideListener.addEventListener("click", function (evt) {
+
+    if (evt.target.id === "Slides") {
+      gotoSlide(evt.target.value);
+    }
+
+  });
+
+
+  let currentSlide = 1;
+
+  function gotoSlide(slideNr) {
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+
+    if (slideNr === undefined) {
+      if (presentation.slides.Slide1 !== undefined) {
+        slideNr = 1;
+      } else {
+        return;
+      }
+    }
+
+    currentSlide = slideNr;
+
+
+
+    let titleDom = document.getElementById("presTitle");
+    let paragraphDom = document.getElementById("presParagraph");
+
+    paragraphDom.innerHTML = "";
+    titleDom.innerHTML = "";
+
+    let slideEditMode = presentation.slides["Slide" + currentSlide];
+    if (!slideEditMode) {
+
+      currentSlide--;
+      slideEditMode = presentation.slides["Slide" + currentSlide];
+
+      if (!slideEditMode) {
+        return;
+      }
+    }
+
+
+    titleDom.innerHTML = slideEditMode.title;
+
+    if (slideEditMode.image) {
+      paragraphDom.innerHTML = slideEditMode.image;
+      paragraphDom.innerHTML += slideEditMode.imageText;
+    }
+
+    if (slideEditMode.list) {
+
+      let listArr = slideEditMode.list;
+
+      listArr = listArr.split(" ");
+
+      for (let i = 0; i < listArr.length; i++) {
+        paragraphDom.innerHTML += `<p id='listItem${listItemIndex} class='listItem''>&#8226; ${listArr[i]}</p>`;
+        listItemIndex++;
+      }
+
+    }
+  }
+
+
+  // fetch server api function
+
+  async function callServerAPI(body, url) {
+
+    if (body === "" || url === "" || !body.authToken) {
+      return;
+    }
+
+    const config = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+
+    const response = await fetch(url, config);
+    const data = await response.json();
+    console.log(response.status);
+    return { "response": response, "data": data };
+  };
+
+//
+
+
+</script>

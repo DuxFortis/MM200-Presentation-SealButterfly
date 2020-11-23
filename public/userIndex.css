@@ -47,8 +47,11 @@ padding: 5px;
                          "ow"
                          "ds"
                          "th"
-                         "ebtn";            
+                         "ebtn"
+                         "dbtn";            
 }
+
+
 
 #editBtn{
     width: 150px;
@@ -58,6 +61,12 @@ padding: 5px;
 #deleteBtn{
     width: 150px;
     grid-area: dbtn;
+    align-items: right;
+}
+
+#viewBtn{
+    width: 150px;
+    grid-area: vbtn;
     align-items: right;
 }
 
