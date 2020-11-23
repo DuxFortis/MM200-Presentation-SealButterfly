@@ -40,22 +40,33 @@ class StorageHandler {
     }
 
 
-    async updateUser(username, password) {
+    async updateUser(currentUsername, username, password) {
         const client = new pg.Client(this.credentials);
-        let results = null;
+        let results = false;
         try {
-            await client.connect();
-            results = await client.query('SELECT password from "users" where username=$1 password=$1', [username, password]);
-            const passCheck = results.rows.find(element => element = password);
 
-            if (passCheck !== undefined) {
-                results = null;
-                client.end();
-            } else {
-                results = await client.query('UPDATE "users" SET username=$1, password=$2 WHERE id=$3 ', [username, password, id]);
-                results = results.rows[0].message;
-                client.end();
+            await client.connect();
+            results = await client.query('SELECT * from "users" where username=$1', [currentUsername]);
+            const id = results.rows[0].id;
+            const checkUsername = results.rows[0].username;
+            const checkPassword = results.rows[0].password;
+
+            results = false;
+
+            if (checkUsername !== username && username.length !== 0) {
+                results = await client.query('SELECT username from "users" where username=$1', [username]);
+                if (results.rows.length === 0) {
+                    await client.query('UPDATE "users" SET username=$1 WHERE id=$2', [username, id]);
+                    await client.query('UPDATE "presentations" SET owner=$1 WHERE owner=$2', [username, currentUsername]);
+                    results = true;
+                }
             }
+
+            if (checkPassword !== password && password.length !== 0) {
+                await client.query('UPDATE "users" SET password=$1 WHERE id=$2', [password, id]);
+                results = true;
+            }
+
         } catch (err) {
             console.log(err);
             results = err;
@@ -64,6 +75,28 @@ class StorageHandler {
 
         return results;
 
+    }
+
+    async deleteUser(username, password) {
+        const client = new pg.Client(this.credentials);
+        let results = false;
+        try {
+            await client.connect();
+
+            results = await client.query('SELECT * FROM "users" WHERE username=$1 AND password=$2', [username, password]);
+            if (results.rows.length !== 0) {
+                if (results.rows[0].username === username && results.rows[0].password === password) {
+                    await client.query('DELETE FROM "users" WHERE username=$1 AND password=$2', [username, password]);
+                    await client.query('DELETE FROM "presentations" WHERE owner=$1', [username]);
+                    results = true;
+                }
+
+                return results;
+            }
+            client.end();
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     //  login user

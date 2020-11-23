@@ -19,7 +19,8 @@
     <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
     <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
       <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
-      <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+      <a href="#" id="updateAcc" class="w3-bar-item w3-button">Update account</a>
+      <a href="#" id="deleteAccBtn" class="w3-bar-item w3-button">Delete account</a>
     </div>
   </div>
 
@@ -83,6 +84,46 @@
 
   <script>
 
+    const deleteAccBtn = document.getElementById("deleteAccBtn");
+
+    deleteAccBtn.addEventListener('click', async function (evt) {
+
+      const confirmUsername = prompt("Please enter your username!", "");
+      const confirmPassword = prompt("Please enter your password!", "");
+
+      if (confirmUsername || confirmPassword) {
+
+        const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`); //kryptert streng
+        //const credentials = username + ":" + password; //til ren streng/tekst
+
+        const token = sessionStorage.getItem("token");
+        const username = sessionStorage.getItem("user");
+        if (confirmUsername !== username) {
+          alert("Wrong username, try again!");
+          return;
+        }
+
+        const body = { authToken: token, user: username, authorization: credentials };
+        const url = `/user/delete`;
+
+        const confirmPress = confirm("Are you sure you want to delete your account? All your presentations will also be deleted!");
+        if (confirmPress === true) {
+
+          const results = await callServerAPI(body, url);
+
+          if (results.response.status === 200) {
+            sessionStorage.clear();
+            localStorage.clear();
+            location.href = "/";
+          } else {
+            alert("Deletion was unsuccessful, incorrect account information");
+          }
+
+        }
+      }
+    });
+
+
     // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
 
     checkIfUserHasToken();
@@ -129,6 +170,33 @@
       localStorage.clear();
       sessionStorage.clear();
       location.href = "/";
+    });
+
+    const updateAcc = document.getElementById("updateAcc");
+
+    updateAcc.addEventListener("click", async function (evt) {
+      const newUsername = prompt("Please enter your new username", "");
+      const newPassword = prompt("Please enter your new password or re-enter your current password", "");
+
+      if (newUsername || newPassword) {
+
+        const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`); //kryptert streng
+        //const credentials = username + ":" + password; //til ren streng/tekst
+
+        const token = sessionStorage.getItem("token");
+        const username = sessionStorage.getItem("user");
+        const body = { authToken: token, user: username, authorization: credentials };
+        const url = `/user/update`;
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+          sessionStorage.clear();
+          localStorage.clear();
+          location.href = "/";
+        }
+
+      }
     });
 
     //create new presentation

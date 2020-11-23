@@ -63,6 +63,17 @@ body{
     align-content: center;
 }
 
+#Slides {
+    border: 1px solid black;
+    padding: 10px;
+    display: block;
+    background-color: #FAFAFA;
+  }
+  
+:active {
+    background-color: rgb(101, 156, 179);
+  }
+
 .serif {
     font-family: "Times New Roman", Times, serif;
   }

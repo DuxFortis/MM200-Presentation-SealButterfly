@@ -35,7 +35,7 @@
           <p>Your slides</p>
           <div class="scroller">
             <ul id="allSlides" class="w3-ul">
-              <li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="1">Slide 1 </li>
+              <li id="Slides" class="w3-hover-grey w3-button" value="1" :active>Slide 1 </li>
             </ul>
           </div>
           <br>
@@ -112,41 +112,43 @@
   const templateListBtn = document.getElementById("templateListBtn");
   const addListBtn = document.getElementById("addListBtn");
 
+  let listItem = "";
+
   let imgdata = "";
   let templateCheck = "";
 
-arialBtn = document.getElementById(`arialBtn`);
-timesBtn = document.getElementById(`timesBtn`);
-lucidaBtn = document.getElementById(`lucidaBtn`);
+  arialBtn = document.getElementById(`arialBtn`);
+  timesBtn = document.getElementById(`timesBtn`);
+  lucidaBtn = document.getElementById(`lucidaBtn`);
 
-arialBtn.addEventListener(`click`, () =>{
-  presParagraph.classList.add(`sansserif`);
-  presTitle.classList.add(`sansserif`);
-  presParagraph.classList.remove(`monospace`);
-  presTitle.classList.remove(`monospace`);
-  presParagraph.classList.remove(`serif`);
-  presTitle.classList.remove(`serif`);
-})
+  arialBtn.addEventListener(`click`, () => {
+    presParagraph.classList.add(`sansserif`);
+    presTitle.classList.add(`sansserif`);
+    presParagraph.classList.remove(`monospace`);
+    presTitle.classList.remove(`monospace`);
+    presParagraph.classList.remove(`serif`);
+    presTitle.classList.remove(`serif`);
+  })
 
-timesBtn.addEventListener(`click`, () =>{
-  presParagraph.classList.add(`serif`);
-  presTitle.classList.add(`serif`);
-  presParagraph.classList.remove(`monospace`);
-  presTitle.classList.remove(`monospace`);
-  presParagraph.classList.remove(`sansserif`);
-  presTitle.classList.remove(`sansserif`);
-})
+  timesBtn.addEventListener(`click`, () => {
+    presParagraph.classList.add(`serif`);
+    presTitle.classList.add(`serif`);
+    presParagraph.classList.remove(`monospace`);
+    presTitle.classList.remove(`monospace`);
+    presParagraph.classList.remove(`sansserif`);
+    presTitle.classList.remove(`sansserif`);
+  })
 
-lucidaBtn.addEventListener(`click`, () =>{
-  presParagraph.classList.add(`monospace`);
-  presTitle.classList.add(`monospace`);
-  presParagraph.classList.remove(`sansserif`);
-  presTitle.classList.remove(`sansserif`);
-  presParagraph.classList.remove(`serif`);
-  presTitle.classList.remove(`serif`);
-})
+  lucidaBtn.addEventListener(`click`, () => {
+    presParagraph.classList.add(`monospace`);
+    presTitle.classList.add(`monospace`);
+    presParagraph.classList.remove(`sansserif`);
+    presTitle.classList.remove(`sansserif`);
+    presParagraph.classList.remove(`serif`);
+    presTitle.classList.remove(`serif`);
+  })
 
-  
+
 
   templateTitleBtn.addEventListener('click', function (evt) {
 
@@ -191,7 +193,7 @@ lucidaBtn.addEventListener(`click`, () =>{
     //presentation.slides["Slide" + currentSlide][key] = value;
     updatePresLocal(key, value, currentSlide);*/
     //updatePresLocal("list", "1234", currentSlide);
-  
+
     //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; edit</p>`;
     //listItemIndex++;
     /*var node = document.createElement("LI");
@@ -436,6 +438,72 @@ lucidaBtn.addEventListener(`click`, () =>{
     location.href = "/";
   });
 
+  const updateAcc = document.getElementById("updateAcc");
+
+  updateAcc.addEventListener("click", async function (evt) {
+    const newUsername = prompt("Please enter your new username", "");
+    const newPassword = prompt("Please enter your new password or re-enter your current password", "");
+
+    if (newUsername || newPassword) {
+
+      const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`); //kryptert streng
+      //const credentials = username + ":" + password; //til ren streng/tekst
+
+      const token = sessionStorage.getItem("token");
+      const username = sessionStorage.getItem("user");
+      const body = { authToken: token, user: username, authorization: credentials };
+      const url = `/user/update`;
+
+      const results = await callServerAPI(body, url);
+
+      if (results.response.status === 200) {
+        sessionStorage.clear();
+        localStorage.clear();
+        location.href = "/";
+      }
+
+    }
+  });
+
+  const deleteAccBtn = document.getElementById("deleteAcc");
+
+  deleteAccBtn.addEventListener('click', async function (evt) {
+
+    const confirmUsername = prompt("Please enter your username!", "");
+    const confirmPassword = prompt("Please enter your password!", "");
+
+    if (confirmUsername || confirmPassword) {
+
+      const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`); //kryptert streng
+      //const credentials = username + ":" + password; //til ren streng/tekst
+
+      const token = sessionStorage.getItem("token");
+      const username = sessionStorage.getItem("user");
+      if (confirmUsername !== username) {
+        alert("Wrong username, try again!");
+        return;
+      }
+
+      const body = { authToken: token, user: username, authorization: credentials };
+      const url = `/user/delete`;
+
+      const confirmPress = confirm("Are you sure you want to delete your account? All your presentations will also be deleted!");
+      if (confirmPress === true) {
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+          sessionStorage.clear();
+          localStorage.clear();
+          location.href = "/";
+        } else {
+          alert("Deletion was unsuccessful, incorrect account information");
+        }
+
+      }
+    }
+  });
+
   const accountText = document.getElementById("accountText");
   const username = sessionStorage.getItem("user");
   if (username) {
@@ -516,11 +584,11 @@ lucidaBtn.addEventListener(`click`, () =>{
     const totalSlides = Object.entries(slides).length;
 
     if (presentation.slides.Slide1 !== undefined) {
-      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="1">Slide 1 </li>`
+      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
     }
 
     for (let i = 2; i <= totalSlides; i++) {
-      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button tablinkSlide slideTab" value="${i}">Slide ${i}</li>`;
+      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
     }
 
     //slideListener = document.getElementById("allSlides");
@@ -589,9 +657,11 @@ lucidaBtn.addEventListener(`click`, () =>{
       listArr = listArr.split(" ");
 
       for (let i = 0; i < listArr.length; i++) {
-        paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; ${listArr[i]}</p>`
+        paragraphDom.innerHTML += `<p id='listItem${listItemIndex} class='listItem''>&#8226; ${listArr[i]}</p>`;
         listItemIndex++;
       }
+
+      listItem = document.getElementsByClassName("listItem");
 
       addListBtn.className = "w3-show";
     }

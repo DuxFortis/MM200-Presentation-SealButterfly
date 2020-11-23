@@ -27,19 +27,12 @@ class User {
     }
 
     async delete() {
-        let success = false;
         try {
             let resp = await database.deleteUser(this.username, this.password);
-
-            if (resp != null) {
-                this.isValid = true;
-                success = true;
-                
-            }
+            return resp;
         } catch (err) {
             console.log(err);
         }
-        return success;
     }
     
 
@@ -62,9 +55,11 @@ class User {
 
 }
 
-async function update() {
+async function update(currentUsername, newUser) {
     try {
-        let resp = await database.updateUser(currentPassword);
+        const username = newUser.username;
+        const password = newUser.password;
+        let resp = await database.updateUser(currentUsername, username, password);
         return resp;
     } catch (error) {
         console.error(error)

@@ -72,26 +72,61 @@ server.post("/authenticate", async (req, res) => {
 });
 
 
-  server.post("/user/update", auth, async (req, res) => {
+server.post("/user/update", auth, async (req, res) => {
 
-    //console.log(req.headers.authorization); // krypterte strengen brukeren sender inn
-  
-    const credentials = req.headers.authorization.split(' ')[1];
-    const [newUsername, newPassword] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
-  
-    //console.log(username + ":" + password); // brukernavn, passord i ren tekst
-  
-    //const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
-    //const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
-  
-    //console.log(isValid); // isValid = true/false
-  
-    if (isUpdated) {
-      let sessionToken = createToken(requestUser);
-      res.status(200).json({ "authToken": sessionToken, "user": requestUser }).end();
+  //console.log(req.body.authorization); // krypterte strengen brukeren sender inn
+
+  const credentials = req.body.authorization.split(' ')[1];
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  const currentUsername = req.body.user;
+
+  //console.log(newUsername + ":" + newPassword); // brukernavn, passord i ren tekst
+
+  //const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
+  //const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
+
+  let isUpdated = false;
+  if (username.length < maxCharLength && password.length < maxCharLength && password) {
+
+    if (currentUsername !== username && username !== "") {
+      newUser = new user(username, password);
     } else {
-      res.status(403).json("Username or password is incorrect!").end();
+      newUser = new user(currentUsername, password);
     }
+
+    isUpdated = await updateUser(currentUsername, newUser);
+
+  }
+  //console.log(isValid); // isValid = true/false
+
+  if (isUpdated) {
+    res.status(200).json("Updated user info").end();
+  } else {
+    res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
+  }
+
+});
+
+server.post("/user/delete", auth, async (req, res) => {
+
+  //console.log(req.body.authorization); // krypterte strengen brukeren sender inn
+
+  const credentials = req.body.authorization.split(' ')[1];
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  const currentUsername = req.body.user;
+
+  const requestDeleteUser = new user(currentUsername, password); // Hvem prøver å logge inn?
+  const isDeleted = await requestDeleteUser.delete();
+
+  //console.log(newUsername + ":" + newPassword); // brukernavn, passord i ren tekst
+
+
+
+  if (isDeleted) {
+    res.status(200).json("Deleted user info").end();
+  } else {
+    res.status(403).json(`Username or password is incorrect!`).end();
+  }
 
 });
 
