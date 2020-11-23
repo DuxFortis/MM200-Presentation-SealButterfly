@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const user = require("./modules/user");
+const updateUser = require("./modules/user").updateUser;
 const presentation = require("./modules/presentation");
 const getPresData = require("./modules/presentation").getPresData;
 const getAllPres = require("./modules/presentation").getAllPres;
@@ -68,6 +69,7 @@ server.post("/authenticate", async (req, res) => {
   } else {
     res.status(403).json("Username or password is incorrect!").end();
   }
+});
 
 
   server.post("/user/update", auth, async (req, res) => {
@@ -79,8 +81,8 @@ server.post("/authenticate", async (req, res) => {
   
     //console.log(username + ":" + password); // brukernavn, passord i ren tekst
   
-    const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
-    const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
+    //const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
+    //const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
   
     //console.log(isValid); // isValid = true/false
   
@@ -322,4 +324,4 @@ server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, 
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));
-});
+})

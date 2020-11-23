@@ -62,9 +62,9 @@ class User {
 
 }
 
-async update() {
+async function update() {
     try {
-        let resp = await database.updateUser(this.username, this.password);
+        let resp = await database.updateUser(currentPassword);
         return resp;
     } catch (error) {
         console.error(error)
@@ -73,3 +73,4 @@ async update() {
 
 
 module.exports = User
+module.exports.updateUser = update;

@@ -52,7 +52,7 @@ class StorageHandler {
                 results = null;
                 client.end();
             } else {
-                results = await client.query('UPDATE "users" SET username = $1, password = $2 WHERE id = $3 ', [username, password, id]);
+                results = await client.query('UPDATE "users" SET username=$1, password=$2 WHERE id=$3 ', [username, password, id]);
                 results = results.rows[0].message;
                 client.end();
             }
