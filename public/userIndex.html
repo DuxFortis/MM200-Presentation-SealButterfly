@@ -429,7 +429,7 @@
 
         myDiv.addEventListener('click', function (evt) {
           if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn"){
-            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
             location.href = "/presIndex.html";
           }
         });

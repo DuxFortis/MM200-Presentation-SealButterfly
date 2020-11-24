@@ -82,7 +82,7 @@
 
   getPresentation(); //laster inn PresentationProject hvis dette finnes
   async function getPresentation() {
-    let presentation = localStorage.getItem("PresentationProject");
+    let presentation = sessionStorage.getItem("CurrentlyViewing");
     presentation = JSON.parse(presentation);
 
     if (presentation === null) {
