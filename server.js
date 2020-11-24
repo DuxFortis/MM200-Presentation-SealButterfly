@@ -17,7 +17,8 @@ const server = express();
 const port = (process.env.PORT || 8080);
 server.set('port', port);
 server.use(express.static('public'));
-server.use(bodyParser.json());
+server.use(bodyParser.json({ limit: '5mb' }));
+server.use(express.urlencoded({limit: "5mb", extended: true, parameterLimit:5000}));
 
 const maxCharLength = 20;
 const maxCharLengthPres = maxCharLength + 10;
