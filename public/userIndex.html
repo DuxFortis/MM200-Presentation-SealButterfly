@@ -355,6 +355,9 @@
 
     async function deletePresentation(presentation) {
 
+      const confirmPress = confirm(`Are you sure you want to delete ${presentation.name}?`);
+        if (confirmPress === true) {
+
       const token = sessionStorage.getItem("token");
       const username = sessionStorage.getItem("user");
       const body = { authToken: token, user: username, presentation: presentation };
@@ -376,7 +379,7 @@
             clearInterval(interval);
           }
         }, 1000);
-      }
+      }}
 
     }
 
