@@ -356,33 +356,34 @@
     async function deletePresentation(presentation) {
 
       const confirmPress = confirm(`Are you sure you want to delete ${presentation.name}?`);
-        if (confirmPress === true) {
+      if (confirmPress === true) {
 
-      const token = sessionStorage.getItem("token");
-      const username = sessionStorage.getItem("user");
-      const body = { authToken: token, user: username, presentation: presentation };
-      const url = `/presentations/delete/${presentation.id}`;
+        const token = sessionStorage.getItem("token");
+        const username = sessionStorage.getItem("user");
+        const body = { authToken: token, user: username, presentation: presentation };
+        const url = `/presentations/delete/${presentation.id}`;
 
-      const results = await callServerAPI(body, url);
+        const results = await callServerAPI(body, url);
 
-      if (results.response.status === 200) {
+        if (results.response.status === 200) {
 
-        let deleteTextDom = document.getElementById("publicText");
-        if(!presentation.ispublic){
-          deleteTextDom = document.getElementById("privateText");
-        }
-
-        deleteTextDom.innerHTML = results.data;
-
-        let timesRun = 0;
-        let interval = setInterval(() => {
-          timesRun = 1;
-          getUserPresentations(presentation.ispublic);
-          if (timesRun === 1) {
-            clearInterval(interval);
+          let deleteTextDom = document.getElementById("publicText");
+          if (!presentation.ispublic) {
+            deleteTextDom = document.getElementById("privateText");
           }
-        }, 1000);
-      }}
+
+          deleteTextDom.innerHTML = results.data;
+
+          let timesRun = 0;
+          let interval = setInterval(() => {
+            timesRun = 1;
+            getUserPresentations(presentation.ispublic);
+            if (timesRun === 1) {
+              clearInterval(interval);
+            }
+          }, 1000);
+        }
+      }
 
     }
 
@@ -428,7 +429,7 @@
         myDiv.innerHTML = myHtml;
 
         myDiv.addEventListener('click', function (evt) {
-          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn"){
+          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
             sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
             location.href = "/presIndex.html";
           }
