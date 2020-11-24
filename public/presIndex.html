@@ -14,25 +14,50 @@
 
 <body>
 
-  <div class="w3-row">
+  <div id="fullScreenPresentation" class="w3-hide">
+    <div id="themeFullscreen">
+      <h1 id="presTitleFullscreen" class="w3-center"></h1>
+      <div id="inputImgFullscreen" class="w3-center"></div>
+      <div id="presParagraphFullscreen" class="w3-center"></div>
+    </div>
+    <div id="toolbar" class="w3-bar w3-center">
+      <a class="w3-bar-item" href="#">
+        <div id="stopFs" class="w3-button">Stop fullscreen</div>
+      </a>
+      <a class="w3-bar-item" href="#">
+        <div id="previous" class="w3-button">Previous</div>
+      </a>
+      <a class="w3-bar-item" href="#">
+        <div id="next" class="w3-button">Next</div>
+      </a>
+    </div>
+  </div>
+
+  <div id="viewNormal" class="w3-row w3-show">
     <div class="w3-container w3-border w3-white container">
       <div class="w3-col l2 s2">
         <div class="w3-container w3-white">
-          <p id="presName">Presentation</p>
+          <div class="gui">
+            <p id="presName">Presentation</p>
+            <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
+              <i class="material-icons">home</i>
+              <br><label>Home</label>
+            </a>
+          </div>
           <p>Slides</p>
           <ul id="allSlides" class="w3-ul">
             <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
           </ul>
-          <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
-            <i class="material-icons">home</i>
-            <br><label>Home</label>
-          </a>
+          <button id="presFullScreenBtn" class="w3-right w3-button w3-display-bottomleft"><i id="viewBtn"
+              class="material-icons w3-xxl">tv</i></button>
+
         </div>
       </div>
       <div class="w3-col l10 s10">
         <div id="edit" class="w3-container w3-center edit">
           <div id="theme"> </div>
           <h1 id="presTitle" class="w3-center"></h1>
+          <div id="inputImg" class="w3-center"></div>
           <div id="presParagraph" class="w3-center">
           </div>
         </div>
@@ -44,6 +69,10 @@
 </body>
 
 <script>
+
+  let isFullScreenOn = false;
+  let listItemIndex = 0;
+
 
   const slideListener = document.getElementById("allSlides");;
   goBackBtn = document.getElementById("goBackBtn");
@@ -80,6 +109,11 @@
         //themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
         bildeUrl = "pictures/Theme_Dark.png";
       }
+
+      let editFullscreen = document.getElementById("fullScreenPresentation");
+      editFullscreen.style.background = "url(" + bildeUrl + ")";
+      editFullscreen.style.width = "100%";
+      editFullscreen.style.height = "550px";
 
       let edit = document.getElementById("edit");
       edit.style.background = "url(" + bildeUrl + ")";
@@ -125,6 +159,34 @@
 
   }
 
+  const switchKeys = document.getElementById("fullScreenPresentation");
+
+  document.body.addEventListener("keydown", function (evt) {
+    const key = evt.keyCode;
+    console.log(key)
+
+    if (isFullScreenOn) {
+
+      if (key === 27) {
+        fullScreenPresentation.classList.remove("w3-show");
+        fullScreenPresentation.classList.add("w3-hide");
+
+        viewNormal.classList.remove("w3-hide");
+        viewNormal.classList.add("w3-show");
+        isFullScreenOn = false;
+      }
+
+      if (key === 39) {
+        currentSlide++;
+        gotoSlide(currentSlide);
+      }
+      if (key === 37) {
+        currentSlide--;
+        gotoSlide(currentSlide);
+      }
+
+    }
+  });
 
 
   slideListener.addEventListener("click", function (evt) {
@@ -139,10 +201,11 @@
   let currentSlide = 1;
 
   function gotoSlide(slideNr) {
+    listItemIndex = 0;
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
 
-    if (slideNr === undefined) {
+    if (slideNr === undefined || slideNr < 1) {
       if (presentation.slides.Slide1 !== undefined) {
         slideNr = 1;
       } else {
@@ -156,9 +219,55 @@
 
     let titleDom = document.getElementById("presTitle");
     let paragraphDom = document.getElementById("presParagraph");
+    let imgDom = document.getElementById("inputImg");
+
+    let titleDomFullscreen = document.getElementById("presTitleFullscreen");
+    let paragraphDomFullscreen = document.getElementById("presParagraphFullscreen");
+    let imgDomFullscreen = document.getElementById("inputImgFullscreen");
+
+    const presFullScreenBtn = document.getElementById("presFullScreenBtn");
+
+    presFullScreenBtn.addEventListener('click', function (evt) {
+
+      const viewNormal = document.getElementById("viewNormal");
+
+      const fullScreenPresentation = document.getElementById("fullScreenPresentation");
+
+      // kjør fullscreen 
+
+      if (isFullScreenOn === false) {
+        fullScreenPresentation.classList.remove("w3-hide");
+        fullScreenPresentation.classList.add("w3-show");
+
+        viewNormal.classList.remove("w3-show");
+        viewNormal.classList.add("w3-hide");
+
+        isFullScreenOn = true;
+
+        return;
+      }
+
+      if (isFullScreenOn === true) {
+        fullScreenPresentation.classList.remove("w3-show");
+        fullScreenPresentation.classList.add("w3-hide");
+
+        viewNormal.classList.remove("w3-hide");
+        viewNormal.classList.add("w3-show");
+
+        isFullScreenOn = false;
+        return;
+      }
+
+    });
+
 
     paragraphDom.innerHTML = "";
     titleDom.innerHTML = "";
+    imgDom.innerHTML = "";
+
+    paragraphDomFullscreen.innerHTML = "";
+    titleDomFullscreen.innerHTML = "";
+    imgDomFullscreen.innerHTML = "";
 
     let slideEditMode = presentation.slides["Slide" + currentSlide];
     if (!slideEditMode) {
@@ -172,21 +281,31 @@
     }
 
 
+    titleDomFullscreen.innerHTML = slideEditMode.title;
     titleDom.innerHTML = slideEditMode.title;
 
-    if (slideEditMode.image) {
-      paragraphDom.innerHTML = slideEditMode.image;
-      paragraphDom.innerHTML += slideEditMode.imageText;
+    if (slideEditMode.image !== undefined) {
+
+
+      if (slideEditMode.image !== "") {
+
+        imgDom.innerHTML = `<img src="${slideEditMode.image}">`;
+        paragraphDom.innerHTML = slideEditMode.imageText;
+        imgDomFullscreen.innerHTML = `<img src="${slideEditMode.image}">`;
+        paragraphDomFullscreen.innerHTML = slideEditMode.imageText;
+
+      }
+
     }
 
     if (slideEditMode.list) {
 
       let listArr = slideEditMode.list;
 
-      listArr = listArr.split(" ");
-
       for (let i = 0; i < listArr.length; i++) {
-        paragraphDom.innerHTML += `<p id='listItem${listItemIndex} class='listItem''>&#8226; ${listArr[i]}</p>`;
+        //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}' class='listItem''>&#8226; ${listArr[i]}</p>`;
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
+        paragraphDomFullscreen.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
         listItemIndex++;
       }
 

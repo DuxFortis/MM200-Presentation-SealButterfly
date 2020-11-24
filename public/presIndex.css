@@ -7,16 +7,63 @@
 
 
 body{
-    background-image: url("./pictures/LandingPageBackground.png");
+ background-color: black;
 }
 
+#toolbar{
+    position: fixed;
+    top: 82%;
+    color: white;
+    
+}
+
+#stopFs{
+    padding: 5px;
+    border: 5px solid white;
+}
+
+#previous{
+    padding: 5px;
+    border: 5px solid white;
+}
+
+#next{
+    padding: 5px;
+    border: 5px solid white;
+}
+
+
+
+.gui{
+display: grid;
+grid-template-columns: 150px 100px;
+grid-template-areas: "nm btn";
+}
+
+#goBackBtn{
+    grid-area: btn;
+}
+
+#presName{
+    grid-area: nm;
+}
+
+.w3-container{
+    height: 100vh;
+    width: 100%;
+}
 
 
 #edit {
-    background-size: contain;
+    height: 100vh;
+    background-size: 100vh;
     background-position: center;
 }
 
+#themeImage{
+    width: auto;
+    height: 100vh;
+}
 
 #themeImage>h1{
     padding-top: 50px;

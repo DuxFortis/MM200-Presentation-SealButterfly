@@ -367,9 +367,12 @@
 
       if (results.response.status === 200) {
 
-        const publicText = document.getElementById("publicText");
+        let deleteTextDom = document.getElementById("publicText");
+        if(!presentation.ispublic){
+          deleteTextDom = document.getElementById("privateText");
+        }
 
-        publicText.innerHTML = results.data;
+        deleteTextDom.innerHTML = results.data;
 
         let timesRun = 0;
         let interval = setInterval(() => {

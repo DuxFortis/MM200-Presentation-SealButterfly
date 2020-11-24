@@ -72,7 +72,7 @@
             <a id="renamePres" href="#" class="w3-bar-item">
               <input id="renamePresInp" type="text" placeholder="Rename presentation">
             </a>
-            <a href="#" class="w3-bar-item">
+            <a id="updateText" href="#" class="w3-bar-item">
               <div id="thisPres"></div>
             </a>
             <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
@@ -85,6 +85,7 @@
         <div id="edit" class="w3-container w3-center edit">
           <div id="theme"> </div>
           <h1 id="presTitle" class="w3-center"></h1>
+          <div id="inputImg" class="w3-center"></div>
           <div id="presParagraph" class="w3-center">
           </div>
         </div>
@@ -98,6 +99,7 @@
             <li id="templateListBtn" class="w3-hover-grey w3-button">Template List</li>
           </ul>
           <button id="addListBtn" class="w3-hide" onclick="addListItem()">Add list item</button>
+          <button id="deleteListBtn" class="w3-hide" onclick="deleteListItem()">Delete list item</button>
         </div>
       </div>
     </div>
@@ -111,6 +113,7 @@
   const templatePictureBtn = document.getElementById("templatePictureBtn");
   const templateListBtn = document.getElementById("templateListBtn");
   const addListBtn = document.getElementById("addListBtn");
+  const deleteListBtn = document.getElementById("deleteListBtn")
 
   let listItem = "";
 
@@ -178,107 +181,45 @@
 
   })
 
-  let listItemIndex = 1;
+  let listItemIndex = 0;
 
   function addListItem() {
-    //const paragraphDom = document.getElementById("presParagraph");
+    const listItem = document.getElementById("presParagraph");
 
-    /*
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
-    let value = "1456723";
-    let key = "list";
-    presentation.slides["Slide" + currentSlide][key] = value;
-    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
-    //presentation.slides["Slide" + currentSlide][key] = value;
-    updatePresLocal(key, value, currentSlide);*/
-    //updatePresLocal("list", "1234", currentSlide);
 
-    //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}'>&#8226; edit</p>`;
-    //listItemIndex++;
-    /*var node = document.createElement("LI");
-    var textnode = document.createTextNode("Click to write");
-    node.appendChild(textnode);
-    document.getElementById("templateSlideList").appendChild(node);*/
+    let listArray = presentation.slides["Slide" + currentSlide].list;
+
+    listArray.push("myList");
+
+    updatePresLocal("list", listArray, currentSlide);
+    gotoSlide(currentSlide);
+  }
+
+  function deleteListItem() {
+    const listItem = document.getElementById("presParagraph");
+
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+
+    let listArray = presentation.slides["Slide" + currentSlide].list;
+
+    listArray.pop();
+
+    updatePresLocal("list", listArray, currentSlide);
+    gotoSlide(currentSlide);
   }
 
   async function insertTemplateSlide() {
     let templateNr = 1;
 
-    /*
-    if (templateCheck === "Title") {
-
-      html = `
-          <div id="theme"> </div>
-          <h1 id="presTitle" class="w3-center"> My Title</h1>
-          
-        `;
-
-      document.getElementById("edit").innerHTML = html;
-      
-    }*/
     if (templateCheck === "Picture") {
       templateNr = 2;
-      /*
-            html = `<h1 id="presTitle" class="w3-center"> My Title</h1>
-            <label id="btnFile" for="inpFile">Select file
-              <img id="btnImg" >
-              </label>   
-           <input id="inpFile" type="file" accept="image/*" />
-           <button id="btnSend">Send data</button>   `;
-            document.getElementById("edit").innerHTML = html;
-      
-            let btnImg = document.getElementById('btnImg');
-            let inpFile = document.getElementById('inpFile');
-            let btnSend = document.getElementById('btnSend');
-      
-            btnSend.addEventListener('click', async function (evt) {
-      
-              console.log(imgdata)
-              updatePresLocal("image", imgdata, currentSlide)
-      
-            });
-            //select and handle image -------------------------
-            inpFile.addEventListener('change', function (evt) {
-      
-              let file = inpFile.files[0];
-      
-              if (file.type != "image/png" && file.type != "image/jpeg") {
-                console.log("wrong filetype");
-                
-              }
-      
-              if (file.size > 1000000) {
-                console.log("the file is too large");
-                
-              }
-      
-              let freader = new FileReader();
-              freader.addEventListener('load', function (evt) {
-                btnImg.src = freader.result;
-                imgdata = freader.result;
-              });
-              freader.readAsDataURL(file);
-            });*/
 
     }
     if (templateCheck === "List") {
       templateNr = 3;
-
-      /*
-
-      html = `
-          <div id="theme"> </div>
-          <h1 id="presTitle" class="w3-center"></h1>
-          <div id="presParagraph">
-           <ul id="templateSlideList">
-           </ul>
-          </div>`;
-      document.getElementById("edit").innerHTML = html;
-
-      */
-
-
     }
 
 
@@ -334,6 +275,10 @@
     let target = evt.target.id;
     console.log(target)
 
+    if (target === "btnFile" || target === "btnSend" || target === "inpFile") {
+      return;
+    }
+
     if (target !== "edit") {
       editText(target, currentSlide);
     }
@@ -345,16 +290,40 @@
     }
 
     let editText = document.getElementById(text);
-    editText.innerHTML = `<input id='edit${text}'></input>`;
+
+    let editTextStorage = editText.innerText;
+
+    let check = editTextStorage.split("• ");
+
+    if (check[1]) {
+      editTextStorage = check[1];
+    }
+
+    editText.innerHTML = `<input id='edit${text}' value='${editTextStorage}'></input>`;
 
     let editNewText = document.getElementById(`edit${text}`);
-    editNewText.addEventListener("keypress", function (evt) {
+
+    editNewText.addEventListener("keydown", function (evt) {
+
+      let indexNum = text.split("itemIndexNum");
+
+      if (indexNum[1]) {
+        text = `itemIndexNum${indexNum[1]}`;
+      }
+
+
 
       let saveKey = 13;
       let cancelKey = 27;
 
 
       let keyCode = evt.keyCode;
+
+      if (keyCode === cancelKey) {
+
+        revertInputBoxToText(text);
+        return;
+      }
 
       if (keyCode === saveKey) {
 
@@ -363,13 +332,39 @@
           case "presTitle":
             key = "title";
             break;
+          case `itemIndexNum${indexNum[1]}`:
+            key = "list";
+            editNewText = document.getElementById(`edit${text}`);
+            break;
+          case "presParagraph":
+            key = "imageText";
+            break;
 
           default:
             return;
         }
 
-        updatePresLocal(key, editNewText.value, slide);
+        const maxLength = 30;
 
+        if (editNewText.value.length > maxLength) {
+          const debugDom = document.getElementById("thisPres");
+          debugDom.innerHTML = `Text exceeds maximum length of ${maxLength} characters!`;
+          revertInputBoxToText(text);
+
+          let timesRun = 0;
+          let interval = setInterval(() => {
+            timesRun = 1;
+            refreshPresentation();
+            if (timesRun === 1) {
+              clearInterval(interval);
+            }
+          }, 3000);
+
+          return;
+        }
+
+        updatePresLocal(key, editNewText.value, slide, indexNum[1]);
+        revertInputBoxToText(text);
       }
 
 
@@ -377,7 +372,11 @@
     })
   }
 
-  function checkKey() {
+  function revertInputBoxToText(text) {
+
+    const revertText = document.getElementById(text);
+    revertText.innerHTML = "";
+    gotoSlide(currentSlide);
 
   }
 
@@ -609,6 +608,7 @@
   let currentSlide = 1;
 
   function gotoSlide(slideNr) {
+    listItemIndex = 0;
     let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
 
@@ -626,10 +626,13 @@
 
     let titleDom = document.getElementById("presTitle");
     let paragraphDom = document.getElementById("presParagraph");
+    let imgDom = document.getElementById("inputImg");
 
     paragraphDom.innerHTML = "";
     titleDom.innerHTML = "";
+    imgDom.innerHTML = "";
     addListBtn.className = "w3-hide";
+    deleteListBtn.className = "w3-hide";
 
     let slideEditMode = presentation.slides["Slide" + currentSlide];
     if (!slideEditMode) {
@@ -645,25 +648,75 @@
 
     titleDom.innerHTML = slideEditMode.title;
 
-    if (slideEditMode.image) {
-      paragraphDom.innerHTML = slideEditMode.image;
-      paragraphDom.innerHTML += slideEditMode.imageText;
+    if (slideEditMode.image !== undefined) {
+      /////
+      if (slideEditMode.image !== "") {
+
+        imgDom.innerHTML = `<img src="${slideEditMode.image}">`;
+        paragraphDom.innerHTML = slideEditMode.imageText;
+
+      }
+      else {
+        html = `
+            <label id="btnFile" for="inpFile">Select file
+              <img id="btnImg" >
+              </label>   
+           <input id="inpFile" type="file" accept="image/*" />
+           <button id="btnSend">Send data</button>   `;
+        paragraphDom.innerHTML = html;
+
+        let btnImg = document.getElementById('btnImg');
+        let inpFile = document.getElementById('inpFile');
+        let btnSend = document.getElementById('btnSend');
+
+        btnSend.addEventListener('click', async function (evt) {
+
+          updatePresLocal("image", imgdata, currentSlide);
+          gotoSlide(currentSlide);
+
+        });
+        //select and handle image -------------------------
+        inpFile.addEventListener('change', function (evt) {
+
+          let file = inpFile.files[0];
+
+          if (file.type != "image/png" && file.type != "image/jpeg") {
+            console.log("wrong filetype");
+
+          }
+
+          if (file.size > 1000000) {
+            console.log("the file is too large");
+          }
+
+          let freader = new FileReader();
+          freader.addEventListener('load', function (evt) {
+            btnImg.src = freader.result;
+            imgdata = freader.result;
+          });
+          freader.readAsDataURL(file);
+        })
+
+      }
+
+      ///
+
     }
 
     if (slideEditMode.list) {
 
       let listArr = slideEditMode.list;
 
-      listArr = listArr.split(" ");
-
       for (let i = 0; i < listArr.length; i++) {
-        paragraphDom.innerHTML += `<p id='listItem${listItemIndex} class='listItem''>&#8226; ${listArr[i]}</p>`;
+        //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}' class='listItem''>&#8226; ${listArr[i]}</p>`;
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
         listItemIndex++;
       }
 
       listItem = document.getElementsByClassName("listItem");
 
       addListBtn.className = "w3-show";
+      deleteListBtn.className = "w3-show";
     }
 
 
@@ -723,7 +776,7 @@
     location.href = "/userIndex.html";
   });
 
-  function updatePresLocal(key, value, slide) {
+  function updatePresLocal(key, value, slide, arrayIndex) {
     if (key === "" || value === "") {
       return;
     }
@@ -732,7 +785,13 @@
     presentation = JSON.parse(presentation);
 
     if (slide) {
-      presentation.slides["Slide" + slide][key] = value;
+      if (arrayIndex) {
+        let listArray = presentation.slides["Slide" + slide][key];
+        listArray[arrayIndex] = value;
+        presentation.slides["Slide" + slide][key] = listArray;
+      } else {
+        presentation.slides["Slide" + slide][key] = value;
+      }
     } else {
       presentation[key] = value;
     }
@@ -759,7 +818,18 @@
     const results = await callServerAPI(body, url);
 
     if (results.response.status === 200) {
-      refreshPresentation();
+
+      const debugDom = document.getElementById("updateText");
+      debugDom.innerHTML = `<div id='thisPres'>Saved!</div>`;
+
+      let timesRun = 0;
+      let interval = setInterval(() => {
+        timesRun = 1;
+        refreshPresentation();
+        if (timesRun === 1) {
+          clearInterval(interval);
+        }
+      }, 1500);
     }
   }
 
