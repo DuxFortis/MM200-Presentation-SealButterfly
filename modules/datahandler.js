@@ -259,12 +259,19 @@ class StorageHandler {
             await client.connect();
             results = await client.query('SELECT * FROM "public"."presentations" WHERE id=$1', [id]);
 
-            const ispublic = results.rows[0].ispublic
-            if (ispublic === false) {
-                results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, id]);
-                results = results.rows;
-            } else {
-                results = results.rows;
+            if (results.rows[0]) {
+
+                const ispublic = results.rows[0].ispublic;
+
+                if (ispublic === false) {
+                    results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, id]);
+                    results = results.rows;
+                } else {
+                    results = results.rows;
+                }
+
+            }else{
+                results = null;
             }
 
             client.end();
