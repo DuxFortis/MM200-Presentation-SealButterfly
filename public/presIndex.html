@@ -70,9 +70,16 @@
 
 <script>
 
+
+  // globale variabler
+
   let isFullScreenOn = false;
   let listItemIndex = 0;
+  let currentSlide = 1;
 
+  //
+
+  // Går tilbake til userindex
 
   const slideListener = document.getElementById("allSlides");;
   goBackBtn = document.getElementById("goBackBtn");
@@ -80,7 +87,11 @@
     location.href = "/userIndex.html";
   });
 
-  getPresentation(); //laster inn PresentationProject hvis dette finnes
+  //
+
+  // laster inn PresentationProject hvis dette finnes
+
+  getPresentation();
   async function getPresentation() {
     let presentation = sessionStorage.getItem("CurrentlyViewing");
     presentation = JSON.parse(presentation);
@@ -94,6 +105,7 @@
     const username = sessionStorage.getItem("user");
     const body = { authToken: token, user: username, presentationId: presentation.id };
     const url = `/user/presentation/${presentation.id}`;
+    document.title = "Viewing: " + presentation.name;
 
     const results = await callServerAPI(body, url);
 
@@ -120,7 +132,7 @@
       edit.style.width = "100%";
       edit.style.height = "550px";
 
-      localStorage.setItem("PresentationProject", JSON.stringify(pres));
+      sessionStorage.setItem("CurrentlyViewing", JSON.stringify(pres));
 
       gotoSlide(currentSlide);
 
@@ -131,10 +143,14 @@
     }
   }
 
+  //
+
+  // refresh presentation, henter presentasjonen fra sessionstorage og viser innhold 
+
   function refreshPresentation() {
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation)
+    let presentation = sessionStorage.getItem("CurrentlyViewing");
+    presentation = JSON.parse(presentation);
     slides = presentation.slides;
 
     const presName = document.getElementById("presName");
@@ -155,25 +171,17 @@
       allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
     }
 
-    //slideListener = document.getElementById("allSlides");
-
   }
 
   const switchKeys = document.getElementById("fullScreenPresentation");
 
   document.body.addEventListener("keydown", function (evt) {
     const key = evt.keyCode;
-    console.log(key)
 
     if (isFullScreenOn) {
 
       if (key === 27) {
-        fullScreenPresentation.classList.remove("w3-show");
-        fullScreenPresentation.classList.add("w3-hide");
-
-        viewNormal.classList.remove("w3-hide");
-        viewNormal.classList.add("w3-show");
-        isFullScreenOn = false;
+        fullscreenFunction();
       }
 
       if (key === 39) {
@@ -188,6 +196,9 @@
     }
   });
 
+  //
+
+  // Går til sliden brukeren trykker på
 
   slideListener.addEventListener("click", function (evt) {
 
@@ -198,11 +209,27 @@
   });
 
 
-  let currentSlide = 1;
+  const previous = document.getElementById("previous");
+  const next = document.getElementById("next");
+
+  previous.addEventListener("click", function (evt) {
+    currentSlide--;
+    gotoSlide(currentSlide);
+  });
+
+  next.addEventListener("click", function (evt) {
+    currentSlide++;
+    gotoSlide(currentSlide);
+  });
+
+  //
+
+
+  // goto slide, oppdaterer slide innhold
 
   function gotoSlide(slideNr) {
     listItemIndex = 0;
-    let presentation = localStorage.getItem("PresentationProject");
+    let presentation = sessionStorage.getItem("CurrentlyViewing");
     presentation = JSON.parse(presentation);
 
     if (slideNr === undefined || slideNr < 1) {
@@ -224,39 +251,6 @@
     let imgDomFullscreen = document.getElementById("inputImgFullscreen");
 
     const presFullScreenBtn = document.getElementById("presFullScreenBtn");
-
-    presFullScreenBtn.addEventListener('click', function (evt) {
-
-      const viewNormal = document.getElementById("viewNormal");
-
-      const fullScreenPresentation = document.getElementById("fullScreenPresentation");
-
-      // kjør fullscreen 
-
-      if (isFullScreenOn === false) {
-        fullScreenPresentation.classList.remove("w3-hide");
-        fullScreenPresentation.classList.add("w3-show");
-
-        viewNormal.classList.remove("w3-show");
-        viewNormal.classList.add("w3-hide");
-
-        isFullScreenOn = true;
-
-        return;
-      }
-
-      if (isFullScreenOn === true) {
-        fullScreenPresentation.classList.remove("w3-show");
-        fullScreenPresentation.classList.add("w3-hide");
-
-        viewNormal.classList.remove("w3-hide");
-        viewNormal.classList.add("w3-show");
-
-        isFullScreenOn = false;
-        return;
-      }
-
-    });
 
 
     paragraphDom.innerHTML = "";
@@ -310,6 +304,58 @@
     }
   }
 
+  //
+
+  // fullscreen presentation btn eventlisteners
+
+  const presFullScreenBtn = document.getElementById("presFullScreenBtn");
+
+  presFullScreenBtn.addEventListener('click', function (evt) {
+    fullscreenFunction();
+  });
+
+  const stopFs = document.getElementById("stopFs");
+
+  stopFs.addEventListener('click', function (evt) {
+    fullscreenFunction();
+  });
+
+  //
+
+  // fullscren function
+  function fullscreenFunction() {
+
+    const viewNormal = document.getElementById("viewNormal");
+
+    const fullScreenPresentation = document.getElementById("fullScreenPresentation");
+
+    // kjør fullscreen 
+
+    if (isFullScreenOn === false) {
+      fullScreenPresentation.classList.remove("w3-hide");
+      fullScreenPresentation.classList.add("w3-show");
+
+      viewNormal.classList.remove("w3-show");
+      viewNormal.classList.add("w3-hide");
+
+      isFullScreenOn = true;
+
+      return;
+    }
+
+    if (isFullScreenOn === true) {
+      fullScreenPresentation.classList.remove("w3-show");
+      fullScreenPresentation.classList.add("w3-hide");
+
+      viewNormal.classList.remove("w3-hide");
+      viewNormal.classList.add("w3-show");
+
+      isFullScreenOn = false;
+      return;
+    }
+  }
+
+  //
 
   // fetch server api function
 

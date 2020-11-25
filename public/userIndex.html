@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client</title>
+  <title>Userpage</title>
   <link rel="stylesheet" href="userIndex.css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -85,6 +85,100 @@
 
   <script>
 
+    // globale variabler
+
+    let chosenTheme = "Light";
+
+    //
+
+
+    // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+
+    checkIfUserHasToken();
+    function checkIfUserHasToken() {
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        location.href = "/";
+      }
+    }
+
+    //
+
+    // tab function, w3.css
+
+    function openTab(evt, tabName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("tab");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " w3-black";
+    }
+
+    //
+
+    // dropdown function w3.css
+
+    function myAccount() {
+      var x = document.getElementById("Acc");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+
+    //
+
+    // logout function
+
+    const logOut = document.getElementById("logOut");
+
+    logOut.addEventListener("click", function (evt) {
+      localStorage.clear();
+      sessionStorage.clear();
+      location.href = "/";
+    });
+
+    //
+
+    // update account function
+
+    const updateAcc = document.getElementById("updateAcc");
+
+    updateAcc.addEventListener("click", async function (evt) {
+      const newUsername = prompt("Please enter your new username", "");
+      const newPassword = prompt("Please enter your new password or re-enter your current password", "");
+
+      if (newUsername || newPassword) {
+
+        const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`);
+
+        const token = sessionStorage.getItem("token");
+        const username = sessionStorage.getItem("user");
+        const body = { authToken: token, user: username, authorization: credentials };
+        const url = `/user/update`;
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+          sessionStorage.clear();
+          localStorage.clear();
+          location.href = "/";
+        }
+
+      }
+    });
+
+    //
+
+    // delete account button
+
     const deleteAccBtn = document.getElementById("deleteAccBtn");
 
     deleteAccBtn.addEventListener('click', async function (evt) {
@@ -124,84 +218,19 @@
       }
     });
 
+    //
 
-    // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+    // vis brukernavn istedenfor account
 
-    checkIfUserHasToken();
-    function checkIfUserHasToken() {
-      const token = sessionStorage.getItem("token");
-      if (!token) {
-        location.href = "/";
-      }
+    const accountText = document.getElementById("accountText");
+    const username = sessionStorage.getItem("user");
+    if (username) {
+      accountText.innerHTML = username;
     }
 
     //
 
-    // tab function, w3.css
-
-    function openTab(evt, tabName) {
-      var i, x, tablinks;
-      x = document.getElementsByClassName("tab");
-      for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablink");
-      for (i = 0; i < x.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
-      }
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " w3-black";
-    }
-
-
-    // dropdown function w3.css
-
-    function myAccount() {
-      var x = document.getElementById("Acc");
-      if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-      } else {
-        x.className = x.className.replace(" w3-show", "");
-      }
-    }
-
-    const logOut = document.getElementById("logOut");
-
-    logOut.addEventListener("click", function (evt) {
-      localStorage.clear();
-      sessionStorage.clear();
-      location.href = "/";
-    });
-
-    const updateAcc = document.getElementById("updateAcc");
-
-    updateAcc.addEventListener("click", async function (evt) {
-      const newUsername = prompt("Please enter your new username", "");
-      const newPassword = prompt("Please enter your new password or re-enter your current password", "");
-
-      if (newUsername || newPassword) {
-
-        const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`); //kryptert streng
-        //const credentials = username + ":" + password; //til ren streng/tekst
-
-        const token = sessionStorage.getItem("token");
-        const username = sessionStorage.getItem("user");
-        const body = { authToken: token, user: username, authorization: credentials };
-        const url = `/user/update`;
-
-        const results = await callServerAPI(body, url);
-
-        if (results.response.status === 200) {
-          sessionStorage.clear();
-          localStorage.clear();
-          location.href = "/";
-        }
-
-      }
-    });
-
-    //create new presentation
-    let chosenTheme = "Light";
+    // get user chosen theme
 
     function chooseTheme(evt, themeName) {
       var i, x, tablinksTheme;
@@ -217,13 +246,9 @@
       evt.currentTarget.className += " w3-black";
     }
 
-    const accountText = document.getElementById("accountText");
-    const username = sessionStorage.getItem("user");
-    if (username) {
-      accountText.innerHTML = username;
-    }
+    //
 
-    // create new presentation
+    // create new presentation button
 
     const createNewBtn = document.getElementById("createNew");
 
@@ -249,7 +274,7 @@
 
     //
 
-    // Get user public or hidden presentations
+    // Get user presentations btn public or private
 
     const privateSlidesBtn = document.getElementById("privateSlidesBtn");
 
@@ -266,6 +291,8 @@
       getUserPresentations(false);
 
     });
+
+    // get user presentations public or private
 
     async function getUserPresentations(isPublicOrNot) {
 
@@ -293,17 +320,9 @@
 
     }
 
-    function clearPresentations(isPublicOrNot) {
+    //
 
-      let container = document.getElementById('myPubContainer');
-
-      if (!isPublicOrNot) {
-        container = document.getElementById('myPrivContainer');
-      }
-
-      container.innerHTML = "";
-
-    }
+    // display user presentations public or private
 
     function displayPresentations(presArr, isPublicOrNot) {
 
@@ -338,7 +357,7 @@
             localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
             location.href = "/editIndex.html";
           } else if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
-            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
             location.href = "/presIndex.html";
           }
         });
@@ -347,6 +366,78 @@
       }
 
 
+    }
+
+    //
+
+    // clear user presentations public or private
+
+    function clearPresentations(isPublicOrNot) {
+
+      let container = document.getElementById('myPubContainer');
+
+      if (!isPublicOrNot) {
+        container = document.getElementById('myPrivContainer');
+      }
+
+      container.innerHTML = "";
+
+    }
+
+    //
+
+    // get all public presentations button
+
+    const publicSlidesBtn = document.getElementById("publicSlidesBtn");
+
+    publicSlidesBtn.addEventListener("click", async function (evt) {
+      const token = sessionStorage.getItem("token");
+      const username = sessionStorage.getItem("user");
+      const body = { authToken: token, user: username };
+      const url = `/presentations/uniPub`;
+
+      const results = await callServerAPI(body, url);
+
+      if (results.response.status === 200) {
+        displayAllPresentations(results.data);
+      }
+
+    });
+
+    //
+
+    // display all public presentations
+
+    function displayAllPresentations(presArr) {
+
+      let container = document.getElementById('allPublicContainer');
+
+      container.innerHTML = "";
+
+      for (let i = 0; i < presArr.length; i++) {
+
+        let myDiv = document.createElement("div");
+        myDiv.classList.add("pres");
+
+        let myHtml = `
+      <h3>Title: ${presArr[i].name}</h3>
+      <p>${presArr[i].description}</p>
+      <h5>Owner: ${presArr[i].owner}</h5>
+      <h4>Theme: ${presArr[i].theme}</h4>
+      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
+  `;
+
+        myDiv.innerHTML = myHtml;
+
+        myDiv.addEventListener('click', function (evt) {
+          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
+            location.href = "/presIndex.html";
+          }
+        });
+
+        container.appendChild(myDiv);
+      }
     }
 
     //
@@ -389,61 +480,6 @@
 
     //
 
-    // get all public presentations
-
-    const publicSlidesBtn = document.getElementById("publicSlidesBtn");
-
-    publicSlidesBtn.addEventListener("click", async function (evt) {
-      const token = sessionStorage.getItem("token");
-      const username = sessionStorage.getItem("user");
-      const body = { authToken: token, user: username };
-      const url = `/presentations/uniPub`;
-
-      const results = await callServerAPI(body, url);
-
-      if (results.response.status === 200) {
-        displayAllPresentations(results.data);
-      }
-
-    });
-
-    function displayAllPresentations(presArr) {
-
-      let container = document.getElementById('allPublicContainer');
-
-      container.innerHTML = "";
-
-      for (let i = 0; i < presArr.length; i++) {
-
-        let myDiv = document.createElement("div");
-        myDiv.classList.add("pres");
-
-        let myHtml = `
-      <h3>Title: ${presArr[i].name}</h3>
-      <p>${presArr[i].description}</p>
-      <h5>Owner: ${presArr[i].owner}</h5>
-      <h4>Theme: ${presArr[i].theme}</h4>
-      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
-  `;
-
-        myDiv.innerHTML = myHtml;
-
-        myDiv.addEventListener('click', function (evt) {
-          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
-            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
-            location.href = "/presIndex.html";
-          }
-        });
-
-        container.appendChild(myDiv);
-      }
-
-
-    }
-
-
-    //
-
     // fetch server api function
 
     async function callServerAPI(body, url) {
@@ -466,9 +502,8 @@
       return { "response": response, "data": data };
     };
 
-//
+    //
 
   </script>
-
 
 </body>

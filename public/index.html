@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client</title>
+    <title>Login / Create Account</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
@@ -12,14 +12,11 @@
 
 <body>
 
-
     <div class="w3-row-padding">
         <div class="w3-col s12 w3-center">
             <img class="w3-image" src="./pictures/logo.png" alt="Logo">
         </div>
     </div>
-
-
 
     <div class="w3-row">
         <div class="w3-col l3">
@@ -34,7 +31,7 @@
                 </div>
                 <label><input id="loginUsername" type="text" placeholder="Username" name="name"> </label>
                 <label><input id="loginPsw" type="password" placeholder="Password" name="password"></label>
-                <div id="info">
+                <div id="info1">
 
                 </div>
                 <button id="subLogin" class="red" type="submit">Login</button>
@@ -54,7 +51,7 @@
                 <label><input id="createPsw" type="password" placeholder="Password" name="password"></label>
                 <label><input id="createPswConf" type="password" placeholder="Confirm Password"
                         name="passwordConf"></label>
-                <div id="info1">
+                <div id="info2">
 
                 </div>
                 <button id="subAcc" class="red" type="submit">Create account</button>
@@ -67,17 +64,12 @@
         </div>
     </div>
 
-
-
 </body>
 
 
 <script>
 
-
-
-
-    //login user
+    // login user
 
     const loginUser = document.getElementById("loginform");
 
@@ -88,42 +80,31 @@
         const loginUsername = document.getElementById("loginUsername").value;
         const loginPsw = document.getElementById("loginPsw").value;
 
-        if (loginUsername !== "" && loginPsw !== "") {
-
-            let username = loginUsername;
-            let password = loginPsw;
+        const username = loginUsername;
+        const password = loginPsw;
 
 
-            const credentials = "Basic " + window.btoa(`${username}:${password}`); //kryptert streng
-            //const credentials = username + ":" + password; //til ren streng/tekst
+        const credentials = "Basic " + window.btoa(`${username}:${password}`);
 
-
-            let config = {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                    "authorization": credentials
-                }
+        const config = {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "authorization": credentials
             }
-
-            const response = await fetch("/authenticate", config);
-            const data = await response.json();
-            serverResp(response, data, 1); //sender response og data til funksjonen 1 = login
-
-        } else {
-            // p shows up with text info
-            //const infoDiv = document.getElementById("info");
-            //infoDiv.innerHTML = "Invalid username or password";
-            //document.body.appendChild(infoDiv);
         }
 
-    })
+        const response = await fetch("/authenticate", config);
+        const data = await response.json();
+        serverResp(response, data, 1); //sender response og data til funksjonen 1 = login
 
+    })
 
     //
 
 
     //create User
+
     const createform = document.getElementById('createform');
 
     createform.addEventListener("submit", async function (evt) {
@@ -133,41 +114,30 @@
         const createUsername = document.getElementById("createUsername").value;
         const createPassword = document.getElementById("createPsw").value;
 
-        if (createUsername !== "" && createPassword !== "") {
+        const createPasswordConf = document.getElementById("createPswConf").value;
 
-            const createPasswordConf = document.getElementById("createPswConf").value;
+        if (createPassword === createPasswordConf) {
 
-            if (createPassword === createPasswordConf) {
-
-                let body = {
-                    username: createUsername,
-                    password: createPassword
-                }
-                let config = {
-                    method: "POST",
-                    headers: {
-                        "content-type": "application/json"
-                    },
-                    body: JSON.stringify(body)
-                }
-
-                const response = await fetch("/user", config);
-                const data = await response.json();
-                serverResp(response, data, 2); //sender response og data til funksjonen 2 = createUser
-
-            } else {
-                // p shows up with text info2
-                const infoDiv = document.getElementById("info1");
-                infoDiv.innerHTML = "Passwords don't match!";
-                //document.body.appendChild(infoDiv);
-
-
+            let body = {
+                username: createUsername,
+                password: createPassword
             }
+            let config = {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify(body)
+            }
+
+            const response = await fetch("/user", config);
+            const data = await response.json();
+            serverResp(response, data, 2); //sender response og data til funksjonen 2 = createUser
+
         } else {
-            // p shows up with text info2
-            const infoDiv = document.getElementById("info1");
-            infoDiv.innerHTML = "Invalid username or password";
-            //document.body.appendChild(infoDiv);
+            // p shows up with text info1
+            const infoDiv = document.getElementById("info2");
+            infoDiv.innerHTML = "Passwords don't match!";
         }
 
 
@@ -175,16 +145,25 @@
 
     //
 
+
+    // server resp
+
     function serverResp(res, data, num) {
         console.log(res.status);
         if (!data.authToken) {
+
+            //sjekker om num 1 = login eller om num 2 = createUser, for å gi brukeren beskjed i riktig div
+
             switch (num) {
                 case 1:
-                    document.getElementById("info").innerHTML = data;
+                    document.getElementById("info1").innerHTML = data;
                     break;
                 case 2:
-                    document.getElementById("info1").innerHTML = data;
+                    document.getElementById("info2").innerHTML = data;
             }
+
+            //
+
         } else {
             let token = data.authToken.authToken;
             let user = data.user;
@@ -198,10 +177,6 @@
                 location.href = "/userIndex.html";
             }
         }
-        //
-
-        //sjekker om num 1 = login eller om num 2 = createUser, for å gi brukeren beskjed i riktig div
-
     }
 
     //

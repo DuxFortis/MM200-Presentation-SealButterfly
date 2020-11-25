@@ -18,10 +18,16 @@ const port = (process.env.PORT || 8080);
 server.set('port', port);
 server.use(express.static('public'));
 server.use(bodyParser.json({ limit: '5mb' }));
-server.use(express.urlencoded({limit: "5mb", extended: true, parameterLimit:5000}));
+server.use(express.urlencoded({ limit: "5mb", extended: true, parameterLimit: 5000 }));
+
+
+// globale variabler
 
 const maxCharLength = 20;
 const maxCharLengthPres = maxCharLength + 10;
+const minCharLength = 3;
+
+//
 
 
 // create new user
@@ -29,24 +35,29 @@ server.post("/user", async function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
 
-  if (username === "" || password === "") {
-    res.status(403).json("Invalid username or password").end();
-  }
-  if (username.length > maxCharLength || password.length > maxCharLength) {
-    res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
-  } else {
-    const newUser = new user(username, password);
-    const resp = await newUser.create();
+  if (username.length >= minCharLength && password.length >= minCharLength) {
 
-    if (resp === null) {
-      res.status(401).json("Username is taken!").end();
+    if (username.length > maxCharLength || password.length > maxCharLength) {
+      res.status(403).json(`Username or password is exceeding ${maxCharLength} characters!`).end();
     } else {
-      res.status(200).json("Account created!").end();
+
+      const newUser = new user(username, password);
+      const resp = await newUser.create();
+
+      if (resp === null) {
+        res.status(401).json("Username is taken!").end();
+      } else {
+        res.status(200).json("Account created!").end();
+      }
+      // Hva om databasen feilet?
+      // Hva om det var en bruker med samme brukernavn?
     }
-    // Hva om databasen feilet?
-    // Hva om det var en bruker med samme brukernavn?
+  } else {
+    res.status(403).json(`Username or password is too short, min length is ${minCharLength} characters!`).end();
   }
 });
+
+//
 
 
 // login user
@@ -57,16 +68,20 @@ server.post("/authenticate", async (req, res) => {
   const credentials = req.headers.authorization.split(' ')[1];
   const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
 
-  //console.log(username + ":" + password); // brukernavn, passord i ren tekst
+  if (username.length >= minCharLength && password.length >= minCharLength) {
+    //console.log(username + ":" + password); // brukernavn, passord i ren tekst
 
-  const requestUser = new user(username, password); // Hvem prøver å logge inn?
-  const isValid = await requestUser.validate(); // Finnes vedkommende i DB og er det riktig passord?
+    const requestUser = new user(username, password); // Hvem prøver å logge inn?
+    const isValid = await requestUser.validate(); // Finnes vedkommende i DB og er det riktig passord?
 
-  //console.log(isValid); // isValid = true/false
+    //console.log(isValid); // isValid = true/false
 
-  if (isValid) {
-    let sessionToken = createToken(requestUser);
-    res.status(200).json({ "authToken": sessionToken, "user": requestUser }).end();
+    if (isValid) {
+      let sessionToken = createToken(requestUser);
+      res.status(200).json({ "authToken": sessionToken, "user": requestUser }).end();
+    } else {
+      res.status(403).json("Username or password is incorrect!").end();
+    }
   } else {
     res.status(403).json("Username or password is incorrect!").end();
   }
@@ -248,6 +263,7 @@ server.post("/presentations/uniPub", auth, async (req, res) => {
 );
 
 server.post("/presentations/update/:id", auth, async (req, res) => {
+
   const presentation = req.body.presentation;
   const owner = req.body.user;
 

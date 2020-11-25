@@ -313,7 +313,10 @@ class StorageHandler {
     }
 
     async deletePres(presentation, owner) {
-        const presentationId = presentation.id;
+        let presentationId = presentation.id;
+
+        presentationId = 192;
+        owner = "test";
 
         const client = new pg.Client(this.credentials);
         let results = 0;

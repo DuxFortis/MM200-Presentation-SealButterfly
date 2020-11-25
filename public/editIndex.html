@@ -26,8 +26,6 @@
     </div>
   </div>
 
-
-
   <div class="w3-row">
     <div class="w3-container w3-border w3-white container">
       <div class="w3-col l2 s2">
@@ -525,6 +523,7 @@
     const username = sessionStorage.getItem("user");
     const body = { authToken: token, user: username, presentationId: presentation.id };
     const url = `/user/presentation/${presentation.id}`;
+    document.title = "Editing: " + presentation.name;
 
     const results = await callServerAPI(body, url);
 
@@ -662,7 +661,7 @@
               <img id="btnImg" >
               </label>   
            <input id="inpFile" type="file" accept="image/*" />
-           <button id="btnSend">Send data</button>   `;
+           <button id="btnSend">Send image</button>   `;
         paragraphDom.innerHTML = html;
 
         let btnImg = document.getElementById('btnImg');
