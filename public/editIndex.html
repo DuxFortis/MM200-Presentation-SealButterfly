@@ -246,13 +246,7 @@
 
     //
 
-
-
-
   }
-
-
-
 
   // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
 
@@ -342,7 +336,7 @@
             return;
         }
 
-        const maxLength = 30;
+        const maxLength = 40;
 
         if (editNewText.value.length > maxLength) {
           const debugDom = document.getElementById("thisPres");
@@ -651,7 +645,7 @@
       /////
       if (slideEditMode.image !== "") {
 
-        imgDom.innerHTML = `<img src="${slideEditMode.image}">`;
+        imgDom.innerHTML = `<img class="presImage" src="${slideEditMode.image}">`;
         paragraphDom.innerHTML = slideEditMode.imageText;
 
       }
@@ -680,14 +674,35 @@
           let file = inpFile.files[0];
 
           if (file.type != "image/png" && file.type != "image/jpeg") {
-            console.log("wrong filetype");
+
+            const debugDom = document.getElementById("updateText");
+            debugDom.innerHTML = `<div id='thisPres'>Wrong filetype!</div>`;
+
+            let timesRun = 0;
+            let interval = setInterval(() => {
+              timesRun = 1;
+              refreshPresentation();
+              if (timesRun === 1) {
+                clearInterval(interval);
+              }
+            }, 3000);
 
           }
 
-          console.log(file.size)
-
           if (file.size > 1000000) {
-            console.log("the file is too large");
+
+            const debugDom = document.getElementById("updateText");
+            debugDom.innerHTML = `<div id='thisPres'>The file is too large!</div>`;
+
+            let timesRun = 0;
+            let interval = setInterval(() => {
+              timesRun = 1;
+              refreshPresentation();
+              if (timesRun === 1) {
+                clearInterval(interval);
+              }
+            }, 3000);
+
           }
 
           let freader = new FileReader();
