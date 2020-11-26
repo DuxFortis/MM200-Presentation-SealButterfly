@@ -98,3 +98,15 @@ grid-template-areas: "nm btn";
     width: auto;
     z-index: 2;
 }
+
+.serif {
+    font-family: "Times New Roman", Times, serif;
+  }
+  
+  .sansserif {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  
+  .monospace {
+    font-family: "Lucida Console", Courier, monospace;
+  }
