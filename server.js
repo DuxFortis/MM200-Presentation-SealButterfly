@@ -17,8 +17,21 @@ const server = express();
 const port = (process.env.PORT || 8080);
 server.set('port', port);
 server.use(express.static('public'));
-server.use(bodyParser.json({ limit: '5mb' }));
-server.use(express.urlencoded({ limit: "5mb", extended: true, parameterLimit: 5000 }));
+
+
+/*
+server.use(bodyParser.json({ limit: '2mb' }));
+server.use(express.urlencoded({ limit: "2mb", extended: true, parameterLimit: 2000 }));
+*/
+server.use(bodyParser.urlencoded({ limit: "25mb",  extended: true, parameterLimit: 1000000 }));
+server.use(bodyParser.json({ limit: "25mb" }));
+
+
+/*
+server.use(bodyParser.json({ limit: '2mb' }));
+server.use(bodyParser.text({ limit: '2mb' }));
+server.use(bodyParser.urlencoded({ limit: '2mb', extended: true }));
+*/
 
 
 // globale variabler
