@@ -113,6 +113,7 @@
   const addListBtn = document.getElementById("addListBtn");
   const deleteListBtn = document.getElementById("deleteListBtn")
 
+
   let listItem = "";
 
   let imgdata = "";
@@ -122,33 +123,30 @@
   timesBtn = document.getElementById(`timesBtn`);
   lucidaBtn = document.getElementById(`lucidaBtn`);
 
+
   arialBtn.addEventListener(`click`, () => {
-    presParagraph.classList.add(`sansserif`);
-    presTitle.classList.add(`sansserif`);
-    presParagraph.classList.remove(`monospace`);
-    presTitle.classList.remove(`monospace`);
-    presParagraph.classList.remove(`serif`);
-    presTitle.classList.remove(`serif`);
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+    presentation.font = 1;
+    console.log(presentation)
+    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
   timesBtn.addEventListener(`click`, () => {
-    presParagraph.classList.add(`serif`);
-    presTitle.classList.add(`serif`);
-    presParagraph.classList.remove(`monospace`);
-    presTitle.classList.remove(`monospace`);
-    presParagraph.classList.remove(`sansserif`);
-    presTitle.classList.remove(`sansserif`);
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+    presentation.font = 2;
+    console.log(presentation)
+    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
   lucidaBtn.addEventListener(`click`, () => {
-    presParagraph.classList.add(`monospace`);
-    presTitle.classList.add(`monospace`);
-    presParagraph.classList.remove(`sansserif`);
-    presTitle.classList.remove(`sansserif`);
-    presParagraph.classList.remove(`serif`);
-    presTitle.classList.remove(`serif`);
+    let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);
+    presentation.font = 3;
+    console.log(presentation)
+    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
-
 
 
   templateTitleBtn.addEventListener('click', function (evt) {
@@ -585,6 +583,8 @@
 
     //slideListener = document.getElementById("allSlides");
 
+    gotoSlide(currentSlide);
+
   }
 
 
@@ -620,12 +620,30 @@
     let titleDom = document.getElementById("presTitle");
     let paragraphDom = document.getElementById("presParagraph");
     let imgDom = document.getElementById("inputImg");
+    let fontType = presentation.font;
+
+    switch (fontType) {
+      case 1:
+        fontType = "sansserif";
+        break;
+      case 2:
+        fontType = "serif";
+        break;
+      case 3:
+        fontType = "monospace";
+        break;
+      default:
+        fontType = "sansserif";
+        break;
+    }
 
     paragraphDom.innerHTML = "";
     titleDom.innerHTML = "";
     imgDom.innerHTML = "";
     addListBtn.className = "w3-hide";
     deleteListBtn.className = "w3-hide";
+    paragraphDom.classList = `w3-center ${fontType}`
+    titleDom.classList = `w3-center ${fontType}`
 
     let slideEditMode = presentation.slides["Slide" + currentSlide];
     if (!slideEditMode) {
@@ -724,9 +742,9 @@
       let listArr = slideEditMode.list;
 
       for (let i = 0; i < listArr.length; i++) {
-        //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}' class='listItem''>&#8226; ${listArr[i]}</p>`;
-        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
         listItemIndex++;
+
       }
 
       listItem = document.getElementsByClassName("listItem");
@@ -876,6 +894,7 @@
   };
 
 //
+
 
 
 </script>

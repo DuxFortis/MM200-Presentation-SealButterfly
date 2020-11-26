@@ -270,7 +270,7 @@ class StorageHandler {
                     results = results.rows;
                 }
 
-            }else{
+            } else {
                 results = null;
             }
 
@@ -295,6 +295,7 @@ class StorageHandler {
         const description = presentation.description;
         const theme = presentation.theme;
         const isPublic = presentation.ispublic;
+        const font = presentation.font;
 
         const client = new pg.Client(this.credentials);
         let results = 0;
@@ -306,6 +307,7 @@ class StorageHandler {
             await client.query('UPDATE presentations SET description=$2 WHERE id=$1 AND owner=$3', [presentationId, description, owner]);
             await client.query('UPDATE presentations SET theme=$2 WHERE id=$1 AND owner=$3', [presentationId, theme, owner]);
             await client.query('UPDATE presentations SET ispublic=$2 WHERE id=$1 AND owner=$3', [presentationId, isPublic, owner]);
+            await client.query('UPDATE presentations SET font=$2 WHERE id=$1 AND owner=$3', [presentationId, font, owner]);
 
             results = `Save successful for ${name}`;
             client.end();

@@ -44,10 +44,12 @@
               <br><label>Home</label>
             </a>
           </div>
+          <div class="scroller">
           <p>Slides</p>
           <ul id="allSlides" class="w3-ul">
             <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
           </ul>
+        </div>
           <button id="presFullScreenBtn" class="w3-right w3-button w3-display-bottomleft"><i id="viewBtn"
               class="material-icons w3-xxl">tv</i></button>
 
@@ -250,6 +252,23 @@
     let paragraphDomFullscreen = document.getElementById("presParagraphFullscreen");
     let imgDomFullscreen = document.getElementById("inputImgFullscreen");
 
+    let fontType = presentation.font;
+
+    switch (fontType) {
+      case 1:
+        fontType = "sansserif";
+        break;
+      case 2:
+        fontType = "serif";
+        break;
+      case 3:
+        fontType = "monospace";
+        break;
+      default:
+        fontType = "sansserif";
+        break;
+    }
+
     const presFullScreenBtn = document.getElementById("presFullScreenBtn");
 
 
@@ -260,6 +279,12 @@
     paragraphDomFullscreen.innerHTML = "";
     titleDomFullscreen.innerHTML = "";
     imgDomFullscreen.innerHTML = "";
+
+    paragraphDom.classList = `w3-center ${fontType}`
+    titleDom.classList = `w3-center ${fontType}`
+
+    paragraphDomFullscreen.classList = `w3-center ${fontType}`
+    titleDomFullscreen.classList = `w3-center ${fontType}`
 
     let slideEditMode = presentation.slides["Slide" + currentSlide];
     if (!slideEditMode) {
@@ -295,9 +320,8 @@
       let listArr = slideEditMode.list;
 
       for (let i = 0; i < listArr.length; i++) {
-        //paragraphDom.innerHTML += `<p id='listItem${listItemIndex}' class='listItem''>&#8226; ${listArr[i]}</p>`;
-        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
-        paragraphDomFullscreen.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem'>&#8226; ${listArr[i]}</p>`;
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
+        paragraphDomFullscreen.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
         listItemIndex++;
       }
 

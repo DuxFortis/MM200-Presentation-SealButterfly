@@ -26,6 +26,15 @@ body{
     
 }
 
+.scroller {
+    border: solid black;
+    width: 150px;
+    height: 400px;
+    overflow-y: scroll;
+    scrollbar-color: rgb(0, 0, 0) rgb(255, 255, 255);
+    scrollbar-width: thin;
+  }
+
 #stopFs{
     padding: 5px;
     border: 5px solid white;

@@ -356,13 +356,13 @@ server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, 
   //template 1 = title, 2 = image, 3 = list
   switch (template) {
     case 1:
-      content = { "title": updateSlide.title };
+      content = { "title": updateSlide.title};
       break;
     case 2:
-      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText" };
+      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText"};
       break;
     case 3:
-      content = { "title": updateSlide.title, "list": ["myList"] };
+      content = { "title": updateSlide.title, "list": ["myList"]};
       break;
 
   }
