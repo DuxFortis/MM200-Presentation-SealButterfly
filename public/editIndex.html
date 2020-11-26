@@ -107,8 +107,8 @@
         <h6>I am hidden</h6>
       </div>
       <div class="w3-col l8 s8">
-        <div class="w3-container">
-          <input id="description" class="w3-center w3-border w3-border-black" placeholder="Description"></input>
+        <div id="descriptionDiv" class="w3-container">
+          <input id="description" class="w3-center w3-border w3-border-black" value="Description"></input>
         </div>
       </div>
       <div class="w3-col l2 s2">
@@ -302,7 +302,7 @@
     let editTextStorage = editText.innerText;
 
     let check = editTextStorage.split("• ");
-
+     
     if (check[1]) {
       editTextStorage = check[1];
     }
@@ -543,6 +543,9 @@
     presentation = pres;
     const slides = pres.slides;
     document.title = "Editing: " + presentation.name;
+    const descriptionDiv = document.getElementById("descriptionDiv");
+
+    descriptionDiv.innerHTML = `<input id="description" class="w3-center w3-border w3-border-black" value="${presentation.description}">`;
 
     if (slides) {
 
@@ -859,8 +862,12 @@
   async function updatePresentation() {
 
     const text = document.getElementById("renamePresInp").value
+    const description = document.getElementById("description").value;
     if (text !== "") {
-      updatePresLocal("name", text);
+     updatePresLocal("name", text);
+    }
+    if(description !== "") {
+      updatePresLocal("description", description);
     }
 
     /*let presentation = localStorage.getItem("PresentationProject");
