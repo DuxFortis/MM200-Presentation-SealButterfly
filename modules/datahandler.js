@@ -150,7 +150,7 @@ class StorageHandler {
 
         try {
             await client.connect();
-            results = await client.query('SELECT * FROM "public"."presentations" WHERE owner=$1 AND ispublic=$2', [owner, isPublic]);
+            results = await client.query('SELECT "id","name","owner","description","theme","ispublic" FROM "public"."presentations" WHERE owner=$1 AND ispublic=$2', [owner, isPublic]);
             results = results.rows;
             client.end();
         } catch (err) {
@@ -172,7 +172,7 @@ class StorageHandler {
 
         try {
             await client.connect();
-            results = await client.query('SELECT * FROM "public"."presentations" WHERE ispublic=$1', [true]);
+            results = await client.query('SELECT "id","name","owner","description","theme" FROM "public"."presentations" WHERE ispublic=$1', [true]);
             results = results.rows;
             client.end();
         } catch (err) {

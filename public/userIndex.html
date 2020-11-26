@@ -79,7 +79,6 @@
     <h2>Public slideshows</h2>
     <p>Here are other users public slideshows.</p>
     <div id="allPublicContainer" class="w3-row w3-white">
-
     </div>
   </div>
 
@@ -266,7 +265,7 @@
       const results = await callServerAPI(body, url);
 
       if (results.response.status === 200) {
-        //localStorage.setItem("PresentationProject", JSON.stringify(results.data))
+        localStorage.setItem("PresentationProject", JSON.stringify(results.data.id))
         location.href = "/editIndex.html";
       }
 
@@ -340,9 +339,9 @@
         myDiv.classList.add("pres");
 
         let myHtml = `
-      <h3>Title: ${presArr[i].name}</h3>
+      <h3>Title: ${presArr[i].name} </h3>
       <h4>Theme: ${presArr[i].theme}</h4> 
-      <p>${presArr[i].description}</p> 
+      <p>${presArr[i].description} id: ${presArr[i].id}</p> 
       <button id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></button>
       <button id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></button>
       <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
@@ -357,7 +356,7 @@
             localStorage.setItem("PresentationProject", JSON.stringify(presArr[i].id));
             location.href = "/editIndex.html";
           } else if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
-            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i].id));
             location.href = "/presIndex.html";
           }
         });
@@ -431,7 +430,7 @@
 
         myDiv.addEventListener('click', function (evt) {
           if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
-            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i].id));
             location.href = "/presIndex.html";
           }
         });
@@ -445,6 +444,7 @@
     // delete presentation
 
     async function deletePresentation(presentation) {
+
 
       const confirmPress = confirm(`Are you sure you want to delete ${presentation.name}?`);
       if (confirmPress === true) {

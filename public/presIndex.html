@@ -78,6 +78,7 @@
   let isFullScreenOn = false;
   let listItemIndex = 0;
   let currentSlide = 1;
+  let presentation = "";
 
   //
 
@@ -95,23 +96,26 @@
 
   getPresentation();
   async function getPresentation() {
-    let presentation = sessionStorage.getItem("CurrentlyViewing");
-    presentation = JSON.parse(presentation);
+    let presId = sessionStorage.getItem("CurrentlyViewing");
+    //presId = JSON.parse(presId);
 
-    if (presentation === null) {
-      location.href = "/userIndex.html";
-      return;
+    if (presId === null) {
+      //location.href = "/userIndex.html";
+      presId = prompt("Presentation ID:");
+      sessionStorage.setItem("CurrentlyViewing", presId);
+      if(!presId || presId.length === 0){
+        location.href = "/userIndex.html";
+      }
     }
 
-    const token = sessionStorage.getItem("token");
-    const username = sessionStorage.getItem("user");
-    const body = { authToken: token, user: username, presentationId: presentation.id };
-    const url = `/user/presentation/${presentation.id}`;
-    document.title = "Viewing: " + presentation.name;
+    const body = { presentationId: presId };
+    const url = `/view/presentation/${presId}`;
 
     const results = await callServerAPI(body, url);
 
     const pres = results.data[0];
+    presentation = pres;
+    document.title = "Viewing: " + presentation.name;
     const slides = pres.slides;
 
     if (slides) {
@@ -127,21 +131,21 @@
       let editFullscreen = document.getElementById("fullScreenPresentation");
       editFullscreen.style.background = "url(" + bildeUrl + ")";
       editFullscreen.style.width = "100%";
-      editFullscreen.style.height = "550px";
+      editFullscreen.style.height = "100vh";
 
       let edit = document.getElementById("edit");
       edit.style.background = "url(" + bildeUrl + ")";
       edit.style.width = "100%";
-      edit.style.height = "550px";
+      edit.style.height = "100vh";
 
-      sessionStorage.setItem("CurrentlyViewing", JSON.stringify(pres));
+      //sessionStorage.setItem("CurrentlyViewing", JSON.stringify(pres));
 
       gotoSlide(currentSlide);
 
       refreshPresentation();
 
     } else {
-      location.href = "/userIndex.html";
+      //location.href = "/userIndex.html";
     }
   }
 
@@ -151,8 +155,8 @@
 
   function refreshPresentation() {
 
-    let presentation = sessionStorage.getItem("CurrentlyViewing");
-    presentation = JSON.parse(presentation);
+    /*let presentation = sessionStorage.getItem("CurrentlyViewing");
+    presentation = JSON.parse(presentation);*/
     slides = presentation.slides;
 
     const presName = document.getElementById("presName");
@@ -231,8 +235,8 @@
 
   function gotoSlide(slideNr) {
     listItemIndex = 0;
-    let presentation = sessionStorage.getItem("CurrentlyViewing");
-    presentation = JSON.parse(presentation);
+    /*let presentation = sessionStorage.getItem("CurrentlyViewing");
+    presentation = JSON.parse(presentation);*/
 
     if (slideNr === undefined || slideNr < 1) {
       if (presentation.slides.Slide1 !== undefined) {
@@ -385,7 +389,7 @@
 
   async function callServerAPI(body, url) {
 
-    if (body === "" || url === "" || !body.authToken) {
+    if (body === "" || url === "") {
       return;
     }
 

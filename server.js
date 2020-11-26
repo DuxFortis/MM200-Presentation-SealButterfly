@@ -160,8 +160,8 @@ server.post("/user/delete", auth, async (req, res) => {
 });
 
 //!!!! WARNING DEMO !!!
-server.post("/user/presentation/:id", auth, async function (req, res) {
-  const owner = req.body.user;
+server.post("/view/presentation/:id", async function (req, res) {
+  const owner = "req.body.user";
   const presentationId = req.body.presentationId;
   //name, theme, owner, isPublic, id
   const Pres = new presentation("", "", "", owner, "", presentationId);

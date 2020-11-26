@@ -516,7 +516,7 @@
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
     const body = { authToken: token, user: username, presentationId: presId };
-    const url = `/user/presentation/${presId}`;
+    const url = `/view/presentation/${presId}`;
 
     const results = await callServerAPI(body, url);
 
