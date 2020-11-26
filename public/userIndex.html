@@ -266,7 +266,7 @@
       const results = await callServerAPI(body, url);
 
       if (results.response.status === 200) {
-        localStorage.setItem("PresentationProject", JSON.stringify(results.data))
+        //localStorage.setItem("PresentationProject", JSON.stringify(results.data))
         location.href = "/editIndex.html";
       }
 
@@ -354,7 +354,7 @@
           if (evt.target.id === "deleteBtn" || evt.target.id === "deleteIconBtn") {
             deletePresentation(presArr[i]);
           } else if (evt.target.id === "editBtn" || evt.target.id === "editBtnIcon") {
-            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i]));
+            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i].id));
             location.href = "/editIndex.html";
           } else if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
             sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i]));

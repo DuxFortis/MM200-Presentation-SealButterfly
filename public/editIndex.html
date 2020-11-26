@@ -115,6 +115,7 @@
 
 
   let listItem = "";
+  let presentation = "";
 
   let imgdata = "";
   let templateCheck = "";
@@ -125,34 +126,30 @@
 
 
   arialBtn.addEventListener(`click`, () => {
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
     presentation.font = 1;
-    console.log(presentation)
-    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
+    //localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
   timesBtn.addEventListener(`click`, () => {
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
     presentation.font = 2;
-    console.log(presentation)
-    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
+    //console.log(presentation) localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
   lucidaBtn.addEventListener(`click`, () => {
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+   /* let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
     presentation.font = 3;
-    console.log(presentation)
-    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
+    //localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
 
   templateTitleBtn.addEventListener('click', function (evt) {
 
     templateCheck += "Title"
-    console.log(templateCheck);
 
     insertTemplateSlide();
     templateCheck = "";
@@ -171,7 +168,7 @@
   templateListBtn.addEventListener('click', function (evt) {
 
     templateCheck += "List"
-    console.log(templateCheck)
+
     insertTemplateSlide();
     templateCheck = "";
 
@@ -182,8 +179,8 @@
   function addListItem() {
     const listItem = document.getElementById("presParagraph");
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
     let listArray = presentation.slides["Slide" + currentSlide].list;
 
@@ -196,8 +193,8 @@
   function deleteListItem() {
     const listItem = document.getElementById("presParagraph");
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
     let listArray = presentation.slides["Slide" + currentSlide].list;
 
@@ -222,10 +219,12 @@
 
     //test
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
+    let presId = localStorage.getItem("PresentationProject");
+    presId = JSON.parse(presId);
 
-    if (presentation === null) {
+    if (presId === null) {
       location.href = "/userIndex.html";
       return;
     }
@@ -503,24 +502,28 @@
 
   getPresentation(); //laster inn PresentationProject hvis dette finnes
   async function getPresentation() {
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
-    if (presentation === null) {
+    let presId = localStorage.getItem("PresentationProject");
+    //presId = JSON.parse(presId);
+
+    if (presId === null) {
       location.href = "/userIndex.html";
       return;
     }
 
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
-    const body = { authToken: token, user: username, presentationId: presentation.id };
-    const url = `/user/presentation/${presentation.id}`;
-    document.title = "Editing: " + presentation.name;
+    const body = { authToken: token, user: username, presentationId: presId };
+    const url = `/user/presentation/${presId}`;
 
     const results = await callServerAPI(body, url);
 
     const pres = results.data[0];
+    presentation = pres;
     const slides = pres.slides;
+    document.title = "Editing: " + presentation.name;
 
     if (slides) {
 
@@ -537,7 +540,7 @@
       edit.style.width = "100%";
       edit.style.height = "550px";
 
-      localStorage.setItem("PresentationProject", JSON.stringify(pres));
+      //localStorage.setItem("PresentationProject", JSON.stringify(pres));
 
       gotoSlide(currentSlide);
 
@@ -550,8 +553,8 @@
 
   function refreshPresentation() {
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation)
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation)*/
     slides = presentation.slides;
 
     const resetInp = document.getElementById("renamePres");
@@ -602,8 +605,8 @@
 
   function gotoSlide(slideNr) {
     listItemIndex = 0;
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
     if (slideNr === undefined) {
       if (presentation.slides.Slide1 !== undefined) {
@@ -768,8 +771,9 @@
   newSlideBtn.addEventListener("click", async function (evt) {
     await updatePresentation();
 
-    let presentation = localStorage.getItem("PresentationProject");
+    /*let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);
+    */
     currentSlide = Object.entries(presentation.slides);
 
     currentSlide = currentSlide.length + 1;
@@ -781,6 +785,7 @@
 
     const results = await callServerAPI(body, url);
 
+    currentSlide++;
     if (results.response.status === 200) {
       getPresentation();
     }
@@ -791,8 +796,8 @@
 
   deleteSlideBtn.addEventListener("click", async function (evt) {
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
     const token = sessionStorage.getItem("token");
     const username = sessionStorage.getItem("user");
@@ -815,8 +820,8 @@
       return;
     }
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
     if (slide) {
       if (arrayIndex) {
@@ -830,7 +835,7 @@
       presentation[key] = value;
     }
 
-    localStorage.setItem("PresentationProject", JSON.stringify(presentation));
+    /*localStorage.setItem("PresentationProject", JSON.stringify(presentation));*/
   }
 
   async function updatePresentation() {
@@ -840,8 +845,8 @@
       updatePresLocal("name", text);
     }
 
-    let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);
+    /*let presentation = localStorage.getItem("PresentationProject");
+    presentation = JSON.parse(presentation);*/
 
 
     const token = sessionStorage.getItem("token");
