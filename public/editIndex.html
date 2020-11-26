@@ -33,7 +33,7 @@
           <p>Your slides</p>
           <div class="scroller">
             <ul id="allSlides" class="w3-ul">
-              <li id="Slides" class="w3-hover-grey w3-button" value="1" :active>Slide 1 </li>
+              <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
             </ul>
           </div>
           <br>
@@ -87,6 +87,7 @@
           <div id="presParagraph" class="w3-center">
           </div>
         </div>
+
       </div>
       <div class="w3-col l2 s2">
         <div class="w3-container w3-white">
@@ -100,6 +101,20 @@
           <button id="deleteListBtn" class="w3-hide" onclick="deleteListItem()">Delete list item</button>
         </div>
       </div>
+
+      <div class="w3-row"></div>
+      <div class="w3-col l2 s2">
+        <h6>I am hidden</h6>
+      </div>
+      <div class="w3-col l8 s8">
+        <div class="w3-container">
+          <input id="description" class="w3-center w3-border w3-border-black" placeholder="Description"></input>
+        </div>
+      </div>
+      <div class="w3-col l2 s2">
+        <h6>I am hidden</h6>
+      </div>
+
     </div>
   </div>
 
@@ -116,6 +131,7 @@
 
   let listItem = "";
   let presentation = "";
+  let currentSlide = 1;
 
   let imgdata = "";
   let templateCheck = "";
@@ -129,6 +145,7 @@
     /*let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);*/
     presentation.font = 1;
+    gotoSlide(currentSlide);
     //localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
@@ -136,13 +153,15 @@
     /*let presentation = localStorage.getItem("PresentationProject");
     presentation = JSON.parse(presentation);*/
     presentation.font = 2;
+    gotoSlide(currentSlide);
     //console.log(presentation) localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
   lucidaBtn.addEventListener(`click`, () => {
-   /* let presentation = localStorage.getItem("PresentationProject");
-    presentation = JSON.parse(presentation);*/
+    /* let presentation = localStorage.getItem("PresentationProject");
+     presentation = JSON.parse(presentation);*/
     presentation.font = 3;
+    gotoSlide(currentSlide);
     //localStorage.setItem("PresentationProject", JSON.stringify(presentation));
   })
 
@@ -268,7 +287,7 @@
       return;
     }
 
-    if (target !== "edit") {
+    if (target !== "edit" && target !== "inputImg") {
       editText(target, currentSlide);
     }
   });
@@ -577,11 +596,11 @@
     const totalSlides = Object.entries(slides).length;
 
     if (presentation.slides.Slide1 !== undefined) {
-      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+      allSlides.innerHTML += `<li id="Slides" name='slide1' class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
     }
 
     for (let i = 2; i <= totalSlides; i++) {
-      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+      allSlides.innerHTML += `<br><li id="Slides" name='slide${i}' class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
     }
 
     //slideListener = document.getElementById("allSlides");
@@ -595,13 +614,19 @@
   slideListener.addEventListener("click", function (evt) {
 
     if (evt.target.id === "Slides") {
+      displayActiveSlide(evt.target.value)
       gotoSlide(evt.target.value);
     }
 
   });
 
+  function displayActiveSlide(nextSlide) {
+    let slideIndicator = document.getElementsByName(`slide${currentSlide}`);
+    slideIndicator[0].classList.remove("w3-blue");
 
-  let currentSlide = 1;
+    slideIndicator = document.getElementsByName(`slide${nextSlide}`);
+    slideIndicator[0].classList.add("w3-blue");
+  }
 
   function gotoSlide(slideNr) {
     listItemIndex = 0;
@@ -617,8 +642,6 @@
     }
 
     currentSlide = slideNr;
-
-
 
     let titleDom = document.getElementById("presTitle");
     let paragraphDom = document.getElementById("presParagraph");
@@ -755,11 +778,6 @@
       addListBtn.className = "w3-show";
       deleteListBtn.className = "w3-show";
     }
-
-
-
-
-
 
 
     //

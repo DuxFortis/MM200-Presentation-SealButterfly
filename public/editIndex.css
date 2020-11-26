@@ -14,6 +14,16 @@ body{
     background-image: url("./pictures/LandingPageBackground.png");
 }
 
+h6{
+  opacity: 0;
+}
+
+#description{
+  height: 150px;
+  width: ;
+}
+
+
 /* tok med dette for at bildene ikke blir alt for store må justeres litt på*/
 
 .presImage {
