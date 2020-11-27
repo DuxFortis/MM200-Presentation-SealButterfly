@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="presNotesIndex.css">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation Notes</title>
+
+</head>
+
+<body>
+
+    <p id="presTitle" class="w3-center"></p>
+    <p id="currentNotes"></p>
+
+</body>
+
+<script>
+
+
+    const currentNotes = document.getElementById("currentNotes");
+
+    setInterval(function () {
+        currentSlideNotesInfo = localStorage.getItem("CurrentSlideNotesInfo");
+
+        currentSlideNotesInfo = JSON.parse(currentSlideNotesInfo);
+        currentNotes.innerHTML = "";
+
+        if (currentSlideNotesInfo.title) {
+            currentNotes.innerHTML += `
+            Current slide:
+            <br>
+            ${currentSlideNotesInfo.title}
+            <br>
+            `
+        }
+        
+        if (currentSlideNotesInfo.notes) {
+            currentNotes.innerHTML += `
+            <br>
+            Notes:
+            <br>
+            ${currentSlideNotesInfo.notes}
+            `
+        }
+
+    }, 1000);
+
+</script>

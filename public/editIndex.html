@@ -100,6 +100,7 @@
           <button id="addListBtn" class="w3-hide" onclick="addListItem()">Add list item</button>
           <button id="deleteListBtn" class="w3-hide" onclick="deleteListItem()">Delete list item</button>
         </div>
+        <div id="slideNotesDiv" class="w3-container w3-bottom"></div>
       </div>
 
       <div class="w3-row"></div>
@@ -121,6 +122,8 @@
 </body>
 
 <script>
+
+  // updatePresLocal("notes", "test, test", currentSlide);
 
   const templateTitleBtn = document.getElementById("templateTitleBtn");
   const templatePictureBtn = document.getElementById("templatePictureBtn");
@@ -274,6 +277,27 @@
     }
   }
 
+
+
+
+  //
+
+  const slideNotesDiv = document.getElementById("slideNotesDiv");
+
+  slideNotesDiv.addEventListener("keydown", function(evt){
+    let keyCode = evt.keyCode;
+
+    let slideNotesVal = document.getElementById("notes").value;
+
+    if(keyCode === 13){
+      updatePresLocal("notes", slideNotesVal, currentSlide)
+    }
+  })
+
+
+  //
+
+
   //
 
 
@@ -302,7 +326,7 @@
     let editTextStorage = editText.innerText;
 
     let check = editTextStorage.split("• ");
-     
+
     if (check[1]) {
       editTextStorage = check[1];
     }
@@ -649,6 +673,7 @@
     let titleDom = document.getElementById("presTitle");
     let paragraphDom = document.getElementById("presParagraph");
     let imgDom = document.getElementById("inputImg");
+    let slideNotesDom = document.getElementById("slideNotesDiv");
     let fontType = presentation.font;
 
     switch (fontType) {
@@ -669,6 +694,9 @@
     paragraphDom.innerHTML = "";
     titleDom.innerHTML = "";
     imgDom.innerHTML = "";
+
+    slideNotesDom.innerHTML = `<input id="notes" class="w3-center w3-border w3-border-black" value="${presentation.slides["Slide" + currentSlide].notes}">`;
+
     addListBtn.className = "w3-hide";
     deleteListBtn.className = "w3-hide";
     paragraphDom.classList = `w3-center ${fontType}`
@@ -684,7 +712,6 @@
         return;
       }
     }
-
 
     titleDom.innerHTML = slideEditMode.title;
 
@@ -783,6 +810,8 @@
     }
 
 
+
+
     //
 
   }
@@ -864,9 +893,9 @@
     const text = document.getElementById("renamePresInp").value
     const description = document.getElementById("description").value;
     if (text !== "") {
-     updatePresLocal("name", text);
+      updatePresLocal("name", text);
     }
-    if(description !== "") {
+    if (description !== "" && description.length < 50) {
       updatePresLocal("description", description);
     }
 

@@ -1,0 +1,17 @@
+* {
+
+    background-color: darkslategray;
+    color: goldenrod;
+    font-family: Verdana, Geneva, sans-serif
+    
+
+
+
+}
+
+p {
+    border-left: 2px solid goldenrod;
+    margin-left: 2px;
+    padding-left: 10px;
+    background-color: darkslategrey;
+  }

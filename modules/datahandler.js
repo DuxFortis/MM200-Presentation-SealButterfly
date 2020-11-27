@@ -125,7 +125,7 @@ class StorageHandler {
 
         //default template 1
         let slides = {
-            "Slide1": { "title": "myTitle" }
+            "Slide1": { "title": "myTitle", "notes": "" }
         }
 
         try {
@@ -207,7 +207,7 @@ class StorageHandler {
                 const newSlide = "Slide" + parseInt(slidesAmount.length + 1);
 
                 //default template 1
-                userSlides[newSlide] = { "title": "myTitle" };
+                userSlides[newSlide] = { "title": "myTitle", "notes": ""};
 
                 results = await client.query('UPDATE presentations SET slides=$2 WHERE id=$1 AND owner=$3', [presentationId, userSlides, owner]);
                 results = await client.query('SELECT slides FROM "public"."presentations" WHERE owner=$1 AND id=$2', [owner, presentationId]);
@@ -326,6 +326,10 @@ class StorageHandler {
 
         const client = new pg.Client(this.credentials);
         let results = 0;
+        
+        /*
+        owner = "test";
+        presentationId = 226;*/
 
         try {
             await client.connect();

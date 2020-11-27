@@ -23,7 +23,7 @@ server.use(express.static('public'));
 server.use(bodyParser.json({ limit: '2mb' }));
 server.use(express.urlencoded({ limit: "2mb", extended: true, parameterLimit: 2000 }));
 */
-server.use(bodyParser.urlencoded({ limit: "25mb",  extended: true, parameterLimit: 1000000 }));
+server.use(bodyParser.urlencoded({ limit: "25mb", extended: true, parameterLimit: 1000000 }));
 server.use(bodyParser.json({ limit: "25mb" }));
 
 
@@ -356,13 +356,13 @@ server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, 
   //template 1 = title, 2 = image, 3 = list
   switch (template) {
     case 1:
-      content = { "title": updateSlide.title};
+      content = { "title": updateSlide.title, "notes": "" };
       break;
     case 2:
-      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText"};
+      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText", "notes": "" };
       break;
     case 3:
-      content = { "title": updateSlide.title, "list": ["myList"]};
+      content = { "title": updateSlide.title, "list": ["myList"], "notes": "" };
       break;
 
   }

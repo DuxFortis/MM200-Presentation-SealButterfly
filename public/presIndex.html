@@ -45,11 +45,11 @@
             </a>
           </div>
           <div class="scroller">
-          <p>Slides</p>
-          <ul id="allSlides" class="w3-ul">
-            <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
-          </ul>
-        </div>
+            <p>Slides</p>
+            <ul id="allSlides" class="w3-ul">
+              <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
+            </ul>
+          </div>
           <button id="presFullScreenBtn" class="w3-right w3-button w3-display-bottomleft"><i id="viewBtn"
               class="material-icons w3-xxl">tv</i></button>
 
@@ -103,7 +103,7 @@
       //location.href = "/userIndex.html";
       presId = prompt("Presentation ID:");
       sessionStorage.setItem("CurrentlyViewing", presId);
-      if(!presId || presId.length === 0){
+      if (!presId || presId.length === 0) {
         location.href = "/userIndex.html";
       }
     }
@@ -188,6 +188,7 @@
 
       if (key === 27) {
         fullscreenFunction();
+        myWindow.close();
       }
 
       if (key === 39) {
@@ -229,6 +230,29 @@
   });
 
   //
+
+  setInterval(() => {
+
+    if (isFullScreenOn) {
+
+      let currentSlideNotes = presentation.slides["Slide" + currentSlide].notes;
+      let currentSlideTitle = presentation.slides["Slide" + currentSlide].title;
+
+
+      let currentSlideNotesInfo = { "title": currentSlideTitle, "notes": currentSlideNotes };
+
+      localStorage.setItem("CurrentSlideNotesInfo", JSON.stringify(currentSlideNotesInfo));
+
+    } else {
+      let check = localStorage.getItem("CurrentSlidesNotesInfo");
+
+      if(check){
+        localStorage.clear("CurrentSlideNotesInfo");
+      }
+      
+    }
+
+  }, 1000);
 
 
   // goto slide, oppdaterer slide innhold
@@ -338,20 +362,43 @@
 
   const presFullScreenBtn = document.getElementById("presFullScreenBtn");
 
+  let myWindow = "";
+
   presFullScreenBtn.addEventListener('click', function (evt) {
     fullscreenFunction();
+    // ----------------------------------------------
+
+    let presNotesURL = "http://localhost:8080/presNotesIndex.html";
+
+
+    myWindow = window.open(presNotesURL, "", "width=100, height=100");  // Opens a new window
+
+    myWindow.resizeTo(350, 350);                             // Resizes the new window
+    myWindow.moveTo(900, 500);
+    myWindow.focus();                                    // Sets focus to the new window
+
+    
+
   });
+  // ----------------------------------------------
 
   const stopFs = document.getElementById("stopFs");
 
   stopFs.addEventListener('click', function (evt) {
     fullscreenFunction();
+
+    myWindow.close();
   });
 
   //
 
+
   // fullscren function
   function fullscreenFunction() {
+
+
+
+
 
     const viewNormal = document.getElementById("viewNormal");
 
