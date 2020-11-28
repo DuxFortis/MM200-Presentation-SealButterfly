@@ -50,6 +50,8 @@
               <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
             </ul>
           </div>
+          <label>You can start an auto playback here</label>
+          <input id="autoPlayback" type="integer" placeholder="Auto playback (sec)"></input>
           <button id="presFullScreenBtn" class="w3-right w3-button w3-display-bottomleft"><i id="viewBtn"
               class="material-icons w3-xxl">tv</i></button>
 
@@ -149,6 +151,35 @@
     }
   }
 
+  // auto playback
+
+  let timerEvent = document.getElementById("autoPlayback");
+
+  timerEvent.addEventListener("keydown", function (evt) {
+    let keyCode = evt.keyCode;
+
+    let timerSeconds = document.getElementById("autoPlayback").value;
+    let timer = timerSeconds * 1000;
+    timer = parseInt(timer);
+
+    if (keyCode === 13) {
+      startTimer(timer);
+    }
+  })
+
+  function startTimer(timer) {
+
+    setInterval(() => {
+
+      if (isFullScreenOn) {
+        currentSlide++;
+        gotoSlide(currentSlide);
+      }
+
+    }, timer);
+
+  }
+
   //
 
   // refresh presentation, henter presentasjonen fra sessionstorage og viser innhold 
@@ -246,10 +277,10 @@
     } else {
       let check = localStorage.getItem("CurrentSlidesNotesInfo");
 
-      if(check){
+      if (check) {
         localStorage.clear("CurrentSlideNotesInfo");
       }
-      
+
     }
 
   }, 1000);
@@ -377,7 +408,7 @@
     myWindow.moveTo(900, 500);
     myWindow.focus();                                    // Sets focus to the new window
 
-    
+
 
   });
   // ----------------------------------------------
