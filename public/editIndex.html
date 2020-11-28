@@ -1,241 +1,923 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>Client</title>
-    <link rel="stylesheet" href="editIndex.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client</title>
+  <link rel="stylesheet" href="editIndex.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
 <body>
+  <!--------- Sb slides logo image ------------>
+  <img id="logo" src="./pictures/logo.png">
 
-    <img id="logo" src= "./pictures/logo.png">
-
-
-    <div class="w3-dropdown-click w3-right">
-        <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
-        <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
-          <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
-          <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+  <!--------- Account dropdown options ------------>
+  <div class="w3-dropdown-click w3-right">
+    <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
+    <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
+      <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+      <a href="#" id="updateAcc" class="w3-bar-item w3-button">Update account</a>
+      <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+    </div>
+  </div>
+  <!--------- Active slides panel ------------>
+  <div class="w3-row">
+    <div class="w3-container w3-border w3-white container">
+      <div class="w3-col l2 s2">
+        <div class="w3-container w3-white">
+          <p>Your slides</p>
+          <div class="scroller">
+            <ul id="allSlides" class="w3-ul">
+              <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
+            </ul>
+          </div>
+          <!--------- add & delete slides buttons ------------>
+          <br>
+          <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
+          <br>
+          <div id="deleteSlideBtn" class="w3-hover-grey w3-button">Delete slide </div>
         </div>
       </div>
-
-
-
-    <div class="w3-row">
-      <div class="w3-container w3-border w3-white container">
-            <div class="w3-col l2 s2">
-                <div class="w3-container w3-white">
-                    <p>Your slides</p>
-                    <ul id="allSlides" class="w3-ul">
-                      <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
-                    </ul>
-                    <div id="newSlideBtn" class="w3-hover-grey w3-button">Create slide</div>
-                </div>
+      <!--------- TOOLBAR start ------------>
+      <div class="w3-col l8 s8">
+        <div class="w3-container w3-border w3-white">
+          <div class="w3-bar w3-light-grey">
+            <a href="#" class="w3-bar-item w3-button" onClick="updatePresentation()">
+              <i id="saveBtn" class="material-icons">save</i>
+              <br><label>Save</label>
+            </a>
+            <div class="w3-dropdown-hover">
+              <button class="w3-button">
+                <i class="material-icons">T</i>
+              </button>
+              <br><label>Font</label>
+              <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <a id="arialBtn" href="#" class="w3-bar-item w3-button">Arial</a>
+                <a id="timesBtn" href="#" class="w3-bar-item w3-button">Times New Roman</a>
+                <a id="lucidaBtn" href="#" class="w3-bar-item w3-button">Lucida Console</a>
+              </div>
             </div>
-            <div class="w3-col l8 s8">
-                <div class="w3-container w3-border w3-white">
-                  <div class="w3-row">
-                    <h2>Toolbar</h2>
-                  </div>
-                  <div class="w3-container edit">
-                    <div id="theme">
-                      <img id="themeImage" src="pictures/Theme_Light.png">
-                    </div>
-                      <h1 id="presTitle" class="w3-center">New Presentation</h1>
-                      <p id="presParagraph" class="w3-center">
-                          Lorem Ipsum Dolor
-                      </p>
-                    </div>
-                </div>
+            <div id="presentationVisability">
+              <a href="#" class="w3-bar-item w3-button" onClick="changeVisability('public', true)">
+                <div id="private" name="visability" value="private">
+                  <i class="fa fa-lock"></i></div>
+                <label>Private</label>
+              </a>
             </div>
-            <div class="w3-col l2 s2">
-                <div class="w3-container w3-white">
-                    <p>Templates</p>
-                    <ul class="w3-ul">
-                        <li class="w3-hover-grey">Template Title</li>
-                        <li class="w3-hover-grey">Template Picture</li>
-                        <li class="w3-hover-grey">Template List</li>
-                    </ul>
-                </div>
-            </div>
+            <a id="renamePres" href="#" class="w3-bar-item">
+              <input id="renamePresInp" type="text" placeholder="Rename presentation">
+            </a>
+            <a id="updateText" href="#" class="w3-bar-item">
+              <div id="thisPres"></div>
+            </a>
+            <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
+              <i class="material-icons">home</i>
+              <br><label>Home</label>
+            </a>
+          </div>
+        </div>
+        <!--------- TOOLBAR end ------------>
+
+        <!--------- Slide object HTML ------------>
+        <div id="edit" class="w3-container w3-center edit">
+          <div id="theme"> </div>
+          <h1 id="presTitle" class="w3-center"></h1>
+          <div id="inputImg" class="w3-center"></div>
+          <div id="presParagraph" class="w3-center">
+          </div>
+        </div>
+        <!--------- Slide Template elements ------------>
       </div>
+      <div class="w3-col l2 s2">
+        <div class="w3-container w3-white">
+          <p>Slide Templates</p>
+          <ul class="w3-ul">
+            <li id="templateTitleBtn" class="w3-hover-grey w3-button">Template Title</li>
+            <li id="templatePictureBtn" class="w3-hover-grey w3-button">Template Picture</li>
+            <li id="templateListBtn" class="w3-hover-grey w3-button">Template List</li>
+          </ul>
+          <button id="addListBtn" class="w3-hide" onclick="addListItem()">Add list item</button>
+          <button id="deleteListBtn" class="w3-hide" onclick="deleteListItem()">Delete list item</button>
+        </div>
+        <div id="slideNotesDiv" class="w3-container w3-bottom"></div>
+      </div>
+      <!--------- Description ------------>
+      <div class="w3-row"></div>
+      <div class="w3-col l2 s2">
+        <h6>I am hidden</h6>
+      </div>
+      <div class="w3-col l8 s8">
+        <div id="descriptionDiv" class="w3-container">
+          <input id="description" class="w3-center w3-border w3-border-black" value="Description"></input>
+        </div>
+      </div>
+      <div class="w3-col l2 s2">
+        <h6>I am hidden</h6>
+      </div>
+
     </div>
-
-
-
-
-
-
-
-
+  </div>
 
 </body>
 
 <script>
-// dropdown function w3.css
 
-function myAccount() {
-  var x = document.getElementById("Acc");
-  if (x.className.indexOf("w3-show") == -1) { 
-    x.className += " w3-show";
-  } else {
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
+  // ------------------------------- globale variabler -------------------------- //
 
-const logOut = document.getElementById("logOut");
+  let listItem = "";
+  let presentation = "";
+  let currentSlide = 1;
 
-logOut.addEventListener("click", function(evt){
-  localStorage.clear();
-  sessionStorage.clear();
-  location.href = "/";
-});
+  let imgdata = "";
+  let templateCheck = "";
 
-const accountText = document.getElementById("accountText");
-const username = sessionStorage.getItem("user");
-if(username){
-  accountText.innerHTML = username;
-}
-
-const slideListener = document.getElementById("allSlides");;
-
-getPresentation();
-async function getPresentation() {
-  let presentation = localStorage.getItem("PresentationProject");
-  presentation = JSON.parse(presentation);
-
-  let token = sessionStorage.getItem("token");
-  let username = sessionStorage.getItem("user");
-  if(token !== undefined){
-
-    let body = {
-                  authToken: token,
-                  user: username,
-                  presentationId: presentation.id
-              };
-              let config = {
-                  method: "POST",
-                  headers: {
-                      "content-type": "application/json"
-                  },
-                  body: JSON.stringify(body)
-              }
-
-    const response = await fetch(`/user/presentation/:${presentation.id}`, config);
-    const data = await response.json();
-    console.log(response.status);
-
-    const pres = data[0];
-    const slides = pres.slides;
-
-    if(slides){
-
-    if(pres.theme === "Dark"){
-
-      const themeStyle = document.getElementById("theme");
-      themeStyle.innerHTML = `<img id="themeImage" src="pictures/Theme_Dark.png">`;
-
-    }
-
-    localStorage.setItem("PresentationProject", JSON.stringify(pres));
-
-    gotoSlide();
-
-    refreshSlides();
-
-    }else{
-      location.href = "/userIndex.html";
-    }
-    }
-}
-
-function refreshSlides(){
-
-  let slides = localStorage.getItem("PresentationProject");
-  slides = JSON.parse(slides)
-  slides = slides.slides;
-
-  const allSlides = document.getElementById("allSlides");
-
-  allSlides.innerHTML = "";
-
-  const totalSlides = Object.entries(slides).length;
-
-  allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
-
-  for(let i = 2; i <= totalSlides; i++){
-    allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
-    }
-
-  //slideListener = document.getElementById("allSlides");
-
-}
-
-slideListener.addEventListener("click", function(evt){
-
-if(evt.target.id === "Slides"){
-gotoSlide(evt.target.value);
-}
-
-});
-
-
-
-function gotoSlide(slideNr){
-  if(slideNr === undefined){
-    slideNr = 1;
-  }
-
-  let presentation = localStorage.getItem("PresentationProject");
-  presentation = JSON.parse(presentation);
-  let slideEditMode = presentation.slides["Slide"+slideNr];
-
-
-    document.getElementById("presTitle").innerHTML = slideEditMode.title;
-
-    //document.getElementById("presParagraph").innerHTML = slideEditMode.image;
-
-    //document.getElementById("presParagraph").innerHTML = slideEditMode.imageText;
-
-    //
-
-}
-
-const newSlideBtn = document.getElementById("newSlideBtn");
-
-newSlideBtn.addEventListener("click", async function(evt){
-  let presentation = localStorage.getItem("PresentationProject");
-  presentation = JSON.parse(presentation);
+  let listItemIndex = 0;
 
   const token = sessionStorage.getItem("token");
   const username = sessionStorage.getItem("user");
-  if(token !== undefined){
+  const presId = localStorage.getItem("PresentationProject");
 
-    let body = {
-                  authToken: token,
-                  user: username,
-                  presentationId: presentation.id
-              };
-              let config = {
-                  method: "POST",
-                  headers: {
-                      "content-type": "application/json"
-                  },
-                  body: JSON.stringify(body)
+  const saveKey = 13;
+  const cancelKey = 27;
+
+  //
+
+  // ------------------------- globale dom variabler ------------------------- //
+
+  const arialBtn = document.getElementById(`arialBtn`);
+  const timesBtn = document.getElementById(`timesBtn`);
+  const lucidaBtn = document.getElementById(`lucidaBtn`);
+
+  const templateTitleBtn = document.getElementById("templateTitleBtn");
+  const templatePictureBtn = document.getElementById("templatePictureBtn");
+  const templateListBtn = document.getElementById("templateListBtn");
+  const addListBtn = document.getElementById("addListBtn");
+  const deleteListBtn = document.getElementById("deleteListBtn");
+
+  const slideNotesDiv = document.getElementById("slideNotesDiv");
+  const editListener = document.getElementById("edit");
+
+  const presentationVisability = document.getElementById("presentationVisability");
+
+  const goBackBtn = document.getElementById("goBackBtn");
+
+  const logOut = document.getElementById("logOut");
+  const updateAcc = document.getElementById("updateAcc");
+  const deleteAccBtn = document.getElementById("deleteAcc");
+  const accountText = document.getElementById("accountText");
+
+  const slideListener = document.getElementById("allSlides");
+
+  const titleDom = document.getElementById("presTitle");
+  const paragraphDom = document.getElementById("presParagraph");
+  const imgDom = document.getElementById("inputImg");
+  const slideNotesDom = document.getElementById("slideNotesDiv");
+
+  const newSlideBtn = document.getElementById("newSlideBtn");
+  const deleteSlideBtn = document.getElementById("deleteSlideBtn");
+
+  //
+
+  // ------------------- event listeners for font types --------------------- //
+
+  arialBtn.addEventListener(`click`, () => {
+    presentation.font = 1;
+    gotoSlide(currentSlide);
+  });
+
+  timesBtn.addEventListener(`click`, () => {
+    presentation.font = 2;
+    gotoSlide(currentSlide);
+  });
+
+  lucidaBtn.addEventListener(`click`, () => {
+    presentation.font = 3;
+    gotoSlide(currentSlide);
+  });
+
+  //
+
+
+  // --------------- event listeners for templates------------------- //
+
+  templateTitleBtn.addEventListener('click', function (evt) {
+    templateCheck += "Title";
+    insertTemplateSlide();
+    templateCheck = "";
+  });
+
+  templatePictureBtn.addEventListener('click', function (evt) {
+    templateCheck += "Picture";
+    insertTemplateSlide();
+    templateCheck = "";
+  });
+
+  templateListBtn.addEventListener('click', function (evt) {
+    templateCheck += "List";
+    insertTemplateSlide();
+    templateCheck = "";
+  });
+
+  //
+
+  // ------------------------ Add list items ----------------------
+
+  function addListItem() {
+    let listArray = presentation.slides["Slide" + currentSlide].list;
+    listArray.push("myList");
+    updatePresLocal("list", listArray, currentSlide);
+    gotoSlide(currentSlide);
+  }
+
+  //
+
+  // ---------- Delete list item ---------------- //
+  function deleteListItem() {
+    let listArray = presentation.slides["Slide" + currentSlide].list;
+    listArray.pop();
+    updatePresLocal("list", listArray, currentSlide);
+    gotoSlide(currentSlide);
+  }
+
+  //
+
+  // ---------- Template switcher ------------------ //
+
+  async function insertTemplateSlide() {
+    let templateNr = 1;
+
+    if (templateCheck === "Picture") {
+      templateNr = 2;
+
+    }
+    if (templateCheck === "List") {
+      templateNr = 3;
+    }
+
+    //test <---------- VIKTIG IKKE SLETT
+
+    if (!presId) {
+      location.href = "/userIndex.html";
+      return;
+    }
+
+    const body = { authToken: token, user: username, presentation: presentation, slide: currentSlide, template: templateNr };
+
+    let url = `/presentations/update/${presentation.id}/slides/${currentSlide}/${templateNr}`;
+    let resp = await callServerAPI(body, url);
+    let statusCode = resp.response.status;
+
+    if (statusCode === 200) {
+      getPresentation();
+    }
+
+    //
+
+  }
+
+  // ------------------- enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login ------------ /
+
+  checkIfUserHasToken();
+  function checkIfUserHasToken() {
+    if (!token) {
+      location.href = "/";
+    }
+  }
+
+  //
+
+  // ------------------ event listener for slide notes ---------------- //
+
+  slideNotesDiv.addEventListener("keydown", function (evt) {
+    let keyCode = evt.keyCode;
+
+    let slideNotesVal = document.getElementById("notes").value;
+
+    if (keyCode === 13) {
+      updatePresLocal("notes", slideNotesVal, currentSlide);
+    }
+  });
+
+  //
+
+  // ------------------ event listener for edit text ------------------- //
+
+  editListener.addEventListener("click", function (evt) {
+    let target = evt.target.id;
+
+    if (target === "btnFile" || target === "btnSend" || target === "inpFile") {
+      return;
+    }
+
+    if (target !== "edit" && target !== "inputImg") {
+      editText(target, currentSlide);
+    }
+  });
+
+  // ---------------- edit text function ----------- //
+
+  function editText(text, slide) {
+    if (!text || !slide) {
+      return;
+    }
+
+    let editText = document.getElementById(text);
+
+    let editTextStorage = editText.innerText;
+
+    let check = editTextStorage.split("• ");
+
+    if (check[1]) {
+      editTextStorage = check[1];
+    }
+
+    editText.innerHTML = `<input id='edit${text}' value='${editTextStorage}'></input>`;
+
+    let editNewText = document.getElementById(`edit${text}`);
+
+    editNewText.addEventListener("keydown", function (evt) {
+
+      let indexNum = text.split("itemIndexNum");
+
+      if (indexNum[1]) {
+        text = `itemIndexNum${indexNum[1]}`;
+      }
+
+      let keyCode = evt.keyCode;
+
+      if (keyCode === cancelKey) {
+
+        revertInputBoxToText(text);
+        return;
+      }
+
+      if (keyCode === saveKey) {
+
+        let key = "";
+        switch (text) {
+          case "presTitle":
+            key = "title";
+            break;
+          case `itemIndexNum${indexNum[1]}`:
+            key = "list";
+            editNewText = document.getElementById(`edit${text}`);
+            break;
+          case "presParagraph":
+            key = "imageText";
+            break;
+
+          default:
+            return;
+        }
+
+        const maxLength = 40;
+
+        if (editNewText.value.length > maxLength) {
+          const debugDom = document.getElementById("thisPres");
+          debugDom.innerHTML = `Text exceeds maximum length of ${maxLength} characters!`;
+          revertInputBoxToText(text);
+
+          let timesRun = 0;
+          let interval = setInterval(() => {
+            timesRun = 1;
+            refreshPresentation();
+            if (timesRun === 1) {
+              clearInterval(interval);
+            }
+          }, 3000);
+
+          return;
+        }
+
+        updatePresLocal(key, editNewText.value, slide, indexNum[1]);
+        revertInputBoxToText(text);
+      }
+
+
+
+    })
+  }
+
+  // ------------- update input boxes into text function  ----------------- // 
+
+  function revertInputBoxToText(text) {
+    const revertText = document.getElementById(text);
+    revertText.innerHTML = "";
+    gotoSlide(currentSlide);
+  }
+
+  // ---------------- Changes presentation from public to private vice versa ---------------- //
+
+  function changeVisability(status, change) {
+
+    let html = "";
+
+    if (status === "private") {
+
+      html = `<a href="#" class="w3-bar-item w3-button" onClick="changeVisability('public', true)">
+                  <div id="private" name="visability" value="private">
+                    <i class="fa fa-lock"></i></div>
+                  <label>Private</label>
+            </a>`;
+
+      if (change) {
+        updatePresLocal("ispublic", false);
+      }
+
+    } else {
+
+      html = `<a href="#" class="w3-bar-item w3-button" onClick="changeVisability('private', true)">
+                  <div id="public" name="visability" value="public">
+                    <i class="fa fa-unlock"></i></div>
+                  <label>Public</label>
+            </a>`;
+
+      if (change) {
+        updatePresLocal("ispublic", true);
+      }
+
+    }
+
+    presentationVisability.innerHTML = html;
+
+  }
+
+  // ----------------- my account dropdown elements w3.css --------------------- //
+
+  function myAccount() {
+    var x = document.getElementById("Acc");
+    if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+    } else {
+      x.className = x.className.replace(" w3-show", "");
+    }
+  }
+
+  // ------------- logout --------------------- //
+
+  logOut.addEventListener("click", function (evt) {
+    localStorage.clear();
+    sessionStorage.clear();
+    location.href = "/";
+  });
+
+  // ------------- Update account elements ----------- // 
+
+
+  updateAcc.addEventListener("click", async function (evt) {
+    const newUsername = prompt("Please enter your new username", "");
+    const newPassword = prompt("Please enter your new password or re-enter your current password", "");
+
+    if (newUsername || newPassword) {
+
+      const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`);
+
+      const body = { authToken: token, user: username, authorization: credentials };
+      const url = `/user/update`;
+
+      const results = await callServerAPI(body, url);
+
+      if (results.response.status === 200) {
+        sessionStorage.clear();
+        localStorage.clear();
+        location.href = "/";
+      } else {
+        alert("Username is taken!")
+      }
+
+    }
+  });
+
+  // ------- delete account elements --------- //
+
+  deleteAccBtn.addEventListener('click', async function (evt) {
+
+    const confirmUsername = prompt("Please enter your username!", "");
+    const confirmPassword = prompt("Please enter your password!", "");
+
+    if (confirmUsername || confirmPassword) {
+
+      const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`);
+
+      if (confirmUsername !== username) {
+        alert("Wrong username, try again!");
+        return;
+      }
+
+      const body = { authToken: token, user: username, authorization: credentials };
+      const url = `/user/delete`;
+
+      const confirmPress = confirm("Are you sure you want to delete your account? All your presentations will also be deleted!");
+      if (confirmPress === true) {
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+          sessionStorage.clear();
+          localStorage.clear();
+          location.href = "/";
+        } else {
+          alert("Deletion was unsuccessful, incorrect account information");
+        }
+
+      }
+    }
+  });
+
+  // -------------- display username in account text ----------------------- //
+
+  if (username) {
+    accountText.innerHTML = username;
+  }
+
+  // ----------- retrieve presentation if there is any ------------------ //
+
+  getPresentation(); //laster inn PresentationProject hvis dette finnes
+  async function getPresentation() {
+
+    if (!presId) {
+      location.href = "/userIndex.html";
+      return;
+    }
+
+    const body = { authToken: token, user: username, presentationId: presId };
+    const url = `/view/presentation/${presId}`;
+
+    const results = await callServerAPI(body, url);
+
+    const pres = results.data[0];
+    presentation = pres;
+    const slides = pres.slides;
+    document.title = "Editing: " + presentation.name;
+    const descriptionDiv = document.getElementById("descriptionDiv");
+
+    descriptionDiv.innerHTML = `<input id="description" class="w3-center w3-border w3-border-black" value="${presentation.description}">`;
+
+    if (slides) {
+
+      let bildeUrl = "pictures/Theme_Light.png";
+
+      if (pres.theme === "Dark") {
+        bildeUrl = "pictures/Theme_Dark.png";
+      }
+
+      let edit = document.getElementById("edit");
+      edit.style.background = "url(" + bildeUrl + ")";
+      edit.style.width = "100%";
+      edit.style.height = "550px";
+
+      gotoSlide(currentSlide);
+
+      refreshPresentation();
+
+    } else {
+      location.href = "/userIndex.html";
+    }
+  }
+
+  //
+
+  // ---------- slide listener ------------------ //
+
+  slideListener.addEventListener("click", function (evt) {
+
+    if (evt.target.id === "Slides") {
+      displayActiveSlide(evt.target.value)
+      gotoSlide(evt.target.value);
+    }
+
+  });
+
+  // ------------- show slides ----------------------- //
+
+  function displayActiveSlide(nextSlide) {
+    let slideIndicator = document.getElementsByName(`slide${currentSlide}`);
+    slideIndicator[0].classList.remove("w3-blue");
+
+    slideIndicator = document.getElementsByName(`slide${nextSlide}`);
+    slideIndicator[0].classList.add("w3-blue");
+  }
+
+  // ----- goto slide ------ // ------- refresh slide -------- //
+
+  function gotoSlide(slideNr) {
+    listItemIndex = 0;
+
+    if (slideNr === undefined) {
+      if (presentation.slides.Slide1 !== undefined) {
+        slideNr = 1;
+      } else {
+        return;
+      }
+    }
+
+    currentSlide = slideNr;
+
+    let fontType = presentation.font;
+
+    switch (fontType) {
+      case 1:
+        fontType = "sansserif";
+        break;
+      case 2:
+        fontType = "serif";
+        break;
+      case 3:
+        fontType = "monospace";
+        break;
+      default:
+        fontType = "sansserif";
+        break;
+    }
+
+    paragraphDom.innerHTML = "";
+    titleDom.innerHTML = "";
+    imgDom.innerHTML = "";
+
+    addListBtn.className = "w3-hide";
+    deleteListBtn.className = "w3-hide";
+    paragraphDom.classList = `w3-center ${fontType}`
+    titleDom.classList = `w3-center ${fontType}`
+
+    // ---------------- check if next slide exists ----------------- //
+
+    let slideEditMode = presentation.slides["Slide" + currentSlide];
+    if (!slideEditMode) {
+
+      currentSlide--;
+      slideEditMode = presentation.slides["Slide" + currentSlide];
+
+      if (!slideEditMode) {
+        return;
+      }
+    }
+
+    titleDom.innerHTML = slideEditMode.title;
+
+    //--------------------- check if current template is image type ----------- //
+
+    if (slideEditMode.image !== undefined) {
+
+      if (slideEditMode.image !== "") {
+
+        imgDom.innerHTML = `<img class="presImage" src="${slideEditMode.image}">`;
+        paragraphDom.innerHTML = slideEditMode.imageText;
+
+      }
+      else {
+        html = `
+        <label id="btnFile" for="inpFile">Select file
+          <img id="btnImg" >
+          </label>   
+       <input id="inpFile" type="file" accept="image/*" />
+       <button id="btnSend">Send image</button>   `;
+        paragraphDom.innerHTML = html;
+
+        let btnImg = document.getElementById('btnImg');
+        let inpFile = document.getElementById('inpFile');
+        let btnSend = document.getElementById('btnSend');
+
+        btnSend.addEventListener('click', async function (evt) {
+
+          updatePresLocal("image", imgdata, currentSlide);
+          gotoSlide(currentSlide);
+
+        });
+
+        // ----------------------select and handle image ------------------------- //
+        inpFile.addEventListener('change', function (evt) {
+
+          let file = inpFile.files[0];
+
+          if (file.type != "image/png" && file.type != "image/jpeg") {
+
+            const debugDom = document.getElementById("updateText");
+            debugDom.innerHTML = `<div id='thisPres'>Wrong filetype!</div>`;
+
+            let timesRun = 0;
+            let interval = setInterval(() => {
+              timesRun = 1;
+              refreshPresentation();
+              if (timesRun === 1) {
+                clearInterval(interval);
               }
+            }, 3000);
 
-    const response = await fetch(`/user/presentation/${presentation.id}/slide`, config);
+          }
+
+          if (file.size > 1000000) {
+
+            const debugDom = document.getElementById("updateText");
+            debugDom.innerHTML = `<div id='thisPres'>The file is too large!</div>`;
+
+            let timesRun = 0;
+            let interval = setInterval(() => {
+              timesRun = 1;
+              refreshPresentation();
+              if (timesRun === 1) {
+                clearInterval(interval);
+              }
+            }, 3000);
+
+          }
+
+          let freader = new FileReader();
+          freader.addEventListener('load', function (evt) {
+            btnImg.src = freader.result;
+            imgdata = freader.result;
+          });
+          freader.readAsDataURL(file);
+        })
+
+      }
+
+    }
+
+    // -------------------------------- checks if current template is list type -------------------- //
+
+    if (slideEditMode.list) {
+
+      let listArr = slideEditMode.list;
+
+      for (let i = 0; i < listArr.length; i++) {
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
+        listItemIndex++;
+
+      }
+
+      listItem = document.getElementsByClassName("listItem");
+
+      addListBtn.className = "w3-show";
+      deleteListBtn.className = "w3-show";
+    }
+
+    if (slideEditMode.notes) {
+      slideNotesDom.innerHTML = `<input id="notes" class="w3-center w3-border w3-border-black" value="${presentation.slides["Slide" + currentSlide].notes}">`;
+    }
+
+  }
+
+  //---------- creates new slide via button ------------------ //
+
+  newSlideBtn.addEventListener("click", async function (evt) {
+    await updatePresentation();
+
+    currentSlide = Object.entries(presentation.slides);
+
+    currentSlide = currentSlide.length + 1;
+
+    const body = { authToken: token, user: username, presentationId: presentation.id };
+    const url = `/user/presentation/${presentation.id}/slide`;
+
+    const results = await callServerAPI(body, url);
+
+    currentSlide++;
+    if (results.response.status === 200) {
+      getPresentation();
+    }
+
+  });
+
+  // ---------------- deletes slide via button ---------------- //
+
+  deleteSlideBtn.addEventListener("click", async function (evt) {
+
+    const body = { authToken: token, user: username, presentation: presentation, slide: currentSlide };
+    const url = `/presentations/delete/${presentation.id}/slides/${currentSlide}`;
+
+    const results = await callServerAPI(body, url);
+
+    if (results.response.status === 200) {
+      getPresentation();
+    }
+
+  });
+
+  // ------------------- updates presentation object ------------------ // 
+
+  function refreshPresentation() {
+
+    slides = presentation.slides;
+
+    const resetInp = document.getElementById("renamePres");
+    resetInp.innerHTML = `<input id="renamePresInp" type="text" placeholder="Rename presentation">`;
+
+    if (presentation.ispublic === false) {
+
+      changeVisability("private", false);
+    } else {
+      changeVisability("public", false);
+    }
+
+    const thisPres = document.getElementById("thisPres");
+    thisPres.innerHTML = "You are working on: " + presentation.name;
+
+    const allSlides = document.getElementById("allSlides");
+
+    allSlides.innerHTML = "";
+
+    const totalSlides = Object.entries(slides).length;
+
+    if (presentation.slides.Slide1 !== undefined) {
+      allSlides.innerHTML += `<li id="Slides" name='slide1' class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    }
+
+    for (let i = 2; i <= totalSlides; i++) {
+      allSlides.innerHTML += `<br><li id="Slides" name='slide${i}' class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+    }
+
+    gotoSlide(currentSlide);
+
+  }
+
+  // -------------- go back to home page button ---------------- //
+
+  goBackBtn.addEventListener("click", function (evt) {
+    location.href = "/userIndex.html";
+  });
+
+  // ------------- update local presentation variable -------------- //
+
+  function updatePresLocal(key, value, slide, arrayIndex) {
+    if (key === "" || value === "") {
+      return;
+    }
+
+    if (slide) {
+      if (arrayIndex) {
+        let listArray = presentation.slides["Slide" + slide][key];
+        listArray[arrayIndex] = value;
+        presentation.slides["Slide" + slide][key] = listArray;
+      } else {
+        presentation.slides["Slide" + slide][key] = value;
+      }
+    } else {
+      presentation[key] = value;
+    }
+
+  }
+
+  // ------------- saves presentation via server, then middleware, then database ------------- //
+
+  async function updatePresentation() {
+
+    const text = document.getElementById("renamePresInp").value
+    const description = document.getElementById("description").value;
+    if (text !== "") {
+      updatePresLocal("name", text);
+    }
+    if (description !== "" && description.length < 50) {
+      updatePresLocal("description", description);
+    }
+
+    const body = { authToken: token, user: username, presentation: presentation };
+    const url = `/presentations/update/${presentation.id}`;
+
+    const results = await callServerAPI(body, url);
+
+    if (results.response.status === 200) {
+
+      const debugDom = document.getElementById("updateText");
+      debugDom.innerHTML = `<div id='thisPres'>Saved!</div>`;
+
+      let timesRun = 0;
+      let interval = setInterval(() => {
+        timesRun = 1;
+        refreshPresentation();
+        if (timesRun === 1) {
+          clearInterval(interval);
+        }
+      }, 1500);
+    }
+  }
+
+  // ----------------  fetch server api function ------------------- //
+
+  async function callServerAPI(body, url) {
+
+    if (body === "" || url === "" || !body.authToken) {
+      return;
+    }
+
+    const config = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+
+    const response = await fetch(url, config);
     const data = await response.json();
     console.log(response.status);
+    return { "response": response, "data": data };
+  };
 
-    getPresentation();
-    }
-})
-
-
-
+//
 
 </script>

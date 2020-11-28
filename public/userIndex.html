@@ -1,268 +1,498 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>Client</title>
-    <link rel="stylesheet" href="userIndex.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Userpage</title>
+  <link rel="stylesheet" href="userIndex.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
+
 <body>
+  <!--------- Sb slides logo image ------------>
+  <img id="logo" src="./pictures/logo.png">
 
-    <img id="logo" src= "./pictures/logo.png">
 
-    <div class="w3-dropdown-click w3-right">
-      <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
-      <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
-        <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
-        <a href="#" id="deleteAcc" class="w3-bar-item w3-button">Delete account</a>
+  <!--------- dropdown account menu ------------>
+  <div class="w3-dropdown-click w3-right">
+    <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
+    <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
+      <a href="#" id="logOut" class="w3-bar-item w3-button">Log out</a>
+      <a href="#" id="updateAcc" class="w3-bar-item w3-button">Update account</a>
+      <a href="#" id="deleteAccBtn" class="w3-bar-item w3-button">Delete account</a>
+    </div>
+  </div>
+  <!--------- presentation visability tabs ------------>
+  <div class="w3-bar w3-white">
+    <button id="createSlidesBtn" class="w3-bar-item w3-button tablink w3-black"
+      onclick="openTab(event,'createTab')">Create Slides</button>
+    <button id="privateSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private
+      Slides</button>
+    <button id="yourSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your
+      Slides</button>
+    <button id="publicSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public
+      Slides</button>
+  </div>
+  <!--------- Create new presentation with chosen theme ------------>
+  <div id="createTab" class="w3-container w3-border w3-white tab">
+    <p>Here you can create a new slideshow from these templates:</p>
+    <div id="themeSelector" class="w3-row-padding" style="margin:0 -16px">
+      <div class="w3-half">
+        <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioLight" value="light"
+          style="margin:0;padding:0 " onclick="chooseTheme(event, `Light`)" checked>
+          <img src="./pictures/Theme_Light.png" style="width:100%">
+          <p>Light theme</p>
+        </div>
+      </div>
+      <div class="w3-half">
+        <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioDark" value="dark"
+          style="margin:0;padding:0" onclick="chooseTheme(event, `Dark`)">
+          <img src="./pictures/Theme_Dark.png" style="width:100%">
+          <p>Dark theme</p>
+        </div>
       </div>
     </div>
+    <br>
+    <input id="presentationName" placeholder="Your slideshow name">
+    <button class="w3-button w3-border" id="createNew">Create new slideshow</button>
+  </div>
+  <!--------- Shows private presentations ------------>
+  <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
+    <h2>My private slideshows</h2>
+    <p id="privateText">Here you will find your private slideshows.</p>
+    <div id="myPrivContainer" class="w3-row w3-white">
 
-    <div class="w3-bar w3-white">
-        <button id="createSlidesBtn" class="w3-bar-item w3-button tablink w3-black" onclick="openTab(event,'createTab')">Create Slides</button>
-        <button id="privateSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'privateTab')">Private Slides</button>
-        <button id="yourSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'myPublicTab')">Your Slides</button>
-        <button id="publicSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public Slides</button>
-      </div>
-
-    <div id="createTab" class="w3-container w3-border w3-white tab">
-      <p>Here you can create a new slideshow from these templates:</p>
-      <div id="themeSelector" class="w3-row-padding" style="margin:0 -16px">
-          <div class="w3-half">
-            <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioLight" value="light" style="margin:0;padding:0 " onclick="chooseTheme(event, `Light`)" checked>
-              <img src="./pictures/Theme_Light.png" style="width:100%">
-              <p>Light theme</p>
-            </div>
-          </div>
-        <div class="w3-half">
-          <div class="w3-button w3-white w3-radio tablinkTheme theme" type="radio" id="themeRadioDark" value="dark" style="margin:0;padding:0" onclick="chooseTheme(event, `Dark`)">
-            <img src="./pictures/Theme_Dark.png" style="width:100%">
-              <p>Dark theme</p>
-          </div>
-        </div>
-      </div>
-      <br>
-        <input id="presentationName" placeholder="Your slideshow name">
-        <button class="w3-button w3-border" id="createNew">Create new slideshow</button>
     </div>
-      
-      <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
-        <h2>My private slideshows</h2>
-        <p>Here you will find your private slideshows.</p>
-        <div id="myPrivContainer" class="w3-row w3-white">
-            
-          </div>
-      </div>
-      
-      <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
-        <h2>My slideshows</h2>
-        <p>Here you will find your public slideshows.</p>
-        <div id="myPubContainer" class="w3-row w3-white">
-          
-        </div>
-      </div>
+  </div>
+  <!--------- Shows the users public presentations ------------>
+  <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
+    <h2>My slideshows</h2>
+    <p id="publicText">Here you will find your public slideshows.</p>
+    <div id="myPubContainer" class="w3-row w3-white">
 
-      <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
-        <h2>Public slideshows</h2>
-        <p>Here are other users public slideshows.</p>
-        <div class="w3-row w3-white">
-         
-        </div>
-      </div>
+    </div>
+  </div>
+  <!--------- Shows ALL users public presentations  ------------>
+  <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
+    <h2>Public slideshows</h2>
+    <p>Here are other users public slideshows.</p>
+    <div id="allPublicContainer" class="w3-row w3-white">
+    </div>
+  </div>
 
-    
+  <script>
 
+    //--------------- globale variabler ------------------ //
 
-<script>
+    let chosenTheme = "Light";
 
-// tab function, w3.css
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
 
-function openTab(evt, tabName) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName("tab");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " w3-black";
-}
+    //
+
+    // ----------------------- globale dom variabler ------------------- //
+
+    const logOut = document.getElementById("logOut");
+    const updateAcc = document.getElementById("updateAcc");
+    const deleteAccBtn = document.getElementById("deleteAccBtn");
+
+    const accountText = document.getElementById("accountText");
+
+    const createNewBtn = document.getElementById("createNew");
+
+    const privateSlidesBtn = document.getElementById("privateSlidesBtn");
+    const publicSlidesListener = document.getElementById("yourSlidesBtn");
+    const publicSlidesBtn = document.getElementById("publicSlidesBtn");
+
+    //
 
 
-// dropdown function w3.css
+    // --------- enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login -------- //
 
-function myAccount() {
-  var x = document.getElementById("Acc");
-  if (x.className.indexOf("w3-show") == -1) { 
-    x.className += " w3-show";
-  } else {
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
-
-const logOut = document.getElementById("logOut");
-
-logOut.addEventListener("click", function(evt){
-  localStorage.clear();
-  sessionStorage.clear();
-  location.href = "/";
-});
-
-//create new presentation
-let chosenTheme = "Light";
-
-function chooseTheme(evt, themeName) {
-  var i, x, tablinksTheme;
-  x = document.getElementsByClassName("theme");
-  chosenTheme = themeName;
-  let fullThemeName = `themeRadio${themeName}`
-
-  tablinksTheme = document.getElementsByClassName("tablinkTheme");
-  for (i = 0; i < x.length; i++) {
-    tablinksTheme[i].className = tablinksTheme[i].className.replace(" w3-black", "");
-  }
-  document.getElementById(fullThemeName).style.display = "block";
-  evt.currentTarget.className += " w3-black";
-}
-
-const accountText = document.getElementById("accountText");
-const username = sessionStorage.getItem("user");
-if(username){
-  accountText.innerHTML = username;
-}
-
-// create new presentation
-
-
-const createNewBtn = document.getElementById("createNew");
-
-createNewBtn.addEventListener("click", async function(evt) {
-
-  const newPresentation = document.getElementById("presentationName").value;
-
-  const userPref = true;//document.getElementById("publicOrPrivate");
-
-  let token = sessionStorage.getItem("token");
-  let username = sessionStorage.getItem("user");
-        if(token !== undefined){
-
-            let body = {
-                authToken: token,
-                user: username,
-                presentation: {"name": newPresentation, "theme": chosenTheme, "isPublic": userPref},
-            }
-            let config = {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json"
-                },
-                body: JSON.stringify(body)
-            }
-
-            const response = await fetch("/presentation", config);
-            const data = await response.json();
-            if(response.status === 200){
-              localStorage.setItem("PresentationProject", JSON.stringify(data))
-              console.log(data)
-              location.href = "/editIndex.html";
-            }
-            console.log(response.status);
-            
-        }
-  
-});
-
-//
-
-// Get user public or hidden presentations
-
-const privateSlidesBtn = document.getElementById("privateSlidesBtn");
-
-const publicSlidesListener = document.getElementById("yourSlidesBtn");
-
-publicSlidesListener.addEventListener("click", async function(evt){
-
-  getUserPresentations(true);
-
-  console.log("Loading public presentations")
-
-});
-
-privateSlidesBtn.addEventListener("click", async function(evt){
-
-  getUserPresentations(false);
-
-  console.log("Loading private presentations")
-
-});
-
-async function getUserPresentations(isPublicOrNot){
-
-  let token = sessionStorage.getItem("token");
-  let username = sessionStorage.getItem("user");
-  if(token !== undefined){
-
-    let body = {
-                  authToken: token,
-                  user: username,
-                  isPublic: isPublicOrNot,
-              };
-              let config = {
-                  method: "POST",
-                  headers: {
-                      "content-type": "application/json"
-                  },
-                  body: JSON.stringify(body)
-              }
-
-    const response = await fetch(`/${username}/presentations/${isPublicOrNot}`, config);
-    const data = await response.json();
-    console.log(response.status);
-    if(response.status === 200){
-    displayPresentations(data, isPublicOrNot);
+    checkIfUserHasToken();
+    function checkIfUserHasToken() {
+      if (!token) {
+        location.href = "/";
+      }
     }
-}}
 
-function displayPresentations(presArr, isPublicOrNot){
+    //
 
-  let container = document.getElementById('myPubContainer')
+    // --------------- tab function, w3.css -------------------
 
-  if(!isPublicOrNot){
-    container = document.getElementById('myPrivContainer');
-  }
+    function openTab(evt, tabName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("tab");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-black", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " w3-black";
+    }
 
-  for (let i = 0; i < presArr.length; i++) {
+    //
 
-  let myDiv = document.createElement("div");
-  myDiv.classList.add("pres");
+    // ----------------- dropdown function w3.css ------------------- // 
 
-  let myHtml = `
-      <h3>Title: ${presArr[i].name}</h3>
-      <h4>Theme: ${presArr[i].theme}</h4>  
-      <p>${presArr[i].description}</p>
-                
+    function myAccount() {
+      var x = document.getElementById("Acc");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+
+    //
+
+    // ----------------- logout function ------------------------ //
+
+    logOut.addEventListener("click", function (evt) {
+      localStorage.clear();
+      sessionStorage.clear();
+      location.href = "/";
+    });
+
+    //
+
+    // ----------------------- update account function --------------------- //
+
+    updateAcc.addEventListener("click", async function (evt) {
+      const newUsername = prompt("Please enter your new username", "");
+      const newPassword = prompt("Please enter your new password or re-enter your current password", "");
+
+      if (newUsername || newPassword) {
+
+        const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`);
+        const body = { authToken: token, user: username, authorization: credentials };
+        const url = `/user/update`;
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+          sessionStorage.clear();
+          localStorage.clear();
+          location.href = "/";
+        } else {
+          alert("Username is taken!")
+        }
+
+      }
+    });
+
+    //
+
+    // -------------------- delete account button --------------------------- //
+
+    deleteAccBtn.addEventListener('click', async function (evt) {
+
+      const confirmUsername = prompt("Please enter your username!", "");
+      const confirmPassword = prompt("Please enter your password!", "");
+
+      if (confirmUsername || confirmPassword) {
+
+        const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`);
+
+        if (confirmUsername !== username) {
+          alert("Wrong username, try again!");
+          return;
+        }
+
+        const body = { authToken: token, user: username, authorization: credentials };
+        const url = `/user/delete`;
+
+        const confirmPress = confirm("Are you sure you want to delete your account? All your presentations will also be deleted!");
+        if (confirmPress === true) {
+
+          const results = await callServerAPI(body, url);
+
+          if (results.response.status === 200) {
+            sessionStorage.clear();
+            localStorage.clear();
+            location.href = "/";
+          } else {
+            alert("Deletion was unsuccessful, incorrect account information");
+          }
+
+        }
+      }
+    });
+
+    //
+
+    //--------- vis brukernavn istedenfor account ---------- // 
+
+    if (username) {
+      accountText.innerHTML = username;
+    }
+
+    //
+
+    // --------------- get user chosen theme ----------------- //
+
+    function chooseTheme(evt, themeName) {
+      var i, x, tablinksTheme;
+      x = document.getElementsByClassName("theme");
+      chosenTheme = themeName;
+      let fullThemeName = `themeRadio${themeName}`
+
+      tablinksTheme = document.getElementsByClassName("tablinkTheme");
+      for (i = 0; i < x.length; i++) {
+        tablinksTheme[i].className = tablinksTheme[i].className.replace(" w3-black", "");
+      }
+      document.getElementById(fullThemeName).style.display = "block";
+      evt.currentTarget.className += " w3-black";
+    }
+
+    //
+
+    // --------------------- create new presentation button -------------------- //
+
+    createNewBtn.addEventListener("click", async function (evt) {
+
+      const newPresentation = document.getElementById("presentationName").value;
+      const userPref = true;
+
+      const body = { authToken: token, user: username, presentation: { "name": newPresentation, "theme": chosenTheme, "isPublic": userPref } };
+      const url = `/presentation`;
+
+      const results = await callServerAPI(body, url);
+
+      if (results.response.status === 200) {
+        localStorage.setItem("PresentationProject", JSON.stringify(results.data.id))
+        location.href = "/editIndex.html";
+      }
+
+    });
+
+    //
+
+    // ------------------ Get user presentations btn public or private --------------------------- //
+
+    publicSlidesListener.addEventListener("click", async function (evt) {
+
+      getUserPresentations(true);
+
+    });
+
+    privateSlidesBtn.addEventListener("click", async function (evt) {
+
+      getUserPresentations(false);
+
+    });
+
+    // ----------------------- get user presentations public or private ----------------------------- // 
+
+    async function getUserPresentations(isPublicOrNot) {
+
+      const body = { authToken: token, user: username, isPublic: isPublicOrNot };
+      const url = `/${username}/presentations/public/${isPublicOrNot}`;
+
+      const results = await callServerAPI(body, url);
+
+      let status = "private";
+      let infoTab = document.getElementById("privateText");
+      if (isPublicOrNot) {
+        status = "public";
+        infoTab = document.getElementById("publicText");
+      }
+
+      if (results.response.status === 200) {
+        displayPresentations(results.data, isPublicOrNot);
+        infoTab.innerHTML = `Here you will find your ${status} slideshows.`;
+      } else {
+        clearPresentations(isPublicOrNot);
+        infoTab.innerHTML = `${results.data}`;
+      }
+
+    }
+
+    //
+
+    // ---------------------- display user presentations public or private ------------------------
+
+    function displayPresentations(presArr, isPublicOrNot) {
+
+      let container = document.getElementById('myPubContainer');
+
+      if (!isPublicOrNot) {
+        container = document.getElementById('myPrivContainer');
+      }
+
+      container.innerHTML = "";
+
+      for (let i = 0; i < presArr.length; i++) {
+
+        let myDiv = document.createElement("div");
+        myDiv.classList.add("pres");
+
+        let myHtml = `
+      <h3>Title: ${presArr[i].name} </h3>
+      <h4>Theme: ${presArr[i].theme}, id: ${presArr[i].id}</h4> 
+      <p>${presArr[i].description}</p> 
+      <button id="editBtn" class="w3-button">Edit <i id="editBtnIcon" class="material-icons">edit</i></button>
+      <button id="deleteBtn" class="w3-right w3-button"><i id="deleteIconBtn" class="material-icons w3-xxlarge">delete</i></button>
+      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
   `;
 
-  myDiv.innerHTML = myHtml;            
+        myDiv.innerHTML = myHtml;
 
-  myDiv.addEventListener('click', function (evt) {
-    console.log("you clicked on number " + i);
-  });
+        myDiv.addEventListener('click', function (evt) {
+          if (evt.target.id === "deleteBtn" || evt.target.id === "deleteIconBtn") {
+            deletePresentation(presArr[i]);
+          } else if (evt.target.id === "editBtn" || evt.target.id === "editBtnIcon") {
+            localStorage.setItem("PresentationProject", JSON.stringify(presArr[i].id));
+            location.href = "/editIndex.html";
+          } else if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i].id));
+            location.href = "/presIndex.html";
+          }
+        });
 
-  container.appendChild(myDiv);
-  }
+        container.appendChild(myDiv);
+      }
 
+    }
 
-}
+    //
 
-//
-    
-</script>
+    // ----------------------- clear user presentations public or private ------------------ //
 
+    function clearPresentations(isPublicOrNot) {
+
+      let container = document.getElementById('myPubContainer');
+
+      if (!isPublicOrNot) {
+        container = document.getElementById('myPrivContainer');
+      }
+
+      container.innerHTML = "";
+
+    }
+
+    //
+
+    // ------------------------- get all public presentations button ---------------------- //
+
+    publicSlidesBtn.addEventListener("click", async function (evt) {
+      const body = { authToken: token, user: username };
+      const url = `/presentations/uniPub`;
+
+      const results = await callServerAPI(body, url);
+
+      if (results.response.status === 200) {
+        displayAllPresentations(results.data);
+      }
+
+    });
+
+    //
+
+    // ---------------------  display all public presentations -------------------- //
+
+    function displayAllPresentations(presArr) {
+
+      let container = document.getElementById('allPublicContainer');
+
+      container.innerHTML = "";
+
+      for (let i = 0; i < presArr.length; i++) {
+
+        let myDiv = document.createElement("div");
+        myDiv.classList.add("pres");
+
+        let myHtml = `
+      <h3>Title: ${presArr[i].name}</h3>
+      <p>${presArr[i].description}</p>
+      <h5>Owner: ${presArr[i].owner}</h5>
+      <h4>Theme: ${presArr[i].theme}</h4>
+      <button id="viewBtn" class="w3-right w3-button"><i id="viewBtn" class="material-icons w3-jumbo">tv</i></button>
+  `;
+
+        myDiv.innerHTML = myHtml;
+
+        myDiv.addEventListener('click', function (evt) {
+          if (evt.target.id === "viewBtn" || evt.target.id === "viewIconBtn") {
+            sessionStorage.setItem("CurrentlyViewing", JSON.stringify(presArr[i].id));
+            location.href = "/presIndex.html";
+          }
+        });
+
+        container.appendChild(myDiv);
+      }
+    }
+
+    //
+
+    // --------------------- delete presentation -------------------------- //
+
+    async function deletePresentation(presentation) {
+
+      const confirmPress = confirm(`Are you sure you want to delete ${presentation.name}?`);
+      if (confirmPress === true) {
+
+        const body = { authToken: token, user: username, presentation: presentation };
+        const url = `/presentations/delete/${presentation.id}`;
+
+        const results = await callServerAPI(body, url);
+
+        if (results.response.status === 200) {
+
+          let deleteTextDom = document.getElementById("publicText");
+          if (!presentation.ispublic) {
+            deleteTextDom = document.getElementById("privateText");
+          }
+
+          deleteTextDom.innerHTML = results.data;
+
+          let timesRun = 0;
+          let interval = setInterval(() => {
+            timesRun = 1;
+            getUserPresentations(presentation.ispublic);
+            if (timesRun === 1) {
+              clearInterval(interval);
+            }
+          }, 1000);
+        }
+      }
+
+    }
+
+    //
+
+    // ------------------------- fetch server api function ---------------------- //
+
+    async function callServerAPI(body, url) {
+
+      if (body === "" || url === "" || !body.authToken) {
+        return;
+      }
+
+      const config = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+
+      const response = await fetch(url, config);
+      const data = await response.json();
+      console.log(response.status);
+      return { "response": response, "data": data };
+    };
+
+    //
+
+  </script>
 
 </body>

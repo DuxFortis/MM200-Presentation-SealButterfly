@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client</title>
+  <link rel="stylesheet" href="presIndex.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+  <!--------- HTML Fullscreen mode elements ------------>
+  <div id="fullScreenPresentation" class="w3-hide">
+    <div id="themeFullscreen">
+      <h1 id="presTitleFullscreen" class="w3-center"></h1>
+      <div id="inputImgFullscreen" class="w3-center"></div>
+      <div id="presParagraphFullscreen" class="w3-center"></div>
+    </div>
+    <!--------- Fullscreen mode Buttons  ------------>
+    <div id="toolbar" class="w3-bar w3-center">
+      <a class="w3-bar-item" href="#">
+        <div id="stopFs" class="w3-button">Stop fullscreen</div>
+      </a>
+      <a class="w3-bar-item" href="#">
+        <div id="previous" class="w3-button">Previous</div>
+      </a>
+      <a class="w3-bar-item" href="#">
+        <div id="next" class="w3-button">Next</div>
+      </a>
+    </div>
+  </div>
+  <!--------- Main presentation mode page  ------------>
+
+  <div id="viewNormal" class="w3-row w3-show">
+    <div class="w3-container w3-border w3-white container">
+      <div class="w3-col l2 s2">
+        <div class="w3-container w3-white">
+          <div class="gui">
+            <p id="presName">Presentation</p>
+            <a href="#" id="goBackBtn" class="w3-bar-item w3-button w3-right">
+              <i class="material-icons">home</i>
+              <br><label>Home</label>
+            </a>
+          </div>
+          <!--------- Slide scroll menu ------------>
+          <div class="scroller">
+            <p>Slides</p>
+            <ul id="allSlides" class="w3-ul">
+              <li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>
+            </ul>
+          </div>
+          <!--------- Playback & fullscreen HTML ------------>
+          <label>You can start an auto playback here</label>
+          <input id="autoPlayback" type="integer" placeholder="Auto playback (sec)"></input>
+          <button id="presFullScreenBtn" class="w3-right w3-button w3-display-bottomleft"><i id="viewBtn"
+              class="material-icons w3-xxl">tv</i></button>
+        </div>
+      </div>
+      <!--------- Slide object HTML ------------>
+      <div class="w3-col l10 s10">
+        <div id="edit" class="w3-container w3-center edit">
+          <div id="theme"> </div>
+          <h1 id="presTitle" class="w3-center"></h1>
+          <div id="inputImg" class="w3-center"></div>
+          <div id="presParagraph" class="w3-center">
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+</body>
+
+<script>
+
+
+  // --------------------- globale variabler ------------------------- //
+
+  let isFullScreenOn = false;
+  let listItemIndex = 0;
+  let currentSlide = 1;
+  let presentation = "";
+
+  let myWindow = "";
+
+  //
+
+  // -------------------- globale dom variabler ----------------------------- //
+
+  const slideListener = document.getElementById("allSlides");
+  const goBackBtn = document.getElementById("goBackBtn");
+
+  const previous = document.getElementById("previous");
+  const next = document.getElementById("next");
+
+  const titleDom = document.getElementById("presTitle");
+  const paragraphDom = document.getElementById("presParagraph");
+  const imgDom = document.getElementById("inputImg");
+
+  const titleDomFullscreen = document.getElementById("presTitleFullscreen");
+  const paragraphDomFullscreen = document.getElementById("presParagraphFullscreen");
+  const imgDomFullscreen = document.getElementById("inputImgFullscreen");
+
+  const timerEvent = document.getElementById("autoPlayback");
+
+  const presFullScreenBtn = document.getElementById("presFullScreenBtn");
+  const stopFs = document.getElementById("stopFs");
+
+  const viewNormal = document.getElementById("viewNormal");
+  const fullScreenPresentation = document.getElementById("fullScreenPresentation");
+
+
+
+  //
+
+  // Går tilbake til userindex
+
+  goBackBtn.addEventListener("click", function (evt) {
+    location.href = "/userIndex.html";
+  });
+
+  //
+
+  // ----------------------- laster inn PresentationProject hvis dette finnes --------------------- //
+
+  getPresentation();
+  async function getPresentation() {
+    let presId = sessionStorage.getItem("CurrentlyViewing");
+
+    if (presId === null) {
+      presId = prompt("Presentation ID:");
+      sessionStorage.setItem("CurrentlyViewing", presId);
+      if (!presId || presId.length === 0) {
+        location.href = "/userIndex.html";
+      }
+    }
+
+    let username = sessionStorage.getItem("user");
+
+    const body = {user: username, presentationId: presId };
+    const url = `/view/presentation/${presId}`;
+
+    const results = await callServerAPI(body, url);
+
+    const pres = results.data[0];
+    presentation = pres;
+    document.title = "Viewing: " + presentation.name;
+    const slides = pres.slides;
+
+    if (slides) {
+
+      let bildeUrl = "pictures/Theme_Light.png";
+
+      if (pres.theme === "Dark") {
+        bildeUrl = "pictures/Theme_Dark.png";
+      }
+
+      let editFullscreen = document.getElementById("fullScreenPresentation");
+      editFullscreen.style.background = "url(" + bildeUrl + ")";
+      editFullscreen.style.width = "100%";
+      editFullscreen.style.height = "100vh";
+
+      let edit = document.getElementById("edit");
+      edit.style.background = "url(" + bildeUrl + ")";
+      edit.style.width = "100%";
+      edit.style.height = "100vh";
+
+      gotoSlide(currentSlide);
+
+      refreshPresentation();
+
+    } else {
+      location.href = "/userIndex.html";
+    }
+  }
+
+  // ----------------------- Går til sliden brukeren trykker på ----------------------//
+
+  slideListener.addEventListener("click", function (evt) {
+
+    if (evt.target.id === "Slides") {
+      gotoSlide(evt.target.value);
+    }
+
+  });
+
+  previous.addEventListener("click", function (evt) {
+    currentSlide--;
+    gotoSlide(currentSlide);
+  });
+
+  next.addEventListener("click", function (evt) {
+    currentSlide++;
+    gotoSlide(currentSlide);
+  });
+
+  // ------------------ goto slide, oppdaterer slide innhold ------------------------- //
+
+  function gotoSlide(slideNr) {
+    listItemIndex = 0;
+
+    if (slideNr === undefined || slideNr < 1) {
+      if (presentation.slides.Slide1 !== undefined) {
+        slideNr = 1;
+      } else {
+        return;
+      }
+    }
+
+    currentSlide = slideNr;
+
+    let fontType = presentation.font;
+
+    switch (fontType) {
+      case 1:
+        fontType = "sansserif";
+        break;
+      case 2:
+        fontType = "serif";
+        break;
+      case 3:
+        fontType = "monospace";
+        break;
+      default:
+        fontType = "sansserif";
+        break;
+    }
+
+    paragraphDom.innerHTML = "";
+    titleDom.innerHTML = "";
+    imgDom.innerHTML = "";
+
+    paragraphDomFullscreen.innerHTML = "";
+    titleDomFullscreen.innerHTML = "";
+    imgDomFullscreen.innerHTML = "";
+
+    paragraphDom.classList = `w3-center ${fontType}`
+    titleDom.classList = `w3-center ${fontType}`
+
+    paragraphDomFullscreen.classList = `w3-center ${fontType}`
+    titleDomFullscreen.classList = `w3-center ${fontType}`
+
+    let slideEditMode = presentation.slides["Slide" + currentSlide];
+    if (!slideEditMode) {
+
+      currentSlide--;
+      slideEditMode = presentation.slides["Slide" + currentSlide];
+
+      if (!slideEditMode) {
+        return;
+      }
+    }
+
+
+    titleDomFullscreen.innerHTML = slideEditMode.title;
+    titleDom.innerHTML = slideEditMode.title;
+
+    if (slideEditMode.image !== undefined) {
+
+      if (slideEditMode.image !== "") {
+
+        imgDom.innerHTML = `<img class="presImage" src="${slideEditMode.image}">`;
+        paragraphDom.innerHTML = slideEditMode.imageText;
+        imgDomFullscreen.innerHTML = `<img class="presImage" src="${slideEditMode.image}">`;
+        paragraphDomFullscreen.innerHTML = slideEditMode.imageText;
+
+      }
+
+    }
+
+    if (slideEditMode.list) {
+
+      let listArr = slideEditMode.list;
+
+      for (let i = 0; i < listArr.length; i++) {
+        paragraphDom.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
+        paragraphDomFullscreen.innerHTML += `<p id='itemIndexNum${listItemIndex}' class='listItem ${fontType}'>&#8226; ${listArr[i]}</p>`;
+        listItemIndex++;
+      }
+
+    }
+  }
+
+  //
+
+  //------------- refresh presentation, henter presentasjonen fra sessionstorage og viser innhold --------------------//
+
+  function refreshPresentation() {
+
+    slides = presentation.slides;
+
+    const presName = document.getElementById("presName");
+
+    presName.innerHTML = presentation.name;
+
+    const allSlides = document.getElementById("allSlides");
+
+    allSlides.innerHTML = "";
+
+    const totalSlides = Object.entries(slides).length;
+
+    if (presentation.slides.Slide1 !== undefined) {
+      allSlides.innerHTML += `<li id="Slides" class="w3-hover-grey w3-button" value="1">Slide 1 </li>`
+    }
+
+    for (let i = 2; i <= totalSlides; i++) {
+      allSlides.innerHTML += `<br><li id="Slides" class="w3-hover-grey w3-button" value="${i}">Slide ${i}</li>`;
+    }
+
+  }
+
+  // event listener for navigasjon
+
+  document.body.addEventListener("keydown", function (evt) {
+    const key = evt.keyCode;
+
+    if (isFullScreenOn) {
+
+      if (key === 27) {
+        fullscreenFunction();
+        myWindow.close();
+      }
+
+      if (key === 39) {
+        currentSlide++;
+        gotoSlide(currentSlide);
+      }
+      if (key === 37) {
+        currentSlide--;
+        gotoSlide(currentSlide);
+      }
+
+    }
+  });
+
+  //
+
+  //------------------------- auto playback ----------------------------------
+
+  function startTimer(timer) {
+
+    let myTimer = setInterval(() => {
+
+      if (isFullScreenOn) {
+        currentSlide++;
+        gotoSlide(currentSlide);
+      } else {
+        clearInterval(myTimer);
+      }
+
+    }, timer);
+
+  }
+
+  //
+
+  //--------fullscreen presentation btn eventlisteners---------------//
+
+  presFullScreenBtn.addEventListener('click', function (evt) {
+    fullscreenFunction();
+
+    let timerSeconds = document.getElementById("autoPlayback").value;
+
+    if (timerSeconds) {
+
+      let timer = timerSeconds * 1000;
+      timer = parseInt(timer);
+
+      startTimer(timer);
+
+    }
+
+    // ------------------Open presenter notes------------------------- //
+
+    let presNotesURL = "https://presentationtool-sealbutterfly.herokuapp.com/presNotesIndex.html";
+
+    myWindow = window.open(presNotesURL, "", "width=100, height=100");
+
+    myWindow.resizeTo(350, 350);
+    myWindow.moveTo(900, 500);
+    myWindow.focus();
+
+  });
+
+  // ----------------------------------------------
+
+  stopFs.addEventListener('click', function (evt) {
+    fullscreenFunction();
+
+    myWindow.close();
+  });
+
+  //
+
+
+  //------------------ fullscreen function --------------------------- //
+
+  function fullscreenFunction() {
+
+    // ---- kjør fullscreen --- //
+
+    if (isFullScreenOn === false) {
+      fullScreenPresentation.classList.remove("w3-hide");
+      fullScreenPresentation.classList.add("w3-show");
+
+      viewNormal.classList.remove("w3-show");
+      viewNormal.classList.add("w3-hide");
+
+      isFullScreenOn = true;
+      return;
+    }
+
+    if (isFullScreenOn === true) {
+      fullScreenPresentation.classList.remove("w3-show");
+      fullScreenPresentation.classList.add("w3-hide");
+
+      viewNormal.classList.remove("w3-hide");
+      viewNormal.classList.add("w3-show");
+
+      isFullScreenOn = false;
+      return;
+    }
+  }
+
+  //
+
+
+  // ------------------------------ fullscreen ---------------------------- //
+
+  setInterval(() => {
+
+    if (isFullScreenOn) {
+
+      let currentSlideNotes = presentation.slides["Slide" + currentSlide].notes;
+      let currentSlideTitle = presentation.slides["Slide" + currentSlide].title;
+
+
+      let currentSlideNotesInfo = { "title": currentSlideTitle, "notes": currentSlideNotes };
+
+      localStorage.setItem("CurrentSlideNotesInfo", JSON.stringify(currentSlideNotesInfo));
+
+    } else {
+      let check = localStorage.getItem("CurrentSlidesNotesInfo");
+
+      if (check) {
+        localStorage.clear("CurrentSlideNotesInfo");
+      }
+
+    }
+
+  }, 1000);
+
+  // ------------------------- fetch server api function ------------------------ //
+
+  async function callServerAPI(body, url) {
+
+    if (body === "" || url === "") {
+      return;
+    }
+
+    const config = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+
+    const response = await fetch(url, config);
+    const data = await response.json();
+    console.log(response.status);
+    return { "response": response, "data": data };
+  };
+
+//
+
+</script>
