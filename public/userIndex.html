@@ -13,9 +13,11 @@
 </head>
 
 <body>
-
+  <!--------- Sb slides logo image ------------>
   <img id="logo" src="./pictures/logo.png">
 
+
+  <!--------- dropdown account menu ------------>
   <div class="w3-dropdown-click w3-right">
     <button id="accountText" onclick="myAccount()" class="w3-button w3-white">Account</button>
     <div id="Acc" class="w3-dropdown-content w3-bar-block w3-border">
@@ -24,7 +26,7 @@
       <a href="#" id="deleteAccBtn" class="w3-bar-item w3-button">Delete account</a>
     </div>
   </div>
-
+  <!--------- presentation visability tabs ------------>
   <div class="w3-bar w3-white">
     <button id="createSlidesBtn" class="w3-bar-item w3-button tablink w3-black"
       onclick="openTab(event,'createTab')">Create Slides</button>
@@ -35,7 +37,7 @@
     <button id="publicSlidesBtn" class="w3-bar-item w3-button tablink" onclick="openTab(event, 'publicTab')">Public
       Slides</button>
   </div>
-
+  <!--------- Create new presentation with chosen theme ------------>
   <div id="createTab" class="w3-container w3-border w3-white tab">
     <p>Here you can create a new slideshow from these templates:</p>
     <div id="themeSelector" class="w3-row-padding" style="margin:0 -16px">
@@ -58,7 +60,7 @@
     <input id="presentationName" placeholder="Your slideshow name">
     <button class="w3-button w3-border" id="createNew">Create new slideshow</button>
   </div>
-
+  <!--------- Shows private presentations ------------>
   <div id="privateTab" class="w3-container w3-border w3-white tab" style="display:none">
     <h2>My private slideshows</h2>
     <p id="privateText">Here you will find your private slideshows.</p>
@@ -66,7 +68,7 @@
 
     </div>
   </div>
-
+  <!--------- Shows the users public presentations ------------>
   <div id="myPublicTab" class="w3-container w3-border w3-white tab" style="display:none">
     <h2>My slideshows</h2>
     <p id="publicText">Here you will find your public slideshows.</p>
@@ -74,7 +76,7 @@
 
     </div>
   </div>
-
+  <!--------- Shows ALL users public presentations  ------------>
   <div id="publicTab" class="w3-container w3-border w3-white tab" style="display:none">
     <h2>Public slideshows</h2>
     <p>Here are other users public slideshows.</p>
@@ -84,18 +86,36 @@
 
   <script>
 
-    // globale variabler
+    //--------------- globale variabler ------------------ //
 
     let chosenTheme = "Light";
+
+    const token = sessionStorage.getItem("token");
+    const username = sessionStorage.getItem("user");
+
+    //
+
+    // ----------------------- globale dom variabler ------------------- //
+
+    const logOut = document.getElementById("logOut");
+    const updateAcc = document.getElementById("updateAcc");
+    const deleteAccBtn = document.getElementById("deleteAccBtn");
+
+    const accountText = document.getElementById("accountText");
+
+    const createNewBtn = document.getElementById("createNew");
+
+    const privateSlidesBtn = document.getElementById("privateSlidesBtn");
+    const publicSlidesListener = document.getElementById("yourSlidesBtn");
+    const publicSlidesBtn = document.getElementById("publicSlidesBtn");
 
     //
 
 
-    // enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login
+    // --------- enkel sjekk om det finnes token i sessionstorage, hvis ikke så sendes brukeren til login -------- //
 
     checkIfUserHasToken();
     function checkIfUserHasToken() {
-      const token = sessionStorage.getItem("token");
       if (!token) {
         location.href = "/";
       }
@@ -103,7 +123,7 @@
 
     //
 
-    // tab function, w3.css
+    // --------------- tab function, w3.css -------------------
 
     function openTab(evt, tabName) {
       var i, x, tablinks;
@@ -121,7 +141,7 @@
 
     //
 
-    // dropdown function w3.css
+    // ----------------- dropdown function w3.css ------------------- // 
 
     function myAccount() {
       var x = document.getElementById("Acc");
@@ -134,9 +154,7 @@
 
     //
 
-    // logout function
-
-    const logOut = document.getElementById("logOut");
+    // ----------------- logout function ------------------------ //
 
     logOut.addEventListener("click", function (evt) {
       localStorage.clear();
@@ -146,9 +164,7 @@
 
     //
 
-    // update account function
-
-    const updateAcc = document.getElementById("updateAcc");
+    // ----------------------- update account function --------------------- //
 
     updateAcc.addEventListener("click", async function (evt) {
       const newUsername = prompt("Please enter your new username", "");
@@ -157,9 +173,6 @@
       if (newUsername || newPassword) {
 
         const credentials = "Basic " + window.btoa(`${newUsername}:${newPassword}`);
-
-        const token = sessionStorage.getItem("token");
-        const username = sessionStorage.getItem("user");
         const body = { authToken: token, user: username, authorization: credentials };
         const url = `/user/update`;
 
@@ -169,6 +182,8 @@
           sessionStorage.clear();
           localStorage.clear();
           location.href = "/";
+        } else {
+          alert("Username is taken!")
         }
 
       }
@@ -176,9 +191,7 @@
 
     //
 
-    // delete account button
-
-    const deleteAccBtn = document.getElementById("deleteAccBtn");
+    // -------------------- delete account button --------------------------- //
 
     deleteAccBtn.addEventListener('click', async function (evt) {
 
@@ -187,11 +200,8 @@
 
       if (confirmUsername || confirmPassword) {
 
-        const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`); //kryptert streng
-        //const credentials = username + ":" + password; //til ren streng/tekst
+        const credentials = "Basic " + window.btoa(`${confirmUsername}:${confirmPassword}`);
 
-        const token = sessionStorage.getItem("token");
-        const username = sessionStorage.getItem("user");
         if (confirmUsername !== username) {
           alert("Wrong username, try again!");
           return;
@@ -219,17 +229,15 @@
 
     //
 
-    // vis brukernavn istedenfor account
+    //--------- vis brukernavn istedenfor account ---------- // 
 
-    const accountText = document.getElementById("accountText");
-    const username = sessionStorage.getItem("user");
     if (username) {
       accountText.innerHTML = username;
     }
 
     //
 
-    // get user chosen theme
+    // --------------- get user chosen theme ----------------- //
 
     function chooseTheme(evt, themeName) {
       var i, x, tablinksTheme;
@@ -247,18 +255,13 @@
 
     //
 
-    // create new presentation button
-
-    const createNewBtn = document.getElementById("createNew");
+    // --------------------- create new presentation button -------------------- //
 
     createNewBtn.addEventListener("click", async function (evt) {
 
-
       const newPresentation = document.getElementById("presentationName").value;
-      const userPref = true; //document.getElementById("publicOrPrivate");
+      const userPref = true;
 
-      const token = sessionStorage.getItem("token");
-      const username = sessionStorage.getItem("user");
       const body = { authToken: token, user: username, presentation: { "name": newPresentation, "theme": chosenTheme, "isPublic": userPref } };
       const url = `/presentation`;
 
@@ -273,11 +276,7 @@
 
     //
 
-    // Get user presentations btn public or private
-
-    const privateSlidesBtn = document.getElementById("privateSlidesBtn");
-
-    const publicSlidesListener = document.getElementById("yourSlidesBtn");
+    // ------------------ Get user presentations btn public or private --------------------------- //
 
     publicSlidesListener.addEventListener("click", async function (evt) {
 
@@ -291,12 +290,10 @@
 
     });
 
-    // get user presentations public or private
+    // ----------------------- get user presentations public or private ----------------------------- // 
 
     async function getUserPresentations(isPublicOrNot) {
 
-      const token = sessionStorage.getItem("token");
-      const username = sessionStorage.getItem("user");
       const body = { authToken: token, user: username, isPublic: isPublicOrNot };
       const url = `/${username}/presentations/public/${isPublicOrNot}`;
 
@@ -321,7 +318,7 @@
 
     //
 
-    // display user presentations public or private
+    // ---------------------- display user presentations public or private ------------------------
 
     function displayPresentations(presArr, isPublicOrNot) {
 
@@ -364,12 +361,11 @@
         container.appendChild(myDiv);
       }
 
-
     }
 
     //
 
-    // clear user presentations public or private
+    // ----------------------- clear user presentations public or private ------------------ //
 
     function clearPresentations(isPublicOrNot) {
 
@@ -385,13 +381,9 @@
 
     //
 
-    // get all public presentations button
-
-    const publicSlidesBtn = document.getElementById("publicSlidesBtn");
+    // ------------------------- get all public presentations button ---------------------- //
 
     publicSlidesBtn.addEventListener("click", async function (evt) {
-      const token = sessionStorage.getItem("token");
-      const username = sessionStorage.getItem("user");
       const body = { authToken: token, user: username };
       const url = `/presentations/uniPub`;
 
@@ -405,7 +397,7 @@
 
     //
 
-    // display all public presentations
+    // ---------------------  display all public presentations -------------------- //
 
     function displayAllPresentations(presArr) {
 
@@ -441,16 +433,13 @@
 
     //
 
-    // delete presentation
+    // --------------------- delete presentation -------------------------- //
 
     async function deletePresentation(presentation) {
-
 
       const confirmPress = confirm(`Are you sure you want to delete ${presentation.name}?`);
       if (confirmPress === true) {
 
-        const token = sessionStorage.getItem("token");
-        const username = sessionStorage.getItem("user");
         const body = { authToken: token, user: username, presentation: presentation };
         const url = `/presentations/delete/${presentation.id}`;
 
@@ -480,7 +469,7 @@
 
     //
 
-    // fetch server api function
+    // ------------------------- fetch server api function ---------------------- //
 
     async function callServerAPI(body, url) {
 

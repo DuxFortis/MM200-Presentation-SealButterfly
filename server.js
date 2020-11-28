@@ -1,14 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
 const user = require("./modules/user");
-const updateUser = require("./modules/user").updateUser;
 const presentation = require("./modules/presentation");
+const slides = require("./modules/slides");
+
+const updateUser = require("./modules/user").updateUser;
+
+const updatePres = require("./modules/presentation").updatePres;
 const getPresData = require("./modules/presentation").getPresData;
 const getAllPres = require("./modules/presentation").getAllPres;
-const updatePres = require("./modules/presentation").updatePres;
 const deletePres = require("./modules/presentation").deletePres;
+
 const deleteSlides = require("./modules/presentation").deleteSlides;
-const slides = require("./modules/slides");
+
 const auth = require("./modules/auth");
 
 const createToken = require("./modules/sbToken").create;
@@ -18,23 +23,11 @@ const port = (process.env.PORT || 8080);
 server.set('port', port);
 server.use(express.static('public'));
 
-
-/*
-server.use(bodyParser.json({ limit: '2mb' }));
-server.use(express.urlencoded({ limit: "2mb", extended: true, parameterLimit: 2000 }));
-*/
 server.use(bodyParser.urlencoded({ limit: "25mb", extended: true, parameterLimit: 1000000 }));
 server.use(bodyParser.json({ limit: "25mb" }));
 
 
-/*
-server.use(bodyParser.json({ limit: '2mb' }));
-server.use(bodyParser.text({ limit: '2mb' }));
-server.use(bodyParser.urlencoded({ limit: '2mb', extended: true }));
-*/
-
-
-// globale variabler
+// ----------------------------- globale variabler ----------------------- //
 
 const maxCharLength = 20;
 const maxCharLengthPres = maxCharLength + 10;
@@ -43,7 +36,8 @@ const minCharLength = 3;
 //
 
 
-// create new user
+// -------------------------------  create new user ---------------------- //
+
 server.post("/user", async function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
@@ -62,8 +56,6 @@ server.post("/user", async function (req, res) {
       } else {
         res.status(200).json("Account created!").end();
       }
-      // Hva om databasen feilet?
-      // Hva om det var en bruker med samme brukernavn?
     }
   } else {
     res.status(403).json(`Username or password is too short, min length is ${minCharLength} characters!`).end();
@@ -72,22 +64,16 @@ server.post("/user", async function (req, res) {
 
 //
 
-
-// login user
+//  ------------------------------- login user  ------------------------------- //
 server.post("/authenticate", async (req, res) => {
 
-  //console.log(req.headers.authorization); // krypterte strengen brukeren sender inn
-
   const credentials = req.headers.authorization.split(' ')[1];
-  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":");
 
   if (username.length >= minCharLength && password.length >= minCharLength) {
-    //console.log(username + ":" + password); // brukernavn, passord i ren tekst
 
-    const requestUser = new user(username, password); // Hvem prøver å logge inn?
-    const isValid = await requestUser.validate(); // Finnes vedkommende i DB og er det riktig passord?
-
-    //console.log(isValid); // isValid = true/false
+    const requestUser = new user(username, password);
+    const isValid = await requestUser.validate();
 
     if (isValid) {
       let sessionToken = createToken(requestUser);
@@ -101,18 +87,13 @@ server.post("/authenticate", async (req, res) => {
 });
 
 
+// -------------------------------  update user info ------------------------------- //
+
 server.post("/user/update", auth, async (req, res) => {
 
-  //console.log(req.body.authorization); // krypterte strengen brukeren sender inn
-
   const credentials = req.body.authorization.split(' ')[1];
-  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); 
   const currentUsername = req.body.user;
-
-  //console.log(newUsername + ":" + newPassword); // brukernavn, passord i ren tekst
-
-  //const requestUser = new user(newUsername, newPassword); // Hvem prøver å logge inn?
-  //const isUpdated = await requestUser.update(); // Finnes vedkommende i DB og er det riktig passord?
 
   let isUpdated = false;
   if (username.length < maxCharLength && password.length < maxCharLength && password) {
@@ -126,7 +107,6 @@ server.post("/user/update", auth, async (req, res) => {
     isUpdated = await updateUser(currentUsername, newUser);
 
   }
-  //console.log(isValid); // isValid = true/false
 
   if (isUpdated) {
     res.status(200).json("Updated user info").end();
@@ -136,20 +116,16 @@ server.post("/user/update", auth, async (req, res) => {
 
 });
 
+//  -------------------------------  delete user ------------------------------- //
+
 server.post("/user/delete", auth, async (req, res) => {
 
-  //console.log(req.body.authorization); // krypterte strengen brukeren sender inn
-
   const credentials = req.body.authorization.split(' ')[1];
-  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":"); // dekrypterer den krypterte strengen
+  const [username, password] = Buffer.from(credentials, 'base64').toString('UTF-8').split(":");
   const currentUsername = req.body.user;
 
-  const requestDeleteUser = new user(currentUsername, password); // Hvem prøver å logge inn?
+  const requestDeleteUser = new user(currentUsername, password); 
   const isDeleted = await requestDeleteUser.delete();
-
-  //console.log(newUsername + ":" + newPassword); // brukernavn, passord i ren tekst
-
-
 
   if (isDeleted) {
     res.status(200).json("Deleted user info").end();
@@ -159,79 +135,7 @@ server.post("/user/delete", auth, async (req, res) => {
 
 });
 
-//!!!! WARNING DEMO !!!
-server.post("/view/presentation/:id", async function (req, res) {
-  const owner = "req.body.user";
-  const presentationId = req.body.presentationId;
-  //name, theme, owner, isPublic, id
-  const Pres = new presentation("", "", "", owner, "", presentationId);
-  const resp = await Pres.getPresentation();
-
-
-  if (resp.length === 0) {
-    res.status(404).json("Presentation not found").end();
-  } else {
-
-    // Bruker spør om presentasjon med id.
-    // Tilhører den presentasjonen denne brukeren?
-    // if(req.user.id = presentasjon.author){}
-    // req.user kommer fra auth. 
-
-    // Retuner json for presentasjon.
-
-    res.status(200).json(resp).end();
-  }
-
-});
-
-server.post("/:user/presentations/public/:isPublic", auth, async function (req, res) {
-  const owner = req.body.user;
-  const isPresentationPublic = req.body.isPublic;
-  let publicOrNotStatus = "public";
-  //name, theme, owner, isPublic, id
-  /*const Pres = new presentation("", "", owner, "", presentationId);*/
-
-  const resp = await getPresData(owner, isPresentationPublic);
-
-  if (!isPresentationPublic) {
-    publicOrNotStatus = "private";
-  }
-
-  if (resp.length === 0) {
-    res.status(404).json(`You don't have any ${publicOrNotStatus} presentations`).end();
-  } else {
-
-    // Bruker spør om presentasjon med id.
-    // Tilhører den presentasjonen denne brukeren?
-    // if(req.user.id = presentasjon.author){}
-    // req.user kommer fra auth. 
-
-    // Retuner json for presentasjon.
-
-    res.status(200).json(resp).end();
-  }
-
-});
-
-server.post("/user/presentation/:id/slide", auth, async function (req, res) {
-  const owner = req.body.user;
-  const presentationId = req.body.presentationId;
-  const template = 1;
-
-  //name, theme, owner, isPublic, id
-  const newSlide = new slides(presentationId, template, owner);
-  const resp = await newSlide.create();
-
-  if (resp === null) {
-    res.status(404).json("Presentation not found").end();
-  } else {
-
-    // Retuner json for presentasjon/slide
-
-    res.status(200).json("Created new slide").end();
-  }
-
-});
+//  -------------------------------  create presentation  ------------------------------- //
 
 server.post("/presentation", auth, async (req, res) => {
 
@@ -263,17 +167,7 @@ server.post("/presentation", auth, async (req, res) => {
   }
 });
 
-server.post("/presentations/uniPub", auth, async (req, res) => {
-
-  let resp = await getAllPres();
-
-  if (resp.length === 0) {
-    res.status(403).json("There is no public presentations!").end();
-  }
-
-  res.status(200).json(resp).end();
-}
-);
+//  ------------------------------- update presentation  ------------------------------- //
 
 server.post("/presentations/update/:id", auth, async (req, res) => {
 
@@ -301,6 +195,8 @@ server.post("/presentations/update/:id", auth, async (req, res) => {
 
 });
 
+//  -------------------------------  delete presentation  ------------------------------- //
+
 server.post("/presentations/delete/:id", auth, async (req, res) => {
   const presentation = req.body.presentation;
   const owner = req.body.user;
@@ -319,6 +215,131 @@ server.post("/presentations/delete/:id", auth, async (req, res) => {
   }
 
 });
+
+//  ------------------------------- view all public presentation without authentication  ------------------------------- //  
+
+server.post("/view/presentation/:id", async function (req, res) {
+  let owner = req.body.user;
+
+  if(!owner){
+    owner = "guest";
+  }
+ 
+  const presentationId = req.body.presentationId;
+  //name, theme, owner, isPublic, id
+  const Pres = new presentation("", "", "", owner, "", presentationId);
+  const resp = await Pres.getPresentation();
+
+
+  if (resp.length === 0) {
+    res.status(404).json("Presentation not found").end();
+  } else {
+
+
+    res.status(200).json(resp).end();
+  }
+
+});
+
+//   ------------------------------- list public or private users presentations with authentication  ------------------------------- //
+
+server.post("/:user/presentations/public/:isPublic", auth, async function (req, res) {
+  const owner = req.body.user;
+  const isPresentationPublic = req.body.isPublic;
+  let publicOrNotStatus = "public";
+
+  const resp = await getPresData(owner, isPresentationPublic);
+
+  if (!isPresentationPublic) {
+    publicOrNotStatus = "private";
+  }
+
+  if (resp.length === 0) {
+    res.status(404).json(`You don't have any ${publicOrNotStatus} presentations`).end();
+  } else {
+
+    res.status(200).json(resp).end();
+  }
+
+});
+
+//   ------------------------------- list all public presentations with authentication  ------------------------------- //
+
+server.post("/presentations/uniPub", auth, async (req, res) => {
+
+  let resp = await getAllPres();
+
+  if (resp.length === 0) {
+    res.status(403).json("There is no public presentations!").end();
+  }
+
+  res.status(200).json(resp).end();
+}
+);
+
+
+//  ------------------------------- create new slide  ------------------------------- //
+
+server.post("/user/presentation/:id/slide", auth, async function (req, res) {
+  const owner = req.body.user;
+  const presentationId = req.body.presentationId;
+
+  const newSlide = new slides(presentationId, owner);
+  const resp = await newSlide.create();
+
+  if (resp === null) {
+    res.status(404).json("Presentation not found").end();
+  } else {
+
+    res.status(200).json("Created new slide").end();
+  }
+
+});
+
+//  ------------------------------- update current slide  ------------------------------- //
+
+server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, res) => {
+  const presentation = req.body.presentation;
+  const owner = req.body.user;
+  const slide = req.body.slide;
+  const template = req.body.template;
+
+  let updateSlide = presentation.slides["Slide" + slide];
+
+  let content = "";
+
+  //template 1 = title, 2 = image, 3 = list
+  switch (template) {
+    case 1:
+      content = { "title": updateSlide.title, "notes": updateSlide.notes };
+      break;
+    case 2:
+      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText", "notes": updateSlide.notes };
+      break;
+    case 3:
+      content = { "title": updateSlide.title, "list": ["myList"], "notes": updateSlide.notes };
+      break;
+
+  }
+
+  presentation.slides["Slide" + slide] = content;
+
+  if (presentation.owner === owner && template <= 3 && template > 0) {
+
+    let resp = await updatePres(presentation, owner)
+
+    if (resp.length === 0) {
+      res.status(403).json("No changes have been made!").end();
+    } else {
+      res.status(200).json(`Successfully updated slide: ${slide}`).end();
+    }
+  } else {
+    res.status(403).json("You are not the owner of this presentation!").end();
+  }
+
+});
+
+//  ------------------------------- delete slide  -------------------------------//
 
 server.post("/presentations/delete/:id/slides/:id", auth, async (req, res) => {
   const presentation = req.body.presentation;
@@ -343,47 +364,7 @@ server.post("/presentations/delete/:id/slides/:id", auth, async (req, res) => {
 });
 
 
-server.post("/presentations/update/:id/slides/:id/:template", auth, async (req, res) => {
-  const presentation = req.body.presentation;
-  const owner = req.body.user;
-  const slide = req.body.slide;
-  const template = req.body.template;
-
-  let updateSlide = presentation.slides["Slide" + slide];
-
-  let content = "";
-
-  //template 1 = title, 2 = image, 3 = list
-  switch (template) {
-    case 1:
-      content = { "title": updateSlide.title, "notes": "" };
-      break;
-    case 2:
-      content = { "title": updateSlide.title, "image": "", "imageText": "myImageText", "notes": "" };
-      break;
-    case 3:
-      content = { "title": updateSlide.title, "list": ["myList"], "notes": "" };
-      break;
-
-  }
-
-  presentation.slides["Slide" + slide] = content;
-
-  if (presentation.owner === owner && template <= 3 && template > 0) {
-
-    let resp = await updatePres(presentation, owner)
-
-    if (resp.length === 0) {
-      res.status(403).json("No changes have been made!").end();
-    } else {
-      res.status(200).json(`Successfully updated slide: ${slide}`).end();
-    }
-  } else {
-    res.status(403).json("You are not the owner of this presentation!").end();
-  }
-
-});
-
+// ------------------------------- allows the server to run on localhost  ------------------------------- //
 
 server.listen(server.get('port'), function () {
   console.log('server running', server.get('port'));

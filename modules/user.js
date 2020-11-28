@@ -1,12 +1,7 @@
 const database = require("./datahandler")
 const crypto = require('crypto');
 const secret = process.env.hashSecret || require("../localenv").hashSecret;
-/*
-const secret = 'abcdefg';
-const hash = crypto.createHmac('sha256', secret)
-                   .update('I love cupcakes')
-                   .digest('hex');
-*/
+
 class User {
     constructor(username, password) {
         this.username = username;
@@ -14,7 +9,6 @@ class User {
             .update(password)
             .digest('hex');
         this.isValid = false;
-        //this.email = null;
     }
 
     async create() {
@@ -34,7 +28,6 @@ class User {
             console.log(err);
         }
     }
-    
 
     async validate() {
         let success = false;
@@ -44,8 +37,6 @@ class User {
             if (resp != null) {
                 this.isValid = true;
                 success = true;
-                // Her kan vi populere andre felter i user objektet
-                // Eks this.email = resp.email (eller lignende)
             }
         } catch (err) {
             console.log(err);

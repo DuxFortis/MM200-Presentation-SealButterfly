@@ -11,7 +11,7 @@
 </head>
 
 <body>
-
+<!--------- Sb slides logo image ------------>
     <div class="w3-row-padding">
         <div class="w3-col s12 w3-center">
             <img class="w3-image" src="./pictures/logo.png" alt="Logo">
@@ -24,6 +24,7 @@
                 I am hidden.
             </p>
         </div>
+        <!--------- Login Form ------------>
         <div class="w3-col l2 m12 s12 w3-center">
             <form id="loginform" class="login-form center">
                 <div class="form-title">
@@ -42,6 +43,7 @@
                 I am hidden.
             </p>
         </div>
+        <!--------- create account form ------------>
         <div class="w3-col l2 m12 s12  w3-center">
             <form id="createform" class="create-form center">
                 <div class="form-title">
@@ -69,9 +71,14 @@
 
 <script>
 
-    // login user
+    // -------------------globale dom variabler --------------------- //
 
     const loginUser = document.getElementById("loginform");
+    const createform = document.getElementById('createform');
+    
+    //
+    
+    //---------------------- login user -------------------------- //
 
     loginUser.addEventListener("submit", async function (evt) {
 
@@ -103,9 +110,7 @@
     //
 
 
-    //create User
-
-    const createform = document.getElementById('createform');
+    //--------------------- create User --------------------- //
 
     createform.addEventListener("submit", async function (evt) {
 
@@ -146,7 +151,7 @@
     //
 
 
-    // server resp
+    // --------------------- server response ------------------- //
 
     function serverResp(res, data, num) {
         console.log(res.status);
@@ -180,6 +185,4 @@
     }
 
     //
-
-
 </script>

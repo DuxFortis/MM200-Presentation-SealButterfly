@@ -1,5 +1,4 @@
 const database = require("./datahandler");
-
 class Presentation {
 
     constructor(name, theme, descr, owner, isPublic, id) {
@@ -85,14 +84,8 @@ async function deleteSlides(presentation, slide, owner) {
 
                 updatedSlides["Slide" + num] = slides["Slide" + i];
                 num++;
-
             }
-
-
         }
-
-
-
 
         let resp = await database.deleteSlides(presentationId, updatedSlides, owner);
         return resp;

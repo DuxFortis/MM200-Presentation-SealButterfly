@@ -1,16 +1,14 @@
 const database = require("./datahandler");
-
 class Slides {
 
-    constructor(presentationId, template, owner) {
+    constructor(presentationId, owner) {
         this.presentationId = presentationId;
-        this.template = template;
         this.owner = owner;
     }
 
     async create() {
         try {
-            let resp = await database.insertSlide(this.presentationId, this.template, this.owner);
+            let resp = await database.insertSlide(this.presentationId, this.owner);
             return resp;
         } catch (error) {
             console.error(error)
